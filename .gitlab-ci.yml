@@ -1,0 +1,10 @@
+stages:
+  - test
+
+include:
+  template: Jobs/Code-Quality.gitlab-ci.yml
+
+code_quality:
+  only:
+    refs:
+      - merge_requests
