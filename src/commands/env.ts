@@ -1,18 +1,13 @@
-import {Command, flags} from '@oclif/command'
-import {FileWorker} from "../generator";
-import {blue} from 'chalk';
+import { Command, flags } from '@oclif/command';
+import { FileWorker } from '../generator';
+import { blue } from 'chalk';
 
 export class ENV extends Command {
-
-  static args = [
-    {name: "action"},
-    {name: 'envName'},
-    {name: "envValue"}
-  ];
+  static args = [{ name: 'action' }, { name: 'envName' }, { name: 'envValue' }];
 
   async run() {
-    const {args} = this.parse(ENV);
-    const {action, envName: name, envValue: value} = args;
+    const { args } = this.parse(ENV);
+    const { action, envName: name, envValue: value } = args;
     const path = process.cwd();
 
     const fileWorker = new FileWorker(path);
@@ -22,7 +17,7 @@ export class ENV extends Command {
     if (fileWorker.checkFileExists()) {
       if (action === 'add') {
         fileWorker.updateFile(`${env}\n`, 'env.yaml');
-        this.log(blue(`ENV ${env} was added`))
+        this.log(blue(`ENV ${env} was added`));
       }
       if (action === 'remove') {
         const updatedFile = fileWorker
@@ -32,11 +27,10 @@ export class ENV extends Command {
           .join('\n');
 
         fileWorker.rewriteFile(updatedFile, 'env.yaml');
-        this.log(blue(`ENV ${env} was removed`))
+        this.log(blue(`ENV ${env} was removed`));
       }
     } else {
       this.error('You should be in service folder');
     }
   }
-
 }
