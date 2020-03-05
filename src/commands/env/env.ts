@@ -1,5 +1,5 @@
 import { Command, flags } from '@oclif/command';
-import { FileWorker } from '../generator';
+import { FileWorker } from '../../generator';
 import { blue } from 'chalk';
 
 export class ENV extends Command {

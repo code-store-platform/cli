@@ -1,7 +1,6 @@
 {
-  "name": "code-store",
+  "name": "code-store-cli",
   "version": "0.0.0",
-  "author": "Denis Mukhopadov",
   "bin": {
     "cs": ".\\bin\\run"
   },
