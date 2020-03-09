@@ -7,10 +7,10 @@ export default class Logout extends Command {
   static aliases = ['logout'];
 
   async run() {
-    //TODO: add action spinner
-    ux.action.start('Logging out');
+    const ora = require('ora');
+
+    const spinner = ora().start('Logging out');
     await ux.wait(3000);
-    ux.action.stop('You have been successfully logged out.');
-    // this.log('You have been successfully logged out.');
+    spinner.succeed('Your have been successfully logged out.');
   }
 }

@@ -1,10 +1,11 @@
 {
-  "name": "code-store-cli",
+  "name": "codestore-cli",
   "version": "0.0.0",
   "bin": {
-    "cs": ".\\bin\\run"
+    "cs": "./bin/run",
+    "codestore": "./bin/run"
   },
-  "bugs": "https://github.com/cli/code-store/issues",
+  "bugs": "https://github.com/code-store-marketplace/codestore-cli",
   "dependencies": {
     "@oclif/command": "^1.5.19",
     "@oclif/config": "^1",
@@ -15,6 +16,7 @@
     "chalk": "^3.0.0",
     "inquirer": "^7.0.0",
     "oclif": "^1.14.2",
+    "ora": "^4.0.3",
     "tslib": "^1"
   },
   "devDependencies": {
@@ -43,12 +45,12 @@
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/cli/code-store",
+  "homepage": "https://docs.code.store/cli",
   "keywords": [
-    "oclif"
+    "codestore",
+    "cli"
   ],
   "license": "MIT",
-  "main": "lib/index.js",
   "oclif": {
     "commands": "./lib/commands",
     "bin": "cs",
@@ -63,7 +65,7 @@
     "prepack": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md",
-    "start": "node .\\bin\\run"
+    "start": "node ./bin/run"
   },
   "types": "lib/index.d.ts"
 }
