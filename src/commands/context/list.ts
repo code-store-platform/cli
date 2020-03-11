@@ -1,4 +1,5 @@
 import ux from 'cli-ux';
+import { bold, cyan } from 'chalk';
 import { Command } from '../../lib/command';
 
 export default class List extends Command {
@@ -7,9 +8,9 @@ export default class List extends Command {
   async run() {
     this.log('List of current contexts:');
     const data = [
-      { context_type: 'Project ID', value: 'PTF-123' },
-      { context_type: 'Service ID', value: 'S-325gpz21' }];
+      { context_type: 'Project ID', value: bold.cyan('prj-d28f33cf') },
+      { context_type: 'Service ID', value: bold.cyan('srv-2b00042f') }];
 
-    ux.table(data, { context_type: {}, value: {} });
+    ux.table(data, { context_type: {}, value: {} }, { 'no-truncate': true });
   }
 }
