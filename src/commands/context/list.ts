@@ -5,6 +5,7 @@ export default class List extends Command {
   static description = 'List all globally set contexts';
 
   async run() {
+    this.log('List of current contexts:');
     const data = [
       { context_type: 'Project ID', value: 'PTF-123' },
       { context_type: 'Service ID', value: 'S-325gpz21' }];

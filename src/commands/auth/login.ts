@@ -16,9 +16,9 @@ export default class Login extends Command {
   };
 
   async run() {
-    const { flags } = this.parse(Login);
+    const { flags: userFlags } = this.parse(Login);
 
-    if (flags.interactive) {
+    if (userFlags.interactive) {
       const prompt: any = await inquirer.prompt([
         {
           type: 'input',
