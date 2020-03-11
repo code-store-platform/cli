@@ -2,19 +2,11 @@
   "compilerOptions": {
     "declaration": true,
     "importHelpers": true,
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "sourceMap": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "suppressExcessPropertyErrors": true,
     "module": "commonjs",
     "outDir": "lib",
     "rootDir": "src",
     "strict": true,
-    "target": "es2017",
-    "types": ["node"]
+    "target": "es2017"
   },
   "include": [
     "src/**/*"

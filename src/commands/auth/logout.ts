@@ -1,5 +1,5 @@
-import { Command } from '../../lib/command';
 import ux from 'cli-ux';
+import { Command } from '../../lib/command';
 
 export default class Logout extends Command {
   static description = 'Clears user credentials and invalidates local session';

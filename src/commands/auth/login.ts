@@ -1,6 +1,7 @@
-import { Command, flags } from '@oclif/command';
+import { flags } from '@oclif/command';
 import { blue, red } from 'chalk';
 import * as inquirer from 'inquirer';
+import { Command } from '../../lib/command';
 
 export default class Login extends Command {
   static description = 'Authenticate at code.store platform';
@@ -23,17 +24,13 @@ export default class Login extends Command {
           type: 'input',
           message: 'Enter your email:',
           name: 'email',
-          validate: input => {
-            return input.length > 0;
-          },
+          validate: (input) => input.length > 0,
         },
         {
           type: 'password',
           message: 'Enter your password:',
           name: 'password',
-          validate: input => {
-            return input.length > 0;
-          },
+          validate: (input) => input.length > 0,
         },
       ]);
       const { login, password } = prompt;

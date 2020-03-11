@@ -1,92 +1,63 @@
-# codestore-cli
+codestore-cli
+=============
 
-🖥Command Line Interface of code.store. Add services, deploy, debug, perform all operations from your terminal.
+Command Line Interface of code.store. Add services, deploy, debug, perform all operations from your terminal.
 
-## Usage
-  <!-- usage -->
+[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
+[![Version](https://img.shields.io/npm/v/codestore-cli.svg)](https://npmjs.org/package/codestore-cli)
+[![Downloads/week](https://img.shields.io/npm/dw/codestore-cli.svg)](https://npmjs.org/package/codestore-cli)
+[![License](https://img.shields.io/npm/l/codestore-cli.svg)](https://github.com/code-store-marketplace/codestore-cli/blob/master/package.json)
+
+<!-- toc -->
+* [Usage](#usage)
+* [Commands](#commands)
+<!-- tocstop -->
+# Usage
+<!-- usage -->
 ```sh-session
 $ npm install -g codestore-cli
-$ cs COMMAND
+$ codestore COMMAND
 running command...
-$ cs (-v|--version|version)
-codestore-cli/0.1.0 darwin-x64 node-v13.7.0
-$ cs --help [COMMAND]
+$ codestore (-v|--version|version)
+codestore-cli/0.0.0 darwin-x64 node-v13.7.0
+$ codestore --help [COMMAND]
 USAGE
-  $ cs COMMAND
+  $ codestore COMMAND
 ...
 ```
 <!-- usagestop -->
+# Commands
+<!-- commands -->
+* [`codestore hello [FILE]`](#codestore-hello-file)
+* [`codestore help [COMMAND]`](#codestore-help-command)
 
-## Commands
-  <!-- commands -->
-* [`cs auth:login`](#cs-authlogin)
-* [`cs auth:logout`](#cs-authlogout)
-* [`cs auth:whoami`](#cs-authwhoami)
-* [`cs env:env [ACTION] [ENVNAME] [ENVVALUE]`](#cs-envenv-action-envname-envvalue)
-* [`cs help [COMMAND]`](#cs-help-command)
-* [`cs old_config`](#cs-old_config)
+## `codestore hello [FILE]`
 
-## `cs auth:login`
-
-Authenticate at code.store platform
+describe the command here
 
 ```
 USAGE
-  $ cs auth:login
+  $ codestore hello [FILE]
 
 OPTIONS
-  -i, --interactive  Login with email and password
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
 
-ALIASES
-  $ cs login
+EXAMPLE
+  $ codestore hello
+  hello world from ./src/hello.ts!
 ```
 
-_See code: [src/commands/auth/login.ts](https://github.com/cli/code-store/blob/v0.1.0/src/commands/auth/login.ts)_
+_See code: [src/commands/hello.ts](https://github.com/code-store-marketplace/codestore-cli/blob/v0.0.0/src/commands/hello.ts)_
 
-## `cs auth:logout`
+## `codestore help [COMMAND]`
 
-Clears user credentials and invalidates local session
-
-```
-USAGE
-  $ cs auth:logout
-
-ALIASES
-  $ cs logout
-```
-
-_See code: [src/commands/auth/logout.ts](https://github.com/cli/code-store/blob/v0.1.0/src/commands/auth/logout.ts)_
-
-## `cs auth:whoami`
-
-Display the currently logged in user
+display help for codestore
 
 ```
 USAGE
-  $ cs auth:whoami
-
-ALIASES
-  $ cs whoami
-```
-
-_See code: [src/commands/auth/whoami.ts](https://github.com/cli/code-store/blob/v0.1.0/src/commands/auth/whoami.ts)_
-
-## `cs env:env [ACTION] [ENVNAME] [ENVVALUE]`
-
-```
-USAGE
-  $ cs env:env [ACTION] [ENVNAME] [ENVVALUE]
-```
-
-_See code: [src/commands/env/env.ts](https://github.com/cli/code-store/blob/v0.1.0/src/commands/env/env.ts)_
-
-## `cs help [COMMAND]`
-
-display help for cs
-
-```
-USAGE
-  $ cs help [COMMAND]
+  $ codestore help [COMMAND]
 
 ARGUMENTS
   COMMAND  command to show help for
@@ -96,13 +67,4 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.3/src/commands/help.ts)_
-
-## `cs old_config`
-
-```
-USAGE
-  $ cs old_config
-```
-
-_See code: [src/commands/old_config.ts](https://github.com/cli/code-store/blob/v0.1.0/src/commands/old_config.ts)_
 <!-- commandsstop -->
