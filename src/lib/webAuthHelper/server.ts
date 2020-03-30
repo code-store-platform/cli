@@ -1,30 +1,30 @@
 import * as Express from 'express';
 import { Request, Response } from 'express';
 import { createServer } from 'http';
-import axios from 'axios';
 import authEmitter from './emitter';
-import config from '../../config';
 
 const app = Express();
 
-app.use('/', async (req: Request, res: Response, next: any) => {
-  try {
-    const addr = `${config.authApiUrl}${req.url}`;
-    const { data: { token } } = await axios.get(addr);
+/*
+ We are using this express application to handle redirect and get user token from auth service.
+ */
+app.use('/', async (req: Request, res: Response) => {
+  const { token } = req.query;
+
+  // we have to emit emitter to close server, so CLI is able to end the process
+  if (token) {
     authEmitter.emit('auth', {
       success: true,
       token,
     });
-    // todo add redirect to code store success page.
-    res.send('success');
-  } catch (e) {
+  } else {
     authEmitter.emit('auth', {
       success: false,
-      error: e.message,
+      error: '',
     });
-    res.send('error');
-    throw e;
   }
+  // todo replace with code.store login success page
+  res.redirect('https://code.store');
 });
 
 export default createServer(app);

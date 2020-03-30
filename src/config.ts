@@ -1,6 +1,6 @@
 // todo update addresses when available
 
 export default {
-  authApiUrl: 'http://localhost:7000',
-  auth0Url: 'http://localhost:7000/authorize',
+  authApiUrl: 'http://localhost:3000',
+  auth0Url: 'https://cs-platform.eu.auth0.com/authorize',
 };
