@@ -2,6 +2,7 @@ import { flags } from '@oclif/command';
 import { blue, red } from 'chalk';
 import * as inquirer from 'inquirer';
 import { Command } from '../../lib/command';
+import { server, emitter, openBrowser } from '../../lib/webAuthHelper';
 
 export default class Login extends Command {
   static description = 'Authenticate at code.store platform';
@@ -35,9 +36,30 @@ export default class Login extends Command {
       ]);
       const { login, password } = prompt;
 
-      this.log('You have been successfully authenticated to code.store.');
+      try {
+        const token = await this.codestore.login(login, password);
+        this.saveToken(token);
+        this.log(blue('You have been successfully authenticated to code.store.'));
+      } catch (e) {
+        this.error(e);
+      }
     } else {
       this.warn('Login using web');
+
+      server.listen(3000);
+
+      await openBrowser();
+
+      await emitter.on('auth', async (result) => {
+        const { success, token, error } = result;
+        await server.close();
+        if (success) {
+          this.saveToken(token);
+          this.log(blue('You have been successfully authenticated to code.store1.'));
+        } else {
+          this.error(error);
+        }
+      });
     }
   }
 }

@@ -6,6 +6,11 @@ export default class Whoami extends Command {
   static aliases = ['whoami'];
 
   async run() {
-    this.log('example@code.store');
+    try {
+      const user:any = await this.codestore.getMe(this.token);
+      this.log(user.email);
+    } catch (e) {
+      this.error(e.message);
+    }
   }
 }

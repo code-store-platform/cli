@@ -11,11 +11,17 @@
     "@oclif/command": "^1.5.19",
     "@oclif/config": "^1.14.0",
     "@oclif/plugin-help": "^2.2.3",
+    "@types/axios": "^0.14.0",
+    "@types/express": "^4.17.3",
     "@types/inquirer": "^6.5.0",
+    "axios": "^0.19.2",
     "chalk": "^3.0.0",
     "cli-ux": "^5.4.5",
+    "express": "^4.17.1",
     "inquirer": "^7.1.0",
+    "open": "^7.0.3",
     "ora": "^4.0.3",
+    "os": "^0.1.1",
     "tslib": "^1.11.1"
   },
   "devDependencies": {
@@ -72,7 +78,8 @@
     "posttest": "eslint . --ext .ts --config .eslintrc.js",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif-dev readme && git add README.md",
+    "start": "node .\\bin\\run"
   },
   "types": "lib/index.d.ts"
 }
