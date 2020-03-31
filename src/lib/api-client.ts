@@ -14,6 +14,7 @@ export default class APIClient {
   private client = new ApolloClient({
     fetch,
     uri: config.gatewayUrl,
+    // TODO replace header with token when gateway is ready.
     headers: {
       'x-user-permissions': '{"userId": 1,"role": "Admin"}',
     },
