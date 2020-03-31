@@ -1,5 +1,4 @@
 import { Command as Base } from '@oclif/command';
-import { readFileSync, writeFileSync } from 'fs';
 import APIClient from './api-client';
 import FileWorker from './fileWorker';
 
@@ -23,14 +22,6 @@ export abstract class Command extends Base {
   }
 
   get token(): string {
-    return readFileSync(this._fileWorker.credentialsPath).toString();
-  }
-
-  get homeFolderService(): FileWorker {
-    return this._fileWorker;
-  }
-
-  saveToken(token:string) {
-    return writeFileSync(this._fileWorker.credentialsPath, token);
+    return this._fileWorker.getToken();
   }
 }

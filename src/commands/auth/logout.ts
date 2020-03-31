@@ -1,5 +1,3 @@
-import ux from 'cli-ux';
-import { writeFileSync } from 'fs';
 import { Command } from '../../lib/command';
 
 export default class Logout extends Command {
@@ -10,8 +8,7 @@ export default class Logout extends Command {
   async run() {
     const ora = require('ora');
     const spinner = ora().start('Logging out');
-    writeFileSync(this.homeFolderService.credentialsPath, '');
-    await ux.wait(1000);
+    await this.codestore.logout();
     spinner.succeed('Your have been successfully logged out.');
   }
 }

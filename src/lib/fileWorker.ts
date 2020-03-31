@@ -1,6 +1,8 @@
 import { join } from 'path';
 import { homedir } from 'os';
-import { mkdirSync, readdirSync, writeFileSync } from 'fs';
+import {
+  mkdirSync, readdirSync, readFileSync, writeFileSync,
+} from 'fs';
 
 export default class FileWorker {
   private homePath = join(homedir(), '.codestore');
@@ -35,5 +37,20 @@ export default class FileWorker {
 
   public createHomeFolder():void {
     mkdirSync(this.homePath);
+  }
+
+  public saveToken(token:string) {
+    if (!this.checkHomeFolder()) {
+      this.createHomeFolder();
+    }
+    return writeFileSync(join(this.homePath, 'credentials'), token);
+  }
+
+  public removeToken():void{
+    return writeFileSync(this.credentialsPath, '');
+  }
+
+  public getToken():string {
+    return readFileSync(this.credentialsPath).toString();
   }
 }

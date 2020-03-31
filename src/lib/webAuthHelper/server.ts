@@ -9,7 +9,7 @@ const app = Express();
  We are using this express application to handle redirect and get user token from auth service.
  */
 app.use('/', async (req: Request, res: Response) => {
-  const { token } = req.query;
+  const { token, error } = req.query;
 
   // we have to emit emitter to close server, so CLI is able to end the process
   if (token) {
@@ -20,7 +20,7 @@ app.use('/', async (req: Request, res: Response) => {
   } else {
     authEmitter.emit('auth', {
       success: false,
-      error: '',
+      error,
     });
   }
   // todo replace with code.store login success page

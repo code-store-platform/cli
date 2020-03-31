@@ -7,7 +7,7 @@ export default class Whoami extends Command {
 
   async run() {
     try {
-      const user:any = await this.codestore.getMe(this.token);
+      const user:any = await this.codestore.getMe();
       this.log(user.email);
     } catch (e) {
       this.error(e.message);
