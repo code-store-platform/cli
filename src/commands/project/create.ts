@@ -18,7 +18,7 @@ export default class Create extends Command {
     }),
   };
 
-  async run() {
+  async execute() {
     const { flags: userFlags } = this.parse(Create);
     let { name, identifier, description } = userFlags;
 

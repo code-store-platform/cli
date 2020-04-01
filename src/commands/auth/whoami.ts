@@ -7,12 +7,8 @@ export default class Whoami extends Command {
 
   static aliases = [Aliases.WHOAMI];
 
-  async run() {
-    try {
-      const user: IUser = await this.codestore.getMe();
-      this.log(user.email);
-    } catch (e) {
-      this.error(e.message);
-    }
+  async execute() {
+    const user: IUser = await this.codestore.getMe();
+    this.log(user.email);
   }
 }

@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events';
 import ApolloClient, { gql } from 'apollo-boost';
 import fetch from 'cross-fetch';
-// @ts-ignore
 import { config } from 'node-config-ts';
 import IUser from '../interfaces/user.interface';
 import { openBrowser, server, emitter } from './webAuthHelper';

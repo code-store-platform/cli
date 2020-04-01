@@ -11,7 +11,7 @@ export default class List extends Command {
     ...ux.table.flags(),
   };
 
-  async run() {
+  async execute() {
     const { flags: userflags } = this.parse(List);
 
     // this.warn(`You haven't created any projects yet. You can create them using ${italic('$ cs project:add')}.`);

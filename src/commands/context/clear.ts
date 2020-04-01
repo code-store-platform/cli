@@ -6,7 +6,7 @@ import { Command } from '../../lib/command';
 export default class Clear extends Command {
   static description = 'Clear all contexts';
 
-  async run() {
+  async execute() {
     const data = [
       { context_type: 'Project ID', value: bold.cyan('prj-d28f33cf') },
       { context_type: 'Service ID', value: bold.cyan('srv-2b00042f') }];

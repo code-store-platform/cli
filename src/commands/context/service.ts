@@ -19,7 +19,7 @@ export default class Service extends Command {
     },
   ];
 
-  async run() {
+  async execute() {
     const { flags: userFlags, args } = this.parse(Service);
 
     if (userFlags.clear) {

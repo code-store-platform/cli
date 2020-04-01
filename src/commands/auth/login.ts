@@ -17,7 +17,7 @@ export default class Login extends Command {
     }),
   };
 
-  async run() {
+  async execute() {
     const { flags: userFlags } = this.parse(Login);
 
     if (userFlags.interactive) {
@@ -37,24 +37,16 @@ export default class Login extends Command {
       ]);
       const { login, password } = prompt;
       // in this case we the REST call to api was sent, so token was returned to overwrite .codestore/credentials file.
-      try {
-        await this.codestore.login(login, password);
-        this.log(blue('You have been successfully authenticated to code.store.'));
-      } catch (e) {
-        this.error(e);
-      }
+      await this.codestore.login(login, password);
+      this.log(blue('You have been successfully authenticated to code.store.'));
     } else {
       this.warn('Login using web');
-
       ux.action.start(blue('Starting login process'));
 
-      try {
-        await this.codestore.loginWeb();
-        ux.action.stop(blue('Done'));
-        this.log(blue('You have been successfully authenticated to code.store.'));
-      } catch (e) {
-        this.error(e);
-      }
+      await this.codestore.loginWeb();
+
+      ux.action.stop(blue('Done'));
+      this.log(blue('You have been successfully authenticated to code.store.'));
     }
   }
 }

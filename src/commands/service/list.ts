@@ -20,7 +20,7 @@ export default class List extends Command {
     }),
   };
 
-  async run() {
+  async execute() {
     const { flags: userFlags } = this.parse(List);
 
     if (userFlags.all && userFlags['project-id']) {

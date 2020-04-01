@@ -1,5 +1,4 @@
 import * as open from 'open';
-// @ts-ignore
 import { config } from 'node-config-ts';
 
 // todo replace with deployed auth service
