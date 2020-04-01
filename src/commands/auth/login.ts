@@ -3,11 +3,12 @@ import { blue } from 'chalk';
 import * as inquirer from 'inquirer';
 import ux from 'cli-ux';
 import { Command } from '../../lib/command';
+import Aliases from '../../common/constants/aliases';
 
 export default class Login extends Command {
   static description = 'Authenticate at code.store platform';
 
-  static aliases = ['login'];
+  static aliases = [Aliases.LOGIN];
 
   static flags = {
     interactive: flags.boolean({

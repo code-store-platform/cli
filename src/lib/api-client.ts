@@ -1,15 +1,14 @@
-import axios from 'axios';
 import { EventEmitter } from 'events';
 import ApolloClient, { gql } from 'apollo-boost';
 import fetch from 'cross-fetch';
-import config from '../config';
+// @ts-ignore
+import { config } from 'node-config-ts';
+import IUser from '../interfaces/user.interface';
 import { openBrowser, server, emitter } from './webAuthHelper';
-import FileWorker from './fileWorker';
+import HomeFolderService from './homeFolderService';
 
 export default class APIClient {
-  private endpoint = config.authApiUrl;
-
-  private homeFolderService = new FileWorker();
+  private homeFolderService = new HomeFolderService();
 
   private client = new ApolloClient({
     fetch,
@@ -20,12 +19,13 @@ export default class APIClient {
     },
   });
 
-  async login(email: string, password:string):Promise<void> {
-    const { data: token } = await axios.post(`${this.endpoint}/authorize`, { email, password });
-    this.homeFolderService.saveToken(token);
+  // added for test to not using web auth, will be disabled
+  async login(email: string, password: string): Promise<void> {
+    return this.homeFolderService.saveToken('TOKEN');
   }
 
-  async getMe():Promise<{email:string}> {
+  async getMe(): Promise<IUser> {
+    const token = await this.homeFolderService.getToken();
     const { data: { me } } = await this.client.query({
       query: gql`{
           me{
@@ -66,7 +66,7 @@ export default class APIClient {
     });
   }
 
-  async logout() {
-    this.homeFolderService.removeToken();
+  async logout(): Promise<void> {
+    return this.homeFolderService.removeToken();
   }
 }

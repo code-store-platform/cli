@@ -1,11 +1,8 @@
 import * as open from 'open';
-import config from '../../config';
-
-const { authApiUrl, auth0Url } = config;
+// @ts-ignore
+import { config } from 'node-config-ts';
 
 // todo replace with deployed auth service
-const url = auth0Url;
-const redirectUrl = `${authApiUrl}/cli/callback`;
-const clientId = 'yNVTwlNBjVxTwCmrQB3GztLnBuAUdaql';
+const redirectUrl = `${config.authApiUrl}/cli/callback`;
 
-export default () => open(`${url}?client_id=${clientId}&response_type=code&redirect_uri=${redirectUrl}&state=STATE&scope=openid+email+profile`);
+export default () => open(`${config.auth0Url}?client_id=${config.clientId}&response_type=code&redirect_uri=${redirectUrl}&state=STATE&scope=openid+email+profile`);

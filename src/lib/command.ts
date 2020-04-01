@@ -1,6 +1,6 @@
 import { Command as Base } from '@oclif/command';
 import APIClient from './api-client';
-import FileWorker from './fileWorker';
+import HomeFolderService from './homeFolderService';
 
 const pjson = require('../../package.json');
 
@@ -9,12 +9,12 @@ export abstract class Command extends Base {
 
   _codestore!: APIClient;
 
-  _fileWorker!: FileWorker;
+  _fileWorker!: HomeFolderService;
 
   constructor(argv:any, config:any) {
     super(argv, config);
     this._codestore = new APIClient();
-    this._fileWorker = new FileWorker();
+    this._fileWorker = new HomeFolderService();
   }
 
   get codestore(): APIClient {

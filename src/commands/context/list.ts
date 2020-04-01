@@ -1,11 +1,12 @@
 import ux from 'cli-ux';
 import { bold } from 'chalk';
 import { Command } from '../../lib/command';
+import Aliases from '../../common/constants/aliases';
 
 export default class List extends Command {
   static description = 'List all globally set contexts';
 
-  static aliases = ['context:ls'];
+  static aliases = [Aliases.CONTEXT_LS];
 
   async run() {
     const data = [
