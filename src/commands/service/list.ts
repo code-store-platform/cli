@@ -1,12 +1,13 @@
 import { flags } from '@oclif/command';
-import { bold, green, bgGreen } from 'chalk';
+import { bold } from 'chalk';
 import ux from 'cli-ux';
 import { Command } from '../../lib/command';
+import Aliases from '../../common/constants/aliases';
 
 export default class List extends Command {
   static description = 'List your services';
 
-  static aliases = ['service:ls'];
+  static aliases = [Aliases.SERVICE_LS];
 
   static flags = {
     all: flags.boolean({
@@ -19,7 +20,7 @@ export default class List extends Command {
     }),
   };
 
-  async run() {
+  async execute() {
     const { flags: userFlags } = this.parse(List);
 
     if (userFlags.all && userFlags['project-id']) {

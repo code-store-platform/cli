@@ -1,17 +1,17 @@
 import { ux } from 'cli-ux';
-import { italic } from 'chalk';
 import { Command } from '../../lib/command';
+import Aliases from '../../common/constants/aliases';
 
 export default class List extends Command {
   static description = 'Lists projects in your organization';
 
-  static aliases = ['project:ls'];
+  static aliases = [Aliases.PROJECT_LS];
 
   static flags = {
     ...ux.table.flags(),
   };
 
-  async run() {
+  async execute() {
     const { flags: userflags } = this.parse(List);
 
     // this.warn(`You haven't created any projects yet. You can create them using ${italic('$ cs project:add')}.`);

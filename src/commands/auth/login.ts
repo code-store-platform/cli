@@ -1,12 +1,14 @@
 import { flags } from '@oclif/command';
-import { blue, red } from 'chalk';
+import { blue } from 'chalk';
 import * as inquirer from 'inquirer';
+import ux from 'cli-ux';
 import { Command } from '../../lib/command';
+import Aliases from '../../common/constants/aliases';
 
 export default class Login extends Command {
   static description = 'Authenticate at code.store platform';
 
-  static aliases = ['login'];
+  static aliases = [Aliases.LOGIN];
 
   static flags = {
     interactive: flags.boolean({
@@ -15,7 +17,7 @@ export default class Login extends Command {
     }),
   };
 
-  async run() {
+  async execute() {
     const { flags: userFlags } = this.parse(Login);
 
     if (userFlags.interactive) {
@@ -34,10 +36,17 @@ export default class Login extends Command {
         },
       ]);
       const { login, password } = prompt;
-
-      this.log('You have been successfully authenticated to code.store.');
+      // in this case we the REST call to api was sent, so token was returned to overwrite .codestore/credentials file.
+      await this.codestore.login(login, password);
+      this.log(blue('You have been successfully authenticated to code.store.'));
     } else {
       this.warn('Login using web');
+      ux.action.start(blue('Starting login process'));
+
+      await this.codestore.loginWeb();
+
+      ux.action.stop(blue('Done'));
+      this.log(blue('You have been successfully authenticated to code.store.'));
     }
   }
 }
