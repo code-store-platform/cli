@@ -1,7 +1,7 @@
 {
   "name": "codestore-cli",
   "description": "Command Line Interface of code.store. Add services, deploy, debug, perform all operations from your terminal.",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "bin": {
     "codestore": "./bin/run",
     "cs": "./bin/run"
@@ -14,6 +14,7 @@
     "@types/axios": "^0.14.0",
     "@types/express": "^4.17.3",
     "@types/inquirer": "^6.5.0",
+    "@types/jest": "^25.2.1",
     "apollo-boost": "^0.4.7",
     "axios": "^0.19.2",
     "chalk": "^3.0.0",
@@ -22,10 +23,12 @@
     "express": "^4.17.1",
     "graphql": "^14.6.0",
     "inquirer": "^7.1.0",
+    "jest": "^25.2.7",
     "node-config-ts": "^3.0.4",
     "open": "^7.0.3",
     "ora": "^4.0.3",
     "os": "^0.1.1",
+    "ts-jest": "^25.3.1",
     "tslib": "^1.11.1"
   },
   "devDependencies": {
@@ -35,12 +38,13 @@
     "@types/mocha": "^5.2.7",
     "@types/node": "^10.17.17",
     "@typescript-eslint/eslint-plugin": "^2.22.0",
-    "@typescript-eslint/parser": "^2.22.0",
+    "@typescript-eslint/parser": "^2.26.0",
     "chai": "^4.2.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-typescript": "^7.0.0",
     "eslint-plugin-import": "^2.20.1",
     "globby": "^10.0.2",
+    "jest-runner-eslint": "^0.7.6",
     "mocha": "^5.2.0",
     "nyc": "^14.1.1",
     "ts-node": "^8.6.2",
@@ -82,9 +86,42 @@
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint . --ext .ts --config .eslintrc.js",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "jest --coverage --runInBand --detectOpenHandles",
     "version": "oclif-dev readme && git add README.md",
     "start": "node ./bin/run"
   },
-  "types": "lib/index.d.ts"
+  "types": "lib/index.d.ts",
+  "jest": {
+    "projects": [
+      {
+        "displayName": "lint",
+        "runner": "jest-runner-eslint",
+        "testMatch": [
+          "<rootDir>/src/**/*.ts"
+        ],
+        "rootDir": "src"
+      },
+      {
+        "displayName": "test",
+        "moduleFileExtensions": [
+          "js",
+          "json",
+          "ts"
+        ],
+        "rootDir": "src",
+        "testRegex": ".spec.ts$",
+        "transform": {
+          "^.+\\.ts$": "ts-jest"
+        },
+        "coverageDirectory": "../coverage",
+        "collectCoverage": true,
+        "coveragePathIgnorePatterns": [
+          "/node_modules/",
+          "/dist/",
+          ".dto.ts$"
+        ],
+        "testEnvironment": "node"
+      }
+    ]
+  }
 }

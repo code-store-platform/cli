@@ -1,6 +1,6 @@
 import ux from 'cli-ux';
 import { bold } from 'chalk';
-import { Command } from '../../lib/command';
+import Command from '../../lib/command';
 import Aliases from '../../common/constants/aliases';
 
 export default class List extends Command {
@@ -8,6 +8,7 @@ export default class List extends Command {
 
   static aliases = [Aliases.CONTEXT_LS];
 
+  // eslint-disable-next-line class-methods-use-this
   async execute() {
     const data = [
       { context_type: 'Project ID', value: bold.cyan('prj-d28f33cf') },

@@ -1,7 +1,7 @@
 import { flags } from '@oclif/command';
 import { bold } from 'chalk';
 
-import { Command } from '../../lib/command';
+import Command from '../../lib/command';
 
 export default class Project extends Command {
   static description = 'Manage global project context';

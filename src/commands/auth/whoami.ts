@@ -1,4 +1,4 @@
-import { Command } from '../../lib/command';
+import Command from '../../lib/command';
 import IUser from '../../interfaces/user.interface';
 import Aliases from '../../common/constants/aliases';
 
