@@ -1,7 +1,7 @@
 import * as inquirer from 'inquirer';
 import ux from 'cli-ux';
 import { bold } from 'chalk';
-import { Command } from '../../lib/command';
+import Command from '../../lib/command';
 
 export default class Clear extends Command {
   static description = 'Clear all contexts';

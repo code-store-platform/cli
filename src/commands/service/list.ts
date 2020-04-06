@@ -1,7 +1,7 @@
 import { flags } from '@oclif/command';
 import { bold } from 'chalk';
 import ux from 'cli-ux';
-import { Command } from '../../lib/command';
+import Command from '../../lib/command';
 import Aliases from '../../common/constants/aliases';
 
 export default class List extends Command {

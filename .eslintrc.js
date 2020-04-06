@@ -36,5 +36,6 @@ module.exports = {
     '@typescript-eslint/no-misused-new': ['error'],
     '@typescript-eslint/no-throw-literal': ['error'],
     '@typescript-eslint/no-unnecessary-boolean-literal-compare': ['error'],
+    'no-underscore-dangle': "off"
   }
 };
