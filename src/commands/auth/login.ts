@@ -8,6 +8,10 @@ export default class Login extends Command {
 
   static aliases = [Aliases.LOGIN];
 
+  static hidden = false;
+
+  static usage = Aliases.LOGIN;
+
   async execute() {
     this.warn('Login using web');
     ux.action.start(blue('Starting login process'));
