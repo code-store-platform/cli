@@ -1,4 +1,3 @@
-import { EventEmitter } from 'events';
 import ApolloClient, { gql } from 'apollo-boost';
 import fetch from 'cross-fetch';
 import { config } from 'node-config-ts';
@@ -9,7 +8,7 @@ import HomeFolderService from './homeFolderService';
 export default class APIClient {
   private homeFolderService = new HomeFolderService();
 
-  private client = new ApolloClient({
+  private graphqlClient = new ApolloClient({
     fetch,
     uri: config.gatewayUrl,
     // TODO replace header with token when gateway is ready.
@@ -25,7 +24,7 @@ export default class APIClient {
 
   async getMe(): Promise<IUser> {
     const token = await this.homeFolderService.getToken();
-    const { data: { me } } = await this.client.query({
+    const { data: { me } } = await this.graphqlClient.query({
       query: gql`{
           me{
               email
@@ -39,7 +38,7 @@ export default class APIClient {
     throw new Error('User not defined');
   }
 
-  async loginWeb(): Promise<EventEmitter> {
+  async loginWeb(): Promise<any> {
     // opening browser. See openBrowser.ts for change configurations
     await openBrowser();
     return new Promise((resolve, reject) => {

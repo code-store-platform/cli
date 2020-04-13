@@ -1,7 +1,7 @@
 import * as inquirer from 'inquirer';
 import { flags } from '@oclif/command';
 import { bold } from 'chalk';
-import { Command } from '../../lib/command';
+import Command from '../../lib/command';
 
 export default class Create extends Command {
   static description = 'Create a new project';
