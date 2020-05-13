@@ -4,6 +4,8 @@ import { config } from 'node-config-ts';
 import IUser from '../interfaces/user.interface';
 import { openBrowser, server, emitter } from './webAuthHelper';
 import HomeFolderService from './homeFolderService';
+import Service from './api-services/service';
+import Project from './api-services/project';
 
 export default class APIClient {
   private homeFolderService = new HomeFolderService();
@@ -12,10 +14,17 @@ export default class APIClient {
     fetch,
     uri: config.gatewayUrl,
     // TODO replace header with token when gateway is ready.
-    headers: {
-      'x-user-permissions': '{"userId": 1,"role": "Admin"}',
-    },
   });
+
+  public readonly Service: Service;
+
+  public readonly Project: Project;
+
+  constructor() {
+    this.Service = new Service(this.graphqlClient);
+    this.Project = new Project(this.graphqlClient);
+  }
+
 
   // added for test to not using web auth, will be disabled
   async login(email: string, password: string): Promise<void> {

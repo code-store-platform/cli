@@ -1,6 +1,8 @@
 import { ux } from 'cli-ux';
+import * as clear from 'clear';
 import Command from '../../lib/command';
 import Aliases from '../../common/constants/aliases';
+import { paginationChoice } from '../../common/utils';
 
 export default class List extends Command {
   static description = 'Lists projects in your organization';
@@ -11,29 +13,39 @@ export default class List extends Command {
     ...ux.table.flags(),
   };
 
-  async execute() {
-    const { flags: userflags } = this.parse(List);
+  private currentPage = 1;
 
-    // this.warn(`You haven't created any projects yet. You can create them using ${italic('$ cs project:add')}.`);
-    ux.table([
-      {
-        identifier: 'leshack-meeting-rooms',
-        name: 'LeShack meeting rooms',
-        description: 'LeShack meeting rooms reservation service',
+  private renderTable(projects: object[]) {
+    ux.table(projects, {
+      id: {
+        header: 'Project ID',
       },
-      {
-        identifier: 'code-store-public-site',
-        name: 'Code.Store public site',
-        description: 'Backend for code.store public sitee',
-      },
-    ], {
-      identifier: {},
       name: {},
-      description: {
-        extended: true,
-      },
-    }, {
-      extended: userflags.extended,
-    });
+      status: {},
+    }, { 'no-truncate': true });
+  }
+
+  private async renderList() {
+    const projects = await this.codestore.Project.list(this.currentPage);
+
+    this.renderTable(projects);
+
+    const choice = await paginationChoice();
+
+    if (choice === 'Prev' && this.currentPage > 1) {
+      this.currentPage -= 1;
+    }
+    if (choice === 'Next') {
+      this.currentPage += 1;
+    }
+    if (choice === 'Done') {
+      return;
+    }
+    clear();
+    this.renderList();
+  }
+
+  async execute() {
+    this.renderList();
   }
 }
