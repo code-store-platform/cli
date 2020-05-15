@@ -1,6 +1,6 @@
 {
-  "authApiUrl": "http://localhost:3000",
+  "authApiUrl": "https://codestore.dev/api/authentication-service",
   "auth0Url": "https://cs-platform.eu.auth0.com/authorize",
-  "gatewayUrl": "http://localhost:3000/api/federation-gateway-service/graphql",
-  "clientId": "yNVTwlNBjVxTwCmrQB3GztLnBuAUdaql"
+  "gatewayUrl": "https://codestore.dev/api/federation-gateway-service/graphql",
+  "clientId": "55MFuVIib8pnGUONil1eCejfde1uCodh"
 }

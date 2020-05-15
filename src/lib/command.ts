@@ -29,7 +29,7 @@ export default abstract class Command extends Base {
         fetch,
         uri: config.gatewayUrl,
         headers: {
-          Authorization: await this.homeFolderService.getToken(),
+          Authorization: this.id !== 'auth:login' && await this.homeFolderService.getToken(),
         },
       });
       this._codestore = new APIClient(this.homeFolderService, this.gqlClient);
