@@ -1,4 +1,4 @@
-import { yellow, gray } from 'chalk';
+import { yellow } from 'chalk';
 import * as inquirer from 'inquirer';
 import { Listr } from 'listr2';
 import * as clear from 'clear';
@@ -25,8 +25,11 @@ export default class Create extends Command {
         name: 'name',
         message: 'Service name',
         validate: (name) => {
-          if (name.length >= 35 && name.length) {
-            return 'Name to long';
+          if (!name.length) {
+            return 'Value should not be empty';
+          }
+          if (name.length >= 35) {
+            return 'Value for this field should be less than 35 characters.';
           }
           return true;
         },
@@ -37,18 +40,18 @@ export default class Create extends Command {
         message: 'What problem is your service solving?',
         validate: (value) => {
           if (value.length >= 140) {
-            return 'Value for this field is to long';
+            return 'Value for this field should be less than 140 characters.';
           }
           return true;
         },
-        suffix: createSuffix('Short description about what service going to solve'),
+        suffix: createSuffix('Short description of what service is going to solve.'),
       },
       {
         name: 'howSolving',
         message: 'How your service is solving this problem',
         validate: (value) => {
           if (value.length >= 140) {
-            return 'Value for this field is to long';
+            return 'Value for this field should be less than 140 characters.';
           }
           return true;
         },
@@ -61,10 +64,10 @@ export default class Create extends Command {
       },
       {
         name: 'tags',
-        message: '#tags (comma-separated)',
+        message: '#tags (up to 5 comma-separated tags)',
         validate: (value) => {
           if (value.length >= 25) {
-            return 'Value for this field is to long';
+            return 'Value for this field should be less than 25 characters.';
           }
           if (value.split(',').length > 5) {
             return '5 tags is available';
@@ -82,7 +85,7 @@ export default class Create extends Command {
       task: async (ctx, task) => {
         const { displayName: createdServiceName, id, commitId } = await this.codestore.Service.create(service);
         ctx.service = {
-          createdServiceName, id, commitId: 'test',
+          createdServiceName, id, commitId,
         };
 
         // eslint-disable-next-line no-param-reassign
@@ -97,7 +100,7 @@ export default class Create extends Command {
         await this.codestore.Service.deploy(id, commitId);
 
         // eslint-disable-next-line no-param-reassign
-        task.title = `Deployment for service ${id} was successfully enqueued `;
+        task.title = `Deployment for service ${id} was successfully enqueued`;
       },
     },
     ]);

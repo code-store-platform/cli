@@ -64,7 +64,6 @@ describe('Service Api Service', () => {
         tags: 'test, test2',
       };
 
-
       const spy = jest.spyOn(gqlClientMock, 'mutate').mockImplementation(async () => ({
         data: {
           createService: {},
@@ -74,9 +73,7 @@ describe('Service Api Service', () => {
       await service.create(serviceExample);
 
       expect(spy.mock.calls[0][0]).toMatchObject({
-        variables: {
-          ...serviceExample,
-        },
+        variables: serviceExample,
       });
     });
 

@@ -59,6 +59,7 @@ export default class HomeFolderService {
       throw new Error('Please login.');
     }
 
-    return this.fs.readFile(this.credentialsPath).toString();
+    const data = await this.fs.readFile(this.credentialsPath);
+    return data.toString();
   }
 }

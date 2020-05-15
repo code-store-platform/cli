@@ -16,23 +16,10 @@ export const LIST_SERVICES = gql`query s($pagination:PaginationOptions){
 }`;
 
 export const CREATE_SERVICE = gql`
-
     mutation createService(
-        $name: String!,
-        $private: Boolean!,
-        $tags: String!,
-        $businessDomain: BusinessDomain!
-        $problemSolving: String!
-        $howSolving: String!
+        $service: CreateService!,
     ){
-        createService(service:{
-            name:$name
-            private:$private
-            tags:$tags
-            businessDomain: $businessDomain
-            problemSolving: $problemSolving
-            howSolving: $howSolving
-        }){
+        createService(service:$service){
             id
             createdAt
             updatedAt

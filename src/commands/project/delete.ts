@@ -7,14 +7,11 @@ export default class Delete extends Command {
   static description = 'Remove project';
 
   static args = [
-    { name: 'id' },
+    { name: 'id', required: true },
   ];
 
   async execute() {
     const { args: { id } } = this.parse(Delete);
-    if (!id) {
-      throw new Error('Id flag is required, please use cs project:delete {id}');
-    }
 
     const { result } = await inquirer.prompt([
       { name: 'result', message: `Are you sure you want to delete project with id ${id}`, type: 'confirm' },

@@ -17,12 +17,11 @@ export interface IServiceCreateResult extends IService{
   commitId: string;
 }
 
-
 export interface IServiceCreate {
   name: string;
   private: boolean;
   businessDomain: string;
   tags?: string;
-  problemSolving;
-  howSolving;
+  problemSolving: string;
+  howSolving: string;
 }

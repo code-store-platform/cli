@@ -8,14 +8,11 @@ export default class List extends Command {
   static aliases = [Aliases.PROJECT_SERVICE_LS];
 
   static args = [
-    { name: 'id' },
+    { name: 'id', required: true },
   ];
 
   async execute() {
     const { args: { id } } = this.parse(List);
-    if (!id) {
-      throw new Error('Id must be provided, please use project:service:list {id}');
-    }
 
     const { services } = await this.codestore.Project.single(+id, true);
 

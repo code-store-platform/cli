@@ -1,6 +1,4 @@
-import ApolloClient, { gql } from 'apollo-boost';
-import fetch from 'cross-fetch';
-import { config } from 'node-config-ts';
+import { gql } from 'apollo-boost';
 import IUser from '../interfaces/user.interface';
 import { openBrowser, server, emitter } from './webAuthHelper';
 import HomeFolderService from './homeFolderService';
@@ -8,31 +6,16 @@ import Service from './api-services/service';
 import Project from './api-services/project';
 
 export default class APIClient {
-  private homeFolderService = new HomeFolderService();
-
-  private graphqlClient = new ApolloClient({
-    fetch,
-    uri: config.gatewayUrl,
-    // TODO replace header with token when gateway is ready.
-  });
-
   public readonly Service: Service;
 
   public readonly Project: Project;
 
-  constructor() {
+  constructor(private readonly homeFolderService: HomeFolderService, private readonly graphqlClient) {
     this.Service = new Service(this.graphqlClient);
     this.Project = new Project(this.graphqlClient);
   }
 
-
-  // added for test to not using web auth, will be disabled
-  async login(email: string, password: string): Promise<void> {
-    return this.homeFolderService.saveToken('TOKEN');
-  }
-
   async getMe(): Promise<IUser> {
-    const token = await this.homeFolderService.getToken();
     const { data: { me } } = await this.graphqlClient.query({
       query: gql`{
           me{

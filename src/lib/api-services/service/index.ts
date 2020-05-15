@@ -3,7 +3,6 @@ import {
 } from './queries';
 import { IService, IServiceCreateResult, IServiceCreate } from '../../../interfaces/service.interface';
 
-
 export default class Service {
   constructor(private readonly apiClient) {
   }
