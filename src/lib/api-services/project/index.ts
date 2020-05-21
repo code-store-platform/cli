@@ -41,13 +41,13 @@ export default class Project {
     return data;
   }
 
-  public async list(page?: number): Promise<IProject[]> {
+  public async list(): Promise<IProject[]> {
     const { data: { projects } } = await this.apiClient.query({
       query: LIST_PROJECTS,
       variables: {
         pagination: {
-          page,
-          perPage: 2,
+          page: 1,
+          perPage: 100,
         },
       },
     });

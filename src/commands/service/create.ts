@@ -70,7 +70,7 @@ export default class Create extends Command {
             return 'Value for this field should be less than 25 characters.';
           }
           if (value.split(',').length > 5) {
-            return '5 tags is available';
+            return 'Please select a maximum of 5 tags.';
           }
           return true;
         },

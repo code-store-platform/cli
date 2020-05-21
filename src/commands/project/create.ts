@@ -3,7 +3,6 @@ import { flags } from '@oclif/command';
 import * as clear from 'clear';
 import { Listr } from 'listr2';
 import { yellow } from 'chalk';
-import { isNumber } from 'util';
 import Command from '../../lib/command';
 
 export default class Create extends Command {

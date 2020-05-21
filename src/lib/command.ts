@@ -2,6 +2,7 @@ import { Command as Base } from '@oclif/command';
 import ApolloClient from 'apollo-boost';
 import fetch from 'cross-fetch';
 import { config } from 'node-config-ts';
+import ux from 'cli-ux';
 import APIClient from './api-client';
 import HomeFolderService from './homeFolderService';
 
@@ -37,5 +38,9 @@ export default abstract class Command extends Base {
     } catch (e) {
       this.error(e.message);
     }
+  }
+
+  renderTable(data: object[], schema: any) {
+    ux.table(data, schema, { 'no-truncate': true });
   }
 }
