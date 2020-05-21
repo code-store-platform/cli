@@ -1,5 +1,5 @@
 import {
-  LIST_SERVICES, CREATE_SERVICE, DEPLOY_SERVICE, LIST_BUSINESS_DOMAINS, DELETE_SERVICE,
+  LIST_SERVICES, CREATE_SERVICE, DEPLOY_SERVICE, LIST_BUSINESS_DOMAINS, DELETE_SERVICE, DOWNLOAD_SERVICE,
 } from './queries';
 import { IService, IServiceCreateResult, IServiceCreate } from '../../../interfaces/service.interface';
 
@@ -25,7 +25,7 @@ export default class Service {
     const { data: { createService } } = await this.apiClient.mutate({
       mutation: CREATE_SERVICE,
       variables: {
-        ...service,
+        service,
       },
     });
 
@@ -65,5 +65,16 @@ export default class Service {
     });
 
     return data;
+  }
+
+  public async download(id: number): Promise<string> {
+    const { data: { downloadProject } } = await this.apiClient.query({
+      query: DOWNLOAD_SERVICE,
+      variables: {
+        id,
+      },
+    });
+
+    return downloadProject;
   }
 }

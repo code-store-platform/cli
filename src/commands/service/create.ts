@@ -2,9 +2,11 @@ import { yellow } from 'chalk';
 import * as inquirer from 'inquirer';
 import { Listr } from 'listr2';
 import * as clear from 'clear';
+import * as tree from 'tree-node-cli';
 import Command from '../../lib/command';
 import { IServiceCreate } from '../../interfaces/service.interface';
 import { createSuffix } from '../../common/utils';
+import FileWorker from '../../common/fileWorker';
 
 interface Ctx {
   service: {
@@ -16,6 +18,8 @@ interface Ctx {
 
 export default class Create extends Command {
   static description = 'Create new service';
+
+  private structure;
 
   async execute() {
     const choices = await this.codestore.Service.businessDomains();
@@ -103,8 +107,24 @@ export default class Create extends Command {
         task.title = `Deployment for service ${id} was successfully enqueued`;
       },
     },
+    {
+      title: 'Downloading service template',
+      task: async (ctx) => {
+        const { id, createdServiceName } = ctx.service;
+
+        const data = await this.codestore.Service.download(id);
+
+        await FileWorker.saveZipFromB64(data, createdServiceName);
+
+        this.structure = tree(createdServiceName);
+
+      },
+
+    },
     ]);
 
     await tasks.run();
+    this.log('\n');
+    this.log(yellow(this.structure));
   }
 }
