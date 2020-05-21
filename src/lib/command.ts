@@ -5,19 +5,20 @@ import { config } from 'node-config-ts';
 import ux from 'cli-ux';
 import APIClient from './api-client';
 import HomeFolderService from './homeFolderService';
+import CommandIds from '../common/constants/commandIds';
 
 const pjson = require('../../package.json');
 
 export default abstract class Command extends Base {
   private homeFolderService = new HomeFolderService();
 
-  base = `${pjson.name}@${pjson.version}`;
+  public base = `${pjson.name}@${pjson.version}`;
 
   _codestore!: APIClient;
 
   protected gqlClient;
 
-  get codestore(): APIClient {
+  public get codestore(): APIClient {
     return this._codestore;
   }
 
@@ -31,7 +32,7 @@ export default abstract class Command extends Base {
         // does not work when uri gets from config in terminal, should be rechecked
         uri: 'http://192.168.1.50:3000/api/federation-gateway-service/graphql',
         headers: {
-          Authorization: this.id !== 'auth:login' && await this.homeFolderService.getToken(),
+          Authorization: this.id !== CommandIds.LOGIN && await this.homeFolderService.getToken(),
         },
       });
       this._codestore = new APIClient(this.homeFolderService, this.gqlClient);
@@ -41,7 +42,7 @@ export default abstract class Command extends Base {
     }
   }
 
-  renderTable(data: object[], schema: any) {
+  protected renderTable(data: object[], schema: any) {
     ux.table(data, schema, { 'no-truncate': true });
   }
 }

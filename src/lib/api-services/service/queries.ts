@@ -65,4 +65,4 @@ export const DELETE_SERVICE = gql`mutation deleteService($id: Id!){
 
 export const DOWNLOAD_SERVICE = gql`query downloadProject($id: Int!){
   downloadProject(serviceId:$id)
-}`
+}`;

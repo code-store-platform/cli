@@ -49,6 +49,7 @@ export default class Create extends Command {
           return true;
         },
         suffix: createSuffix('Short description of what service is going to solve.'),
+        prefix: '(optional)',
       },
       {
         name: 'howSolving',
@@ -59,6 +60,7 @@ export default class Create extends Command {
           }
           return true;
         },
+        prefix: '(optional)',
       },
       {
         type: 'list',
@@ -78,6 +80,7 @@ export default class Create extends Command {
           }
           return true;
         },
+        prefix: '(optional)',
       },
       { name: 'private', message: 'Is your service going to be private?', type: 'confirm' },
     ]) as IServiceCreate;
@@ -101,7 +104,7 @@ export default class Create extends Command {
       title: `Dispatching commands to build ${yellow('Develop')} and ${yellow('Demo')} environments`,
       task: async (ctx, task) => {
         const { id, commitId } = ctx.service;
-        await this.codestore.Service.deploy(id, commitId);
+        // await this.codestore.Service.deploy(id, commitId);
 
         // eslint-disable-next-line no-param-reassign
         task.title = `Deployment for service ${id} was successfully enqueued`;
@@ -117,9 +120,7 @@ export default class Create extends Command {
         await FileWorker.saveZipFromB64(data, createdServiceName);
 
         this.structure = tree(createdServiceName);
-
       },
-
     },
     ]);
 

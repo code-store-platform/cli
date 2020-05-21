@@ -15,7 +15,7 @@ export default class APIClient {
     this.Project = new Project(this.graphqlClient);
   }
 
-  async getMe(): Promise<IUser> {
+  public async getMe(): Promise<IUser> {
     const { data: { me } } = await this.graphqlClient.query({
       query: gql`{
           me{
@@ -30,7 +30,7 @@ export default class APIClient {
     throw new Error('User not defined');
   }
 
-  async loginWeb(): Promise<any> {
+  public async loginWeb(): Promise<any> {
     // opening browser. See openBrowser.ts for change configurations
     await openBrowser();
     return new Promise((resolve, reject) => {
@@ -56,7 +56,7 @@ export default class APIClient {
     });
   }
 
-  async logout(): Promise<void> {
+  public async logout(): Promise<void> {
     return this.homeFolderService.removeToken();
   }
 }
