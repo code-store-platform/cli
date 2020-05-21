@@ -1,6 +1,8 @@
 import * as inquirer from 'inquirer';
 import { flags } from '@oclif/command';
-import { bold } from 'chalk';
+import * as clear from 'clear';
+import { Listr } from 'listr2';
+import { yellow } from 'chalk';
 import Command from '../../lib/command';
 
 export default class Create extends Command {
@@ -19,48 +21,29 @@ export default class Create extends Command {
   };
 
   async execute() {
-    const { flags: userFlags } = this.parse(Create);
-    let { name, identifier, description } = userFlags;
+    clear();
 
-    if (!name || !userFlags.identifier) {
-      const responses: any = await inquirer.prompt([
-        {
-          name: 'name',
-          message: 'Name of the project:',
-          type: 'input',
-          validate: (input) => {
-            if (input.length === 0) {
-              return 'Please enter project name';
-            }
+    const { name, proceed } = await inquirer.prompt([
+      { name: 'name', message: 'Name of the project:' },
+      { name: 'description', message: 'Description of the project' },
+      { name: 'proceed', message: 'Is the entered information correct and would like to proceed', type: 'confirm' },
+    ]);
 
-            return true;
-          },
-        },
-        {
-          name: 'identifier',
-          message: 'Identifier of the project:',
-          type: 'input',
-          validate: (input) => {
-            const pass = input.match(/^[a-zA-Z0-9]+[a-zA-Z0-9-_]*$/); // identifier cannot begin with - or _
-            if (!pass || !(input.length > 0 && input.length <= 255)) {
-              return 'Project identifier should be 1-255 characters long and contain alpha-numerical characters, dash and underscores only.';
-            }
-
-            return true;
-          },
-        },
-        {
-          name: 'description',
-          message: 'Description of the project:',
-          type: 'input',
-        },
-      ]);
-      name = responses.name;
-      identifier = responses.identifier;
-      description = responses.description;
+    if (!proceed) {
+      this.log('Project has not been created');
     }
 
-    this.log(`Project "${bold(name)}" has successfully been created: https://code.store/project/${identifier}`);
-    this.log(`name: ${name}\nidentifier: ${identifier}\ndescription: ${description}`);
+    const tasks = new Listr<{}>([{
+      title: `Creating Project ${yellow(name)}`,
+      task: async (ctx, task) => {
+        const { id, name: projectName } = await this.codestore.Project.create(name);
+
+        // eslint-disable-next-line no-param-reassign
+        task.title = `Created project "${yellow(projectName)}", Service ID: "${yellow(id)}"`;
+      },
+      options: { persistentOutput: true },
+    }]);
+
+    await tasks.run();
   }
 }

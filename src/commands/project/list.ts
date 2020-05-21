@@ -12,28 +12,14 @@ export default class List extends Command {
   };
 
   async execute() {
-    const { flags: userflags } = this.parse(List);
+    const projects = await this.codestore.Project.list();
 
-    // this.warn(`You haven't created any projects yet. You can create them using ${italic('$ cs project:add')}.`);
-    ux.table([
-      {
-        identifier: 'leshack-meeting-rooms',
-        name: 'LeShack meeting rooms',
-        description: 'LeShack meeting rooms reservation service',
+    this.renderTable(projects, {
+      id: {
+        header: 'Project ID',
       },
-      {
-        identifier: 'code-store-public-site',
-        name: 'Code.Store public site',
-        description: 'Backend for code.store public sitee',
-      },
-    ], {
-      identifier: {},
       name: {},
-      description: {
-        extended: true,
-      },
-    }, {
-      extended: userflags.extended,
+      status: {},
     });
   }
 }
