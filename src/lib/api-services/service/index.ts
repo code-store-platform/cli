@@ -7,13 +7,13 @@ export default class Service {
   constructor(private readonly apiClient) {
   }
 
-  public async list(page: number): Promise<IService[]> {
+  public async list(): Promise<IService[]> {
     const { data: { services } } = await this.apiClient.query({
       query: LIST_SERVICES,
       variables: {
         pagination: {
-          page,
-          perPage: 5,
+          page: 1,
+          perPage: 100,
         },
       },
     });
