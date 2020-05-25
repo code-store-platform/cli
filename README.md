@@ -22,7 +22,7 @@ $ npm install -g codestore-cli
 $ codestore COMMAND
 running command...
 $ codestore (-v|--version|version)
-codestore-cli/1.1.0 darwin-x64 node-v12.16.3
+codestore-cli/1.1.1 darwin-x64 node-v12.16.3
 $ codestore --help [COMMAND]
 USAGE
   $ codestore COMMAND
@@ -44,8 +44,9 @@ USAGE
 * [`codestore project:list`](#codestore-projectlist)
 * [`codestore project:service:list ID`](#codestore-projectservicelist-id)
 * [`codestore service:create`](#codestore-servicecreate)
-* [`codestore service:delete ID`](#codestore-servicedelete-id)
+* [`codestore service:delete`](#codestore-servicedelete)
 * [`codestore service:list`](#codestore-servicelist)
+* [`codestore service:pull`](#codestore-servicepull)
 
 ## `codestore login`
 
@@ -211,13 +212,13 @@ USAGE
   $ codestore service:create
 ```
 
-## `codestore service:delete ID`
+## `codestore service:delete`
 
 Remove service
 
 ```
 USAGE
-  $ codestore service:delete ID
+  $ codestore service:delete
 ```
 
 ## `codestore service:list`
@@ -230,5 +231,17 @@ USAGE
 
 ALIASES
   $ codestore service:ls
+```
+
+## `codestore service:pull`
+
+Create new service
+
+```
+USAGE
+  $ codestore service:pull
+
+ALIASES
+  $ codestore pull
 ```
 <!-- commandsstop -->
