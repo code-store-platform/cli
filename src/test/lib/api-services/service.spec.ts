@@ -4,9 +4,12 @@ import { IServiceCreate } from '../../../interfaces/service.interface';
 describe('Service Api Service', () => {
   let service: Service;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const mockFn = (args): any => ({});
+
   const gqlClientMock = {
-    query: (args) => ({}),
-    mutate: (args) => ({}),
+    query: mockFn,
+    mutate: mockFn,
   };
 
   beforeAll(async () => {
@@ -25,13 +28,13 @@ describe('Service Api Service', () => {
         },
       }));
 
-      const data = await service.list(1);
+      const data = await service.list();
 
       expect(spy.mock.calls[0][0]).toMatchObject({
         variables: {
           pagination: {
             page: 1,
-            perPage: 5,
+            perPage: 100,
           },
         },
       });
@@ -39,7 +42,7 @@ describe('Service Api Service', () => {
     });
 
     it('businessDomains', async () => {
-      const spy = jest.spyOn(gqlClientMock, 'query').mockImplementation(async () => ({
+      jest.spyOn(gqlClientMock, 'query').mockImplementation(async () => ({
         data: {
           __type: {
             enumValues: ['CRM'],
@@ -73,7 +76,9 @@ describe('Service Api Service', () => {
       await service.create(serviceExample);
 
       expect(spy.mock.calls[0][0]).toMatchObject({
-        variables: serviceExample,
+        variables: {
+          service: serviceExample,
+        },
       });
     });
 

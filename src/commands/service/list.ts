@@ -6,7 +6,7 @@ export default class List extends Command {
 
   public static aliases = [Aliases.SERVICE_LS];
 
-  public async execute() {
+  public async execute(): Promise<void> {
     const services = await this.codestore.Service.list()
       .then((serviceList) => serviceList.map((service) => {
         const { id, name } = service;

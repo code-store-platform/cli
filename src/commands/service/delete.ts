@@ -10,7 +10,7 @@ export default class Delete extends Command {
     { name: 'id', required: true },
   ];
 
-  public async execute() {
+  public async execute(): Promise<void> {
     const { args: { id } } = this.parse(Delete);
 
     const { result } = await inquirer.prompt([
@@ -20,7 +20,7 @@ export default class Delete extends Command {
     if (result) {
       const tasks = new Listr<{}>([{
         title: `Removing service ${yellow(id)}`,
-        task: async (ctx, task) => {
+        task: async (ctx, task): Promise<void> => {
           await this.codestore.Service.delete(+id);
 
           // eslint-disable-next-line no-param-reassign

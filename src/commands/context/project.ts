@@ -19,7 +19,7 @@ export default class Project extends Command {
     },
   ];
 
-  public async execute() {
+  public async execute(): Promise<void> {
     const { flags: userFlags, args } = this.parse(Project);
 
     if (userFlags.clear) {

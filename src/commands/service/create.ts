@@ -21,14 +21,14 @@ export default class Create extends Command {
 
   private structure;
 
-  public async execute() {
+  public async execute(): Promise<void> {
     const choices = await this.codestore.Service.businessDomains();
     // todo update description
     const service = await inquirer.prompt([
       {
         name: 'name',
         message: 'Service name',
-        validate: (name) => {
+        validate: (name): string | boolean => {
           if (!name.length) {
             return 'Value should not be empty';
           }
@@ -42,7 +42,7 @@ export default class Create extends Command {
       {
         name: 'problemSolving',
         message: 'What problem is your service solving?',
-        validate: (value) => {
+        validate: (value): string | boolean => {
           if (value.length >= 140) {
             return 'Value for this field should be less than 140 characters.';
           }
@@ -54,7 +54,7 @@ export default class Create extends Command {
       {
         name: 'howSolving',
         message: 'How your service is solving this problem',
-        validate: (value) => {
+        validate: (value): string | boolean => {
           if (value.length >= 140) {
             return 'Value for this field should be less than 140 characters.';
           }
@@ -71,7 +71,7 @@ export default class Create extends Command {
       {
         name: 'tags',
         message: '#tags (up to 5 comma-separated tags)',
-        validate: (value) => {
+        validate: (value): string | boolean => {
           if (value.length >= 25) {
             return 'Value for this field should be less than 25 characters.';
           }
@@ -89,7 +89,7 @@ export default class Create extends Command {
 
     const tasks = new Listr<Ctx>([{
       title: `Creating service ${yellow(service.name)}`,
-      task: async (ctx, task) => {
+      task: async (ctx, task): Promise<void> => {
         const { service: { displayName: createdServiceName, id }, commitId } = await this.codestore.Service.create(service);
         ctx.service = {
           createdServiceName, id, commitId,
@@ -102,7 +102,7 @@ export default class Create extends Command {
     },
     {
       title: `Dispatching commands to build ${yellow('Develop')} and ${yellow('Demo')} environments`,
-      task: async (ctx, task) => {
+      task: async (ctx, task): Promise<void> => {
         const { id, commitId } = ctx.service;
         await this.codestore.Service.deploy(id, commitId);
 
@@ -112,7 +112,7 @@ export default class Create extends Command {
     },
     {
       title: 'Downloading service template',
-      task: async (ctx) => {
+      task: async (ctx): Promise<void> => {
         const { id, createdServiceName } = ctx.service;
 
         const data = await this.codestore.Service.download(id);

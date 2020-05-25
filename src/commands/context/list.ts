@@ -9,7 +9,7 @@ export default class List extends Command {
   public static aliases = [Aliases.CONTEXT_LS];
 
   // eslint-disable-next-line class-methods-use-this
-  public async execute() {
+  public async execute(): Promise<void> {
     const data = [
       { context_type: 'Project ID', value: bold.cyan('prj-d28f33cf') },
       { context_type: 'Service ID', value: bold.cyan('srv-2b00042f') }];

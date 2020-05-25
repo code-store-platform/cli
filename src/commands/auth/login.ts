@@ -12,7 +12,7 @@ export default class Login extends Command {
 
   public static usage = Aliases.LOGIN;
 
-  public async execute() {
+  public async execute(): Promise<void> {
     this.warn('Login using web');
     ux.action.start(blue('Starting login process'));
 
