@@ -6,7 +6,7 @@ import Command from '../../lib/command';
 export default class Delete extends Command {
   public static description = 'Remove service';
 
-  public async execute() {
+  public async execute(): Promise<void> {
     const { serviceId } = await this.serviceWorker.loadValuesFromYaml();
 
     const { result } = await inquirer.prompt([
@@ -16,7 +16,7 @@ export default class Delete extends Command {
     if (result) {
       const tasks = new Listr<{}>([{
         title: `Removing service ${yellow(serviceId)}`,
-        task: async (ctx, task) => {
+        task: async (ctx, task): Promise<void> => {
           await this.codestore.Service.delete(serviceId);
 
           // eslint-disable-next-line no-param-reassign

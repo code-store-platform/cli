@@ -1,6 +1,6 @@
 import { createReadStream } from 'fs';
 import * as unzipper from 'unzipper';
-import PromisifiedFs from './promisifiedFs';
+import PromisifiedFs from './promisified-fs';
 
 export default class FileWorker {
   public static async saveZipFromB64(data: string, folderName: string): Promise<void> {

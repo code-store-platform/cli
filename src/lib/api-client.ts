@@ -1,7 +1,7 @@
 import { gql } from 'apollo-boost';
 import IUser from '../interfaces/user.interface';
 import { openBrowser, server, emitter } from './webAuthHelper';
-import HomeFolderService from './homeFolderService';
+import HomeFolderService from './home-folder-service';
 import Service from './api-services/service';
 import Project from './api-services/project';
 

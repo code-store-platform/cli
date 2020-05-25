@@ -1,6 +1,6 @@
 import { parse } from 'yaml';
 import { join } from 'path';
-import PromisifiedFs from '../common/promisifiedFs';
+import PromisifiedFs from '../common/promisified-fs';
 import IServiceConfig from '../interfaces/service-config.interface';
 
 export default class ServiceWorker {

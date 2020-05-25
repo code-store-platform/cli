@@ -6,7 +6,7 @@ import * as tree from 'tree-node-cli';
 import Command from '../../lib/command';
 import { IServiceCreate } from '../../interfaces/service.interface';
 import { createSuffix } from '../../common/utils';
-import FileWorker from '../../common/fileWorker';
+import FileWorker from '../../common/file-worker';
 
 interface Ctx {
   service: {
@@ -104,7 +104,7 @@ export default class Create extends Command {
       title: `Dispatching commands to build ${yellow('Develop')} and ${yellow('Demo')} environments`,
       task: async (ctx, task): Promise<void> => {
         const { id, commitId } = ctx.service;
-        // await this.codestore.Service.deploy(id, commitId);
+        await this.codestore.Service.deploy(id, commitId);
 
         // eslint-disable-next-line no-param-reassign
         task.title = `Deployment for service ${id} was successfully enqueued`;

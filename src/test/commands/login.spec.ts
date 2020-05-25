@@ -6,7 +6,7 @@ describe('Logout', () => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const codestore = {
-    loginWeb: () => ({}),
+    loginWeb: (): object => ({}),
   };
 
   beforeAll(async () => {

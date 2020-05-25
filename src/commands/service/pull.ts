@@ -1,14 +1,14 @@
 import * as inquirer from 'inquirer';
 import Command from '../../lib/command';
 import Aliases from '../../common/constants/aliases';
-import FileWorker from '../../common/fileWorker';
+import FileWorker from '../../common/file-worker';
 
 export default class Pull extends Command {
   public static description = 'Create new service';
 
   public static aliases = [Aliases.PULL];
 
-  public async execute() {
+  public async execute(): Promise<void> {
     const { serviceId } = await this.serviceWorker.loadValuesFromYaml();
 
     const { userAgreed } = await inquirer.prompt([

@@ -3,7 +3,7 @@ import ApolloClient from 'apollo-boost';
 import fetch from 'cross-fetch';
 import ux from 'cli-ux';
 import APIClient from './api-client';
-import HomeFolderService from './homeFolderService';
+import HomeFolderService from './home-folder-service';
 import CommandIds from '../common/constants/commandIds';
 import ServiceWorker from './service-worker';
 
