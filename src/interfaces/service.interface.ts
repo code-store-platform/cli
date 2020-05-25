@@ -13,7 +13,8 @@ export interface IService {
   private: boolean;
 }
 
-export interface IServiceCreateResult extends IService{
+export interface IServiceCreateResult {
+  service: IService;
   commitId: string;
 }
 
