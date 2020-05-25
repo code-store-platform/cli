@@ -99,7 +99,8 @@
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "test": "jest --coverage --runInBand --detectOpenHandles",
     "version": "oclif-dev readme && git add README.md",
-    "start": "node ./bin/run"
+    "start": "node ./bin/run",
+    "lint": "eslint '{src,apps,libs,test}/**/*.ts' --fix"
   },
   "types": "lib/index.d.ts",
   "jest": {

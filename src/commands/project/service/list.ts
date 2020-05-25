@@ -3,15 +3,15 @@ import Command from '../../../lib/command';
 import Aliases from '../../../common/constants/aliases';
 
 export default class List extends Command {
-  static description = 'Lists projects in your organization';
+  public static description = 'Lists projects in your organization';
 
-  static aliases = [Aliases.PROJECT_SERVICE_LS];
+  public static aliases = [Aliases.PROJECT_SERVICE_LS];
 
-  static args = [
+  public static args = [
     { name: 'id', required: true },
   ];
 
-  async execute() {
+  public async execute() {
     const { args: { id } } = this.parse(List);
 
     const { services } = await this.codestore.Project.single(+id, true);

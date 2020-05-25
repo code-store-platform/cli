@@ -4,13 +4,13 @@ import { Listr } from 'listr2';
 import Command from '../../lib/command';
 
 export default class Delete extends Command {
-  static description = 'Remove service';
+  public static description = 'Remove service';
 
-  static args = [
+  public static args = [
     { name: 'id', required: true },
   ];
 
-  async execute() {
+  public async execute() {
     const { args: { id } } = this.parse(Delete);
 
     const { result } = await inquirer.prompt([

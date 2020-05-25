@@ -10,7 +10,7 @@ export default class APIClient {
 
   public readonly Project: Project;
 
-  constructor(private readonly homeFolderService: HomeFolderService, private readonly graphqlClient) {
+  public constructor(private readonly homeFolderService: HomeFolderService, private readonly graphqlClient) {
     this.Service = new Service(this.graphqlClient);
     this.Project = new Project(this.graphqlClient);
   }

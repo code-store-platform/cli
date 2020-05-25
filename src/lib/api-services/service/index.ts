@@ -4,7 +4,7 @@ import {
 import { IService, IServiceCreateResult, IServiceCreate } from '../../../interfaces/service.interface';
 
 export default class Service {
-  constructor(private readonly apiClient) {
+  public constructor(private readonly apiClient) {
   }
 
   public async list(): Promise<IService[]> {

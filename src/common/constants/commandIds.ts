@@ -1,5 +1,5 @@
 enum CommandIds {
-  LOGIN= 'auth:login'
+  LOGIN = 'auth:login'
 }
 
 export default CommandIds;

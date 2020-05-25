@@ -2,11 +2,11 @@ import Command from '../../lib/command';
 import Aliases from '../../common/constants/aliases';
 
 export default class List extends Command {
-  static description = 'List your services';
+  public static description = 'List your services';
 
-  static aliases = [Aliases.SERVICE_LS];
+  public static aliases = [Aliases.SERVICE_LS];
 
-  async execute() {
+  public async execute() {
     const services = await this.codestore.Service.list()
       .then((serviceList) => serviceList.map((service) => {
         const { id, name } = service;

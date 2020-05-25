@@ -17,11 +17,11 @@ interface Ctx {
 }
 
 export default class Create extends Command {
-  static description = 'Create new service';
+  public static description = 'Create new service';
 
   private structure;
 
-  async execute() {
+  public async execute() {
     const choices = await this.codestore.Service.businessDomains();
     // todo update description
     const service = await inquirer.prompt([
@@ -104,7 +104,7 @@ export default class Create extends Command {
       title: `Dispatching commands to build ${yellow('Develop')} and ${yellow('Demo')} environments`,
       task: async (ctx, task) => {
         const { id, commitId } = ctx.service;
-        // await this.codestore.Service.deploy(id, commitId);
+        await this.codestore.Service.deploy(id, commitId);
 
         // eslint-disable-next-line no-param-reassign
         task.title = `Deployment for service ${id} was successfully enqueued`;

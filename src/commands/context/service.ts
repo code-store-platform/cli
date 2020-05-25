@@ -4,22 +4,22 @@ import { bold } from 'chalk';
 import Command from '../../lib/command';
 
 export default class Service extends Command {
-  static description = 'Manage global service context';
+  public static description = 'Manage global service context';
 
-  static flags = {
+  public static flags = {
     clear: flags.boolean({
       char: 'c',
       description: 'Clear service context',
     }),
   };
 
-  static args = [
+  public static args = [
     {
       name: 'serviceID',
     },
   ];
 
-  async execute() {
+  public async execute() {
     const { flags: userFlags, args } = this.parse(Service);
 
     if (userFlags.clear) {

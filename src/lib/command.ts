@@ -1,7 +1,6 @@
 import { Command as Base } from '@oclif/command';
 import ApolloClient from 'apollo-boost';
 import fetch from 'cross-fetch';
-import { config } from 'node-config-ts';
 import ux from 'cli-ux';
 import APIClient from './api-client';
 import HomeFolderService from './homeFolderService';
@@ -14,7 +13,7 @@ export default abstract class Command extends Base {
 
   public base = `${pjson.name}@${pjson.version}`;
 
-  _codestore!: APIClient;
+  private _codestore!: APIClient;
 
   protected gqlClient;
 
@@ -22,10 +21,10 @@ export default abstract class Command extends Base {
     return this._codestore;
   }
 
-  abstract execute():PromiseLike<any>;
+  abstract execute(): PromiseLike<any>;
 
   // do not override this method because it uses execute method to provide base erorr handling logic.
-  async run() {
+  public async run() {
     try {
       this.gqlClient = new ApolloClient({
         fetch,
@@ -42,6 +41,7 @@ export default abstract class Command extends Base {
     }
   }
 
+  // eslint-disable-next-line class-methods-use-this
   protected renderTable(data: object[], schema: any) {
     ux.table(data, schema, { 'no-truncate': true });
   }
