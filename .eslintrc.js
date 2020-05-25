@@ -18,7 +18,7 @@ module.exports = {
     '@typescript-eslint/interface-name-prefix': ['off'],
     '@typescript-eslint/no-explicit-any': ['off'],
     '@typescript-eslint/adjacent-overload-signatures': ['error'],
-    '@typescript-eslint/explicit-function-return-type': ['off'],
+    '@typescript-eslint/explicit-function-return-type': ['error'],
     '@typescript-eslint/member-delimiter-style': ['error'],
     '@typescript-eslint/no-for-in-array': ['error'],
     '@typescript-eslint/naming-convention': ['error',

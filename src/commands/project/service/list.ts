@@ -11,7 +11,7 @@ export default class List extends Command {
     { name: 'id', required: true },
   ];
 
-  public async execute() {
+  public async execute(): Promise<void> {
     const { args: { id } } = this.parse(List);
 
     const { services } = await this.codestore.Project.single(+id, true);

@@ -9,7 +9,7 @@ export default class Whoami extends Command {
 
   public static usage = Aliases.WHOAMI;
 
-  public async execute() {
+  public async execute(): Promise<void> {
     const user: IUser = await this.codestore.getMe();
     this.log(user.email);
   }

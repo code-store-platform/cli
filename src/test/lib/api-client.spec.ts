@@ -1,16 +1,18 @@
 import APIClient from '../../lib/api-client';
+import HomeFolderService from '../../lib/homeFolderService';
 
 describe('Api Client', () => {
   let apiClient: APIClient;
 
   const homeFolderServiceMocks = {
-    saveToken: () => null,
-    getToken: () => 'testtoken',
-    removeToken: () => null,
+    saveToken: (): void => null,
+    getToken: (): string => 'testtoken',
+    removeToken: (): void => null,
   };
 
   const gqlClientMock = {
-    query: (options): object => ({
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    query: (params): object => ({
       data: {
         me: {
           email: 'test@email.com',
@@ -20,7 +22,8 @@ describe('Api Client', () => {
   };
 
   beforeAll(async () => {
-    apiClient = new APIClient();
+    const homeFolderService = new HomeFolderService();
+    apiClient = new APIClient(homeFolderService, gqlClientMock);
 
     Object.assign(apiClient, {
       homeFolderService: homeFolderServiceMocks,
@@ -28,21 +31,11 @@ describe('Api Client', () => {
     });
   });
 
-  it('login', async () => {
-    const spy = jest.spyOn(homeFolderServiceMocks, 'saveToken');
-
-    await apiClient.login('test', 'test');
-
-    expect(spy).toBeCalled();
-  });
-
   it('get me', async () => {
-    const spyGetToken = jest.spyOn(homeFolderServiceMocks, 'getToken');
     const spyGqlQuery = jest.spyOn(gqlClientMock, 'query');
 
     await apiClient.getMe();
 
-    expect(spyGetToken).toBeCalled();
     expect(spyGqlQuery).toBeCalled();
   });
 

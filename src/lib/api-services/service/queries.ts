@@ -20,16 +20,19 @@ export const CREATE_SERVICE = gql`
         $service: CreateService!,
     ){
         createService(service:$service){
-            id
-            createdAt
-            updatedAt
-            name
-            status
-            state
-            repositoryUrl
-            displayName
-            organizationId
-            private
+           service {
+             id
+             createdAt
+             updatedAt
+             name
+             status
+             state
+             repositoryUrl
+             displayName
+             organizationId
+             private
+           }
+           commitId
         }
     }`;
 

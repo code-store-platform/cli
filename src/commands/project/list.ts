@@ -11,7 +11,7 @@ export default class List extends Command {
     ...ux.table.flags(),
   };
 
-  public async execute() {
+  public async execute(): Promise<void> {
     const projects = await this.codestore.Project.list();
 
     this.renderTable(projects, {

@@ -27,7 +27,7 @@ export default abstract class Command extends Base {
   abstract execute(): PromiseLike<any>;
 
   // do not override this method because it uses execute method to provide base erorr handling logic.
-  public async run() {
+  public async run(): Promise<void> {
     try {
       this.gqlClient = new ApolloClient({
         fetch,
@@ -45,7 +45,7 @@ export default abstract class Command extends Base {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  protected renderTable(data: object[], schema: any) {
+  protected renderTable(data: object[], schema: any): void {
     ux.table(data, schema, { 'no-truncate': true });
   }
 }

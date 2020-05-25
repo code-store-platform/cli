@@ -8,7 +8,7 @@ export default class Logout extends Command {
 
   public static aliases = [Aliases.LOGOUT];
 
-  public async execute() {
+  public async execute(): Promise<void> {
     const spinner = ora().start('Logging out');
     await this.codestore.logout();
     spinner.succeed('Your have been successfully logged out.');
