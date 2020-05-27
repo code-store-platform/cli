@@ -4,7 +4,6 @@ import Login from '../../commands/auth/login';
 describe('Logout', () => {
   let command: Login;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const codestore = {
     loginWeb: (): object => ({}),
   };
