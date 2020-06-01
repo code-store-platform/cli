@@ -1,5 +1,6 @@
 import { createReadStream } from 'fs';
 import * as unzipper from 'unzipper';
+import { zip } from 'zip-a-folder';
 import PromisifiedFs from './promisified-fs';
 
 export default class FileWorker {
@@ -13,5 +14,15 @@ export default class FileWorker {
       .promise();
 
     await PromisifiedFs.unlink('temp.zip');
+  }
+
+  public static async zipFolder(): Promise<string> {
+    await zip('./', 'temp.zip');
+
+    const buffer = await PromisifiedFs.readFile('temp.zip');
+
+    await PromisifiedFs.unlink('temp.zip');
+
+    return buffer.toString('base64');
   }
 }

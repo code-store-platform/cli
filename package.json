@@ -8,6 +8,7 @@
   },
   "bugs": "https://github.com/code-store-marketplace/codestore-cli/issues",
   "dependencies": {
+    "@graphql-schema/validate-schema": "^1.0.1",
     "@oclif/command": "^1.5.19",
     "@oclif/config": "^1.14.0",
     "@oclif/plugin-help": "^2.2.3",
@@ -35,7 +36,8 @@
     "tree-node-cli": "^1.3.0",
     "ts-jest": "^25.3.1",
     "unzipper": "^0.10.11",
-    "yaml": "^1.10.0"
+    "yaml": "^1.10.0",
+    "zip-a-folder": "0.0.12"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.2",
@@ -67,7 +69,7 @@
   ],
   "homepage": "https://github.com/code-store-marketplace/codestore-cli",
   "keywords": [
-    "codestore",
+    "codesatore",
     "cli",
     "command line interface",
     "reuse"
