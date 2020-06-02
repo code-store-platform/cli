@@ -1,4 +1,4 @@
-// import * as inquirer from 'inquirer';
+import * as inquirer from 'inquirer';
 import { Listr } from 'listr2';
 import Command from '../../lib/command';
 import Aliases from '../../common/constants/aliases';
@@ -11,6 +11,20 @@ export default class Push extends Command {
 
   public async execute(): Promise<void> {
     await this.serviceWorker.validateSchema();
+
+    const { releaseNotes } = await inquirer.prompt([
+      {
+        name: 'releaseNotes',
+        message: 'Please enter release notes (comma separated)',
+        validate: (value): string | boolean => {
+          if (!value || value.split(';').length < 1) {
+            return 'At least one note is required';
+          }
+          return true;
+        },
+        prefix: '(optional)',
+      },
+    ]);
 
     const tasks = new Listr<{encodedZip: string}>([
       {
@@ -29,7 +43,7 @@ export default class Push extends Command {
         title: 'Uploading service',
         task: async (ctx, task): Promise<void> => {
           const { encodedZip } = ctx;
-          const result = await this.codestore.Service.push(encodedZip);
+          const result = await this.codestore.Service.push(encodedZip, releaseNotes.split(';'));
 
           if (result) {
             // eslint-disable-next-line no-param-reassign

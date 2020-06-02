@@ -78,11 +78,12 @@ export default class Service {
     return downloadProject;
   }
 
-  public async push(encodedString: string): Promise<boolean> {
+  public async push(encodedString: string, releaseNotes: string[]): Promise<boolean> {
     const { data: { pushService } } = await this.apiClient.mutate({
       mutation: PUSH_SERVICE,
       variables: {
         base64Service: encodedString,
+        notes: releaseNotes,
       },
     });
 
