@@ -6,9 +6,9 @@ import { yellow } from 'chalk';
 import Command from '../../lib/command';
 
 export default class Create extends Command {
-  static description = 'Create a new project';
+  public static description = 'Create a new project';
 
-  static flags = {
+  public static flags = {
     name: flags.string({
       description: 'Name of the project',
     }),
@@ -20,7 +20,7 @@ export default class Create extends Command {
     }),
   };
 
-  async execute() {
+  public async execute(): Promise<void> {
     clear();
 
     const { name, proceed } = await inquirer.prompt([
@@ -35,7 +35,7 @@ export default class Create extends Command {
 
     const tasks = new Listr<{}>([{
       title: `Creating Project ${yellow(name)}`,
-      task: async (ctx, task) => {
+      task: async (ctx, task): Promise<void> => {
         const { id, name: projectName } = await this.codestore.Project.create(name);
 
         // eslint-disable-next-line no-param-reassign

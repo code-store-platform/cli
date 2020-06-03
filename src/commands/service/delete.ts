@@ -4,13 +4,13 @@ import { Listr } from 'listr2';
 import Command from '../../lib/command';
 
 export default class Delete extends Command {
-  static description = 'Remove service';
+  public static description = 'Remove service';
 
-  static args = [
+  public static args = [
     { name: 'id', required: true },
   ];
 
-  async execute() {
+  public async execute(): Promise<void> {
     const { args: { id } } = this.parse(Delete);
 
     const { result } = await inquirer.prompt([
@@ -20,7 +20,7 @@ export default class Delete extends Command {
     if (result) {
       const tasks = new Listr<{}>([{
         title: `Removing service ${yellow(id)}`,
-        task: async (ctx, task) => {
+        task: async (ctx, task): Promise<void> => {
           await this.codestore.Service.delete(+id);
 
           // eslint-disable-next-line no-param-reassign

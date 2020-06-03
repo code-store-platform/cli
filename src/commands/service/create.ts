@@ -2,9 +2,11 @@ import { yellow } from 'chalk';
 import * as inquirer from 'inquirer';
 import { Listr } from 'listr2';
 import * as clear from 'clear';
+import * as tree from 'tree-node-cli';
 import Command from '../../lib/command';
 import { IServiceCreate } from '../../interfaces/service.interface';
 import { createSuffix } from '../../common/utils';
+import FileWorker from '../../common/fileWorker';
 
 interface Ctx {
   service: {
@@ -15,16 +17,18 @@ interface Ctx {
 }
 
 export default class Create extends Command {
-  static description = 'Create new service';
+  public static description = 'Create new service';
 
-  async execute() {
+  private structure;
+
+  public async execute(): Promise<void> {
     const choices = await this.codestore.Service.businessDomains();
     // todo update description
     const service = await inquirer.prompt([
       {
         name: 'name',
         message: 'Service name',
-        validate: (name) => {
+        validate: (name): string | boolean => {
           if (!name.length) {
             return 'Value should not be empty';
           }
@@ -38,23 +42,25 @@ export default class Create extends Command {
       {
         name: 'problemSolving',
         message: 'What problem is your service solving?',
-        validate: (value) => {
+        validate: (value): string | boolean => {
           if (value.length >= 140) {
             return 'Value for this field should be less than 140 characters.';
           }
           return true;
         },
         suffix: createSuffix('Short description of what service is going to solve.'),
+        prefix: '(optional)',
       },
       {
         name: 'howSolving',
         message: 'How your service is solving this problem',
-        validate: (value) => {
+        validate: (value): string | boolean => {
           if (value.length >= 140) {
             return 'Value for this field should be less than 140 characters.';
           }
           return true;
         },
+        prefix: '(optional)',
       },
       {
         type: 'list',
@@ -65,7 +71,7 @@ export default class Create extends Command {
       {
         name: 'tags',
         message: '#tags (up to 5 comma-separated tags)',
-        validate: (value) => {
+        validate: (value): string | boolean => {
           if (value.length >= 25) {
             return 'Value for this field should be less than 25 characters.';
           }
@@ -74,6 +80,7 @@ export default class Create extends Command {
           }
           return true;
         },
+        prefix: '(optional)',
       },
       { name: 'private', message: 'Is your service going to be private?', type: 'confirm' },
     ]) as IServiceCreate;
@@ -82,8 +89,8 @@ export default class Create extends Command {
 
     const tasks = new Listr<Ctx>([{
       title: `Creating service ${yellow(service.name)}`,
-      task: async (ctx, task) => {
-        const { displayName: createdServiceName, id, commitId } = await this.codestore.Service.create(service);
+      task: async (ctx, task): Promise<void> => {
+        const { service: { displayName: createdServiceName, id }, commitId } = await this.codestore.Service.create(service);
         ctx.service = {
           createdServiceName, id, commitId,
         };
@@ -95,7 +102,7 @@ export default class Create extends Command {
     },
     {
       title: `Dispatching commands to build ${yellow('Develop')} and ${yellow('Demo')} environments`,
-      task: async (ctx, task) => {
+      task: async (ctx, task): Promise<void> => {
         const { id, commitId } = ctx.service;
         await this.codestore.Service.deploy(id, commitId);
 
@@ -103,8 +110,22 @@ export default class Create extends Command {
         task.title = `Deployment for service ${id} was successfully enqueued`;
       },
     },
+    {
+      title: 'Downloading service template',
+      task: async (ctx): Promise<void> => {
+        const { id, createdServiceName } = ctx.service;
+
+        const data = await this.codestore.Service.download(id);
+
+        await FileWorker.saveZipFromB64(data, createdServiceName);
+
+        this.structure = tree(createdServiceName);
+      },
+    },
     ]);
 
     await tasks.run();
+    this.log('\n');
+    this.log(yellow(this.structure));
   }
 }

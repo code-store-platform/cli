@@ -20,16 +20,19 @@ export const CREATE_SERVICE = gql`
         $service: CreateService!,
     ){
         createService(service:$service){
-            id
-            createdAt
-            updatedAt
-            name
-            status
-            state
-            repositoryUrl
-            displayName
-            organizationId
-            private
+           service {
+             id
+             createdAt
+             updatedAt
+             name
+             status
+             state
+             repositoryUrl
+             displayName
+             organizationId
+             private
+           }
+           commitId
         }
     }`;
 
@@ -61,4 +64,8 @@ export const DELETE_SERVICE = gql`mutation deleteService($id: Id!){
     deleteService(id:$id){
         affected
     }
+}`;
+
+export const DOWNLOAD_SERVICE = gql`query downloadProject($id: Int!){
+  downloadProject(serviceId:$id)
 }`;

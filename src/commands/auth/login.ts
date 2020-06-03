@@ -4,15 +4,15 @@ import Command from '../../lib/command';
 import Aliases from '../../common/constants/aliases';
 
 export default class Login extends Command {
-  static description = 'Authenticate at code.store platform';
+  public static description = 'Authenticate at code.store platform';
 
-  static aliases = [Aliases.LOGIN];
+  public static aliases = [Aliases.LOGIN];
 
-  static hidden = false;
+  public static hidden = false;
 
-  static usage = Aliases.LOGIN;
+  public static usage = Aliases.LOGIN;
 
-  async execute() {
+  public async execute(): Promise<void> {
     this.warn('Login using web');
     ux.action.start(blue('Starting login process'));
 

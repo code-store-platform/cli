@@ -1,24 +1,10 @@
-import { gql } from 'apollo-boost';
 import IProject from '../../../interfaces/project.interface';
-import { CREATE_PROJECT, DELETE_PROJECT, LIST_PROJECTS } from './queries';
+import {
+  CREATE_PROJECT, DELETE_PROJECT, LIST_PROJECTS, SINGLE_PROJECT, SINGLE_PROJECT_INCLUDE_SERVICES,
+} from './queries';
 
 export default class Project {
-  constructor(private readonly apiClient) {
-  }
-
-  private get includeServices() {
-    return `services{
-       id
-      createdAt
-      updatedAt
-      name
-      description
-      status
-      state
-      repositoryUrl
-      displayName
-      organizationId
-      private }`;
+  public constructor(private readonly apiClient) {
   }
 
   public async create(name: string): Promise<IProject> {
@@ -60,15 +46,7 @@ export default class Project {
       variables: {
         id,
       },
-      query: gql` query project($id: Int!){
-          project(id:$id){
-              id
-              name
-              status
-              ${includeServices ? this.includeServices : ''}
-          }
-      }`,
-
+      query: includeServices ? SINGLE_PROJECT_INCLUDE_SERVICES : SINGLE_PROJECT,
     });
 
     return project;

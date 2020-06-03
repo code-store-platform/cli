@@ -19,3 +19,30 @@ export const LIST_PROJECTS = gql`query projects($pagination: PaginationOptions){
         status
     }
 }`;
+
+export const SINGLE_PROJECT = gql` query project($id: Int!){
+  project(id:$id){
+    id
+    name
+    status
+  }
+}`;
+
+export const SINGLE_PROJECT_INCLUDE_SERVICES = gql` query project($id: Int!){
+  project(id:$id){
+    id
+    name
+    status
+    services {
+      id
+      createdAt
+      updatedAt
+      name
+      status
+      state
+      repositoryUrl
+      displayName
+      organizationId
+      private }
+  }
+}`;

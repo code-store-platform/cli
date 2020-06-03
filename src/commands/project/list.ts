@@ -3,15 +3,15 @@ import Command from '../../lib/command';
 import Aliases from '../../common/constants/aliases';
 
 export default class List extends Command {
-  static description = 'Lists projects in your organization';
+  public static description = 'Lists projects in your organization';
 
-  static aliases = [Aliases.PROJECT_LS];
+  public static aliases = [Aliases.PROJECT_LS];
 
-  static flags = {
+  public static flags = {
     ...ux.table.flags(),
   };
 
-  async execute() {
+  public async execute(): Promise<void> {
     const projects = await this.codestore.Project.list();
 
     this.renderTable(projects, {
