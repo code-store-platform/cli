@@ -23,9 +23,6 @@ describe('Who Am I', () => {
     });
   });
 
-  beforeEach(() => {
-  });
-
   it('Should print user email', async () => {
     const spy = jest.spyOn(process.stdout, 'write');
     await command.run();

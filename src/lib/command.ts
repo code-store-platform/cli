@@ -3,13 +3,16 @@ import ApolloClient from 'apollo-boost';
 import fetch from 'cross-fetch';
 import ux from 'cli-ux';
 import APIClient from './api-client';
-import HomeFolderService from './homeFolderService';
+import HomeFolderService from './home-folder-service';
 import CommandIds from '../common/constants/commandIds';
+import ServiceWorker from './service-worker';
 
 const pjson = require('../../package.json');
 
 export default abstract class Command extends Base {
   private homeFolderService = new HomeFolderService();
+
+  protected serviceWorker = new ServiceWorker();
 
   public base = `${pjson.name}@${pjson.version}`;
 

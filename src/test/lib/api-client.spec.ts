@@ -1,5 +1,5 @@
 import APIClient from '../../lib/api-client';
-import HomeFolderService from '../../lib/homeFolderService';
+import HomeFolderService from '../../lib/home-folder-service';
 
 describe('Api Client', () => {
   let apiClient: APIClient;

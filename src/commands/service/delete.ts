@@ -6,22 +6,18 @@ import Command from '../../lib/command';
 export default class Delete extends Command {
   public static description = 'Remove service';
 
-  public static args = [
-    { name: 'id', required: true },
-  ];
-
   public async execute(): Promise<void> {
-    const { args: { id } } = this.parse(Delete);
+    const { serviceId } = await this.serviceWorker.loadValuesFromYaml();
 
     const { result } = await inquirer.prompt([
-      { name: 'result', message: `Are you sure you want to delete service with id ${id}`, type: 'confirm' },
+      { name: 'result', message: `Are you sure you want to delete service with id ${serviceId}`, type: 'confirm' },
     ]);
 
     if (result) {
       const tasks = new Listr<{}>([{
-        title: `Removing service ${yellow(id)}`,
+        title: `Removing service ${yellow(serviceId)}`,
         task: async (ctx, task): Promise<void> => {
-          await this.codestore.Service.delete(+id);
+          await this.codestore.Service.delete(serviceId);
 
           // eslint-disable-next-line no-param-reassign
           task.title = 'Service was successfully removed';

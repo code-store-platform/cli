@@ -6,7 +6,7 @@ import * as tree from 'tree-node-cli';
 import Command from '../../lib/command';
 import { IServiceCreate } from '../../interfaces/service.interface';
 import { createSuffix } from '../../common/utils';
-import FileWorker from '../../common/fileWorker';
+import FileWorker from '../../common/file-worker';
 
 interface Ctx {
   service: {
