@@ -101,16 +101,6 @@ export default class Create extends Command {
       options: { persistentOutput: true },
     },
     {
-      title: `Dispatching commands to build ${yellow('Develop')} and ${yellow('Demo')} environments`,
-      task: async (ctx, task): Promise<void> => {
-        const { id, commitId } = ctx.service;
-        await this.codestore.Service.deploy(id, commitId);
-
-        // eslint-disable-next-line no-param-reassign
-        task.title = `Deployment for service ${id} was successfully enqueued`;
-      },
-    },
-    {
       title: 'Downloading service template',
       task: async (ctx): Promise<void> => {
         const { id, createdServiceName } = ctx.service;
