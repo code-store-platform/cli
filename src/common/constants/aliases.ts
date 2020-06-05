@@ -6,7 +6,8 @@ enum Aliases {
   PROJECT_LS = 'project:ls',
   SERVICE_LS = 'service:ls',
   PROJECT_SERVICE_LS = 'project:service:ls',
-  PULL = 'pull'
+  PULL = 'pull',
+  PUSH = 'push'
 }
 
 export default Aliases;

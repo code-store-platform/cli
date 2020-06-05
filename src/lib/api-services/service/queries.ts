@@ -1,17 +1,9 @@
 import { gql } from 'apollo-boost';
+import { SERVICE } from '../fields';
 
 export const LIST_SERVICES = gql`query s($pagination:PaginationOptions){
     services(pagination:$pagination){
-        id
-        createdAt
-        updatedAt
-        name
-        status
-        state
-        repositoryUrl
-        displayName
-        organizationId
-        private
+        ${SERVICE}
     }
 }`;
 
@@ -21,16 +13,7 @@ export const CREATE_SERVICE = gql`
     ){
         createService(service:$service){
            service {
-             id
-             createdAt
-             updatedAt
-             name
-             status
-             state
-             repositoryUrl
-             displayName
-             organizationId
-             private
+             ${SERVICE}
            }
            commitId
         }
@@ -47,16 +30,7 @@ export const LIST_BUSINESS_DOMAINS = gql`{
 
 export const DEPLOY_SERVICE = gql`mutation deployService($deployment: DeploymentCreate!){
     deployService(deployment:$deployment){
-        id
-        createdAt
-        updatedAt
-        name
-        status
-        state
-        repositoryUrl
-        displayName
-        organizationId
-        private
+        ${SERVICE}
     }
 }`;
 
@@ -68,4 +42,8 @@ export const DELETE_SERVICE = gql`mutation deleteService($id: Id!){
 
 export const DOWNLOAD_SERVICE = gql`query downloadProject($id: Int!){
   downloadProject(serviceId:$id)
+}`;
+
+export const PUSH_SERVICE = gql`mutation pushService($base64Service: String!){
+  pushService(base64Service:$base64Service)
 }`;

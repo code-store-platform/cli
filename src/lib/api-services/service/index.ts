@@ -1,5 +1,5 @@
 import {
-  LIST_SERVICES, CREATE_SERVICE, DEPLOY_SERVICE, LIST_BUSINESS_DOMAINS, DELETE_SERVICE, DOWNLOAD_SERVICE,
+  LIST_SERVICES, CREATE_SERVICE, DEPLOY_SERVICE, LIST_BUSINESS_DOMAINS, DELETE_SERVICE, DOWNLOAD_SERVICE, PUSH_SERVICE,
 } from './queries';
 import { IService, IServiceCreateResult, IServiceCreate } from '../../../interfaces/service.interface';
 
@@ -54,7 +54,7 @@ export default class Service {
     return deployService;
   }
 
-  public async delete(id: number): Promise<{affected: number}> {
+  public async delete(id: number): Promise<{ affected: number }> {
     const { data } = await this.apiClient.mutate({
       mutation: DELETE_SERVICE,
       variables: {
@@ -76,5 +76,16 @@ export default class Service {
     });
 
     return downloadProject;
+  }
+
+  public async push(encodedString: string): Promise<boolean> {
+    const { data: { pushService } } = await this.apiClient.mutate({
+      mutation: PUSH_SERVICE,
+      variables: {
+        base64Service: encodedString,
+      },
+    });
+
+    return pushService;
   }
 }
