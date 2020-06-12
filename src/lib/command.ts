@@ -32,7 +32,7 @@ export default abstract class Command extends Base {
       this.gqlClient = new ApolloClient({
         fetch,
         // does not work when uri gets from config in terminal, should be rechecked
-        uri: 'http://192.168.1.50:3000/api/federation-gateway-service/graphql',
+        uri: 'http://127.0.0.1:3000/api/federation-gateway-service/graphql',
         headers: {
           Authorization: this.id !== CommandIds.LOGIN && await this.homeFolderService.getToken(),
         },
