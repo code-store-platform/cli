@@ -18,7 +18,7 @@
     "@types/inquirer": "^6.5.0",
     "@types/jest": "^25.2.1",
     "apollo-boost": "^0.4.7",
-    "archiver": "^4.0.1",
+    "archiver-promise": "^1.0.0",
     "axios": "^0.19.2",
     "chalk": "^3.0.0",
     "clear": "^0.1.0",

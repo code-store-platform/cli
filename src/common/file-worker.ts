@@ -1,8 +1,7 @@
-import { createReadStream, createWriteStream } from 'fs';
+import { createReadStream } from 'fs';
 import * as unzipper from 'unzipper';
-import { zip } from 'zip-a-folder';
-import * as archiver from 'archiver';
 import PromisifiedFs from './promisified-fs';
+import Archiver from './zip-tool';
 
 export default class FileWorker {
   public static async saveZipFromB64(data: string, folderName: string): Promise<void> {
@@ -18,35 +17,13 @@ export default class FileWorker {
   }
 
   public static async zipFolder(): Promise<string> {
-    const archive = archiver('zip', {});
+    const archiver = new Archiver(process.cwd());
 
-    const stream = createWriteStream('temp.zip');
+    const pathToZip = await archiver.zipFiles();
 
-    archive.pipe(stream);
+    const buffer = await PromisifiedFs.readFile(pathToZip);
 
-    const filesAndFolders = await PromisifiedFs.readdir(process.cwd());
-
-    const result = filesAndFolders.map(async (item) => {
-      if (['node_modules', '.DS_Store', 'temp.zip'].find((element) => element === item)) {
-        return;
-      }
-
-      const stat = await PromisifiedFs.stat(item);
-
-      if (stat.isFile()) {
-        archive.file(item, { name: item });
-      } else {
-        archive.directory(item, item);
-      }
-    });
-
-    await Promise.all(result);
-
-    await archive.finalize();
-
-    const buffer = await PromisifiedFs.readFile('temp.zip');
-
-    await PromisifiedFs.unlink('temp.zip');
+    await PromisifiedFs.unlink(pathToZip);
 
     return buffer.toString('base64');
   }

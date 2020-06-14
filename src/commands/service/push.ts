@@ -45,8 +45,7 @@ export default class Push extends Command {
         title: 'Uploading service',
         task: async (ctx, task): Promise<void> => {
           const { encodedZip } = ctx;
-          console.log(encodedZip);
-          // const result = await this.codestore.Service.push(encodedZip, this.splitNotes(releaseNotes));
+          const result = await this.codestore.Service.push(encodedZip, this.splitNotes(releaseNotes));
 
           if (result) {
             // eslint-disable-next-line no-param-reassign
