@@ -45,7 +45,7 @@ export default abstract class Command extends Base {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  protected renderTable(data: object[], schema: any): void {
-    ux.table(data, schema, { 'no-truncate': true });
+  protected renderTable(data: object[], schema: any, options: object = { 'no-truncate': true }): void {
+    ux.table(data, schema, options);
   }
 }
