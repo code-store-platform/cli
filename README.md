@@ -22,7 +22,7 @@ $ npm install -g codestore-cli
 $ codestore COMMAND
 running command...
 $ codestore (-v|--version|version)
-codestore-cli/1.1.2 darwin-x64 node-v12.16.3
+codestore-cli/1.2.1 darwin-x64 node-v12.16.3
 $ codestore --help [COMMAND]
 USAGE
   $ codestore COMMAND
@@ -42,11 +42,14 @@ USAGE
 * [`codestore project:create`](#codestore-projectcreate)
 * [`codestore project:delete ID`](#codestore-projectdelete-id)
 * [`codestore project:list`](#codestore-projectlist)
+* [`codestore project:service:add [SERVICEID]`](#codestore-projectserviceadd-serviceid)
 * [`codestore project:service:list ID`](#codestore-projectservicelist-id)
+* [`codestore project:service:remove [SERVICEID]`](#codestore-projectserviceremove-serviceid)
 * [`codestore service:create`](#codestore-servicecreate)
 * [`codestore service:delete`](#codestore-servicedelete)
 * [`codestore service:list`](#codestore-servicelist)
-* [`codestore service:pull`](#codestore-servicepull)
+* [`codestore service:logs`](#codestore-servicelogs)
+* [`codestore service:pull [ID]`](#codestore-servicepull-id)
 * [`codestore service:push`](#codestore-servicepush)
 
 ## `codestore login`
@@ -192,6 +195,21 @@ ALIASES
   $ codestore project:ls
 ```
 
+## `codestore project:service:add [SERVICEID]`
+
+Include service to project
+
+```
+USAGE
+  $ codestore project:service:add [SERVICEID]
+
+ARGUMENTS
+  SERVICEID  Id of the service
+
+OPTIONS
+  --project-id=project-id  (required) Id of the project
+```
+
 ## `codestore project:service:list ID`
 
 Lists projects in your organization
@@ -202,6 +220,21 @@ USAGE
 
 ALIASES
   $ codestore project:service:ls
+```
+
+## `codestore project:service:remove [SERVICEID]`
+
+Exclude service from project
+
+```
+USAGE
+  $ codestore project:service:remove [SERVICEID]
+
+ARGUMENTS
+  SERVICEID  Id of the service
+
+OPTIONS
+  --project-id=project-id  (required) Id of the project
 ```
 
 ## `codestore service:create`
@@ -234,13 +267,32 @@ ALIASES
   $ codestore service:ls
 ```
 
-## `codestore service:pull`
+## `codestore service:logs`
+
+Print the logs for your services.
+
+```
+USAGE
+  $ codestore service:logs
+
+OPTIONS
+  -e, --env=(development|staging|production|demo|private)  [default: development] Project environment.
+  -f, --follow                                             Specify if the logs should be streamed.
+  -n, --num=num                                            [default: 20] Number of most recent log lines to display.
+  -p, --projectId=projectId                                Project ID
+  -s, --serviceId=serviceId                                Service ID
+
+ALIASES
+  $ codestore logs
+```
+
+## `codestore service:pull [ID]`
 
 Create new service
 
 ```
 USAGE
-  $ codestore service:pull
+  $ codestore service:pull [ID]
 
 ALIASES
   $ codestore pull
