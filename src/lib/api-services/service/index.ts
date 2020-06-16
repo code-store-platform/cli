@@ -75,8 +75,6 @@ export default class Service {
       },
     });
 
-    console.log(result);
-
     return result.data.downloadProject.data;
   }
 
