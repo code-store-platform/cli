@@ -1,11 +1,13 @@
+import { gql, ApolloClient } from 'apollo-boost';
 import IProject from '../../../interfaces/project.interface';
 import {
   CREATE_PROJECT, DELETE_PROJECT, LIST_PROJECTS, SINGLE_PROJECT, SINGLE_PROJECT_INCLUDE_SERVICES,
 } from './queries';
 
 export default class Project {
-  public constructor(private readonly apiClient) {
-  }
+  public constructor(
+    private readonly apiClient: ApolloClient<unknown>,
+  ) { }
 
   public async create(name: string): Promise<IProject> {
     const { data: { createProject } } = await this.apiClient.mutate({
@@ -17,7 +19,7 @@ export default class Project {
   }
 
   public async delete(id: number): Promise<boolean> {
-    const { data } = this.apiClient.mutate({
+    const { data } = await this.apiClient.mutate({
       mutation: DELETE_PROJECT,
       variables: {
         id,
@@ -50,5 +52,27 @@ export default class Project {
     });
 
     return project;
+  }
+
+  public async includeService(projectId: number, serviceId: number): Promise<any> {
+    return this.apiClient.mutate({
+      mutation: gql`mutation {
+        includeService(data: {
+          projectId: ${projectId},
+          serviceId: ${serviceId}
+        }) { status }
+      }`,
+    });
+  }
+
+  public async excludeService(projectId: number, serviceId: number): Promise<any> {
+    return this.apiClient.mutate({
+      mutation: gql`mutation {
+        excludeService(data: {
+          projectId: ${projectId},
+          serviceId: ${serviceId}
+        }) { status }
+      }`,
+    });
   }
 }

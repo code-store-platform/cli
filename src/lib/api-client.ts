@@ -4,15 +4,19 @@ import { openBrowser, server, emitter } from './webAuthHelper';
 import HomeFolderService from './home-folder-service';
 import Service from './api-services/service';
 import Project from './api-services/project';
+import Logs from './api-services/logs';
 
 export default class APIClient {
   public readonly Service: Service;
 
   public readonly Project: Project;
 
+  public readonly Logs: Logs;
+
   public constructor(private readonly homeFolderService: HomeFolderService, private readonly graphqlClient) {
     this.Service = new Service(this.graphqlClient);
     this.Project = new Project(this.graphqlClient);
+    this.Logs = new Logs(this.graphqlClient);
   }
 
   public async getMe(): Promise<IUser> {

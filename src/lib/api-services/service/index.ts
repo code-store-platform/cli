@@ -1,11 +1,13 @@
+import { ApolloClient } from 'apollo-boost';
 import {
   LIST_SERVICES, CREATE_SERVICE, DEPLOY_SERVICE, LIST_BUSINESS_DOMAINS, DELETE_SERVICE, DOWNLOAD_SERVICE, PUSH_SERVICE,
 } from './queries';
 import { IService, IServiceCreateResult, IServiceCreate } from '../../../interfaces/service.interface';
 
 export default class Service {
-  public constructor(private readonly apiClient) {
-  }
+  public constructor(
+    private readonly apiClient: ApolloClient<unknown>,
+  ) { }
 
   public async list(): Promise<IService[]> {
     const { data: { services } } = await this.apiClient.query({
@@ -24,9 +26,7 @@ export default class Service {
   public async create(service: IServiceCreate): Promise<IServiceCreateResult> {
     const { data: { createService } } = await this.apiClient.mutate({
       mutation: CREATE_SERVICE,
-      variables: {
-        service,
-      },
+      variables: { service },
     });
 
     return createService;

@@ -18,7 +18,7 @@ export default abstract class Command extends Base {
 
   private _codestore!: APIClient;
 
-  protected gqlClient;
+  protected gqlClient: ApolloClient<unknown>;
 
   public get codestore(): APIClient {
     return this._codestore;
@@ -32,7 +32,7 @@ export default abstract class Command extends Base {
       this.gqlClient = new ApolloClient({
         fetch,
         // does not work when uri gets from config in terminal, should be rechecked
-        uri: 'http://127.0.0.1:3000/api/federation-gateway-service/graphql',
+        uri: 'https://api.codestore.dev/federation-gateway-service/graphql',
         headers: {
           Authorization: this.id !== CommandIds.LOGIN && await this.homeFolderService.getToken(),
         },
@@ -45,7 +45,7 @@ export default abstract class Command extends Base {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  protected renderTable(data: object[], schema: any): void {
-    ux.table(data, schema, { 'no-truncate': true });
+  protected renderTable(data: object[], schema: any, options: object = { 'no-truncate': true }): void {
+    ux.table(data, schema, options);
   }
 }
