@@ -41,9 +41,13 @@ export const DELETE_SERVICE = gql`mutation deleteService($id: Id!){
 }`;
 
 export const DOWNLOAD_SERVICE = gql`query downloadProject($id: Int!){
-  downloadProject(serviceId:$id)
+  downloadProject(serviceId:$id){
+    data
+  }
 }`;
 
-export const PUSH_SERVICE = gql`mutation pushService($base64Service: String!){
-  pushService(base64Service:$base64Service)
+export const PUSH_SERVICE = gql`mutation pushService($base64Service: String!, $notes: [String]!){
+  pushService(base64Service:$base64Service, releaseNotes: $notes){
+    success
+  }
 }`;

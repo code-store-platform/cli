@@ -68,24 +68,25 @@ export default class Service {
   }
 
   public async download(id: number): Promise<string> {
-    const { data: { downloadProject } } = await this.apiClient.query({
+    const result = await this.apiClient.query({
       query: DOWNLOAD_SERVICE,
       variables: {
         id,
       },
     });
 
-    return downloadProject;
+    return result.data.downloadProject.data;
   }
 
-  public async push(encodedString: string): Promise<boolean> {
-    const { data: { pushService } } = await this.apiClient.mutate({
+  public async push(encodedString: string, releaseNotes: string[]): Promise<boolean> {
+    const { data: { success } } = await this.apiClient.mutate({
       mutation: PUSH_SERVICE,
       variables: {
         base64Service: encodedString,
+        notes: releaseNotes,
       },
     });
 
-    return pushService;
+    return success;
   }
 }

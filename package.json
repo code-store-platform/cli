@@ -1,7 +1,7 @@
 {
   "name": "codestore-cli",
   "description": "Command Line Interface of code.store. Add services, deploy, debug, perform all operations from your terminal.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "bin": {
     "codestore": "./bin/run",
     "cs": "./bin/run"
@@ -12,11 +12,13 @@
     "@oclif/command": "^1.5.19",
     "@oclif/config": "^1.14.0",
     "@oclif/plugin-help": "^2.2.3",
+    "@types/archiver": "^3.1.0",
     "@types/axios": "^0.14.0",
     "@types/express": "^4.17.3",
     "@types/inquirer": "^6.5.0",
     "@types/jest": "^25.2.1",
     "apollo-boost": "^0.4.7",
+    "archiver-promise": "^1.0.0",
     "axios": "^0.19.2",
     "chalk": "^3.0.0",
     "clear": "^0.1.0",

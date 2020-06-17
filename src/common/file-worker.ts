@@ -1,7 +1,7 @@
 import { createReadStream } from 'fs';
 import * as unzipper from 'unzipper';
-import { zip } from 'zip-a-folder';
 import PromisifiedFs from './promisified-fs';
+import Archiver from './zip-tool';
 
 export default class FileWorker {
   public static async saveZipFromB64(data: string, folderName: string): Promise<void> {
@@ -17,11 +17,13 @@ export default class FileWorker {
   }
 
   public static async zipFolder(): Promise<string> {
-    await zip('./', 'temp.zip');
+    const archiver = new Archiver(process.cwd());
 
-    const buffer = await PromisifiedFs.readFile('temp.zip');
+    const pathToZip = await archiver.zipFiles();
 
-    await PromisifiedFs.unlink('temp.zip');
+    const buffer = await PromisifiedFs.readFile(pathToZip);
+
+    await PromisifiedFs.unlink(pathToZip);
 
     return buffer.toString('base64');
   }

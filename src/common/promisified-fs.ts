@@ -1,5 +1,5 @@
 import {
-  writeFile, unlink, readdir, readFile, access,
+  writeFile, unlink, readdir, readFile, access, stat,
 } from 'fs';
 import { promisify } from 'util';
 
@@ -13,4 +13,6 @@ export default class PromisifiedFs {
   public static readFile = promisify(readFile);
 
   public static access = promisify(access);
+
+  public static stat = promisify(stat);
 }

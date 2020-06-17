@@ -8,8 +8,21 @@ export default class Pull extends Command {
 
   public static aliases = [Aliases.PULL];
 
+  public static args = [
+    { name: 'id' },
+  ];
+
+  private async getServiceId(args): Promise<{serviceId: number}> {
+    if (args.id) {
+      return { serviceId: +args.id };
+    }
+    return this.serviceWorker.loadValuesFromYaml();
+  }
+
   public async execute(): Promise<void> {
-    const { serviceId } = await this.serviceWorker.loadValuesFromYaml();
+    const { args } = this.parse(Pull);
+
+    const { serviceId } = await this.getServiceId(args);
 
     const { userAgreed } = await inquirer.prompt([
       {

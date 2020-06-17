@@ -3,7 +3,7 @@ import IQueryLog from '../../../interfaces/query-log.interface';
 import { GET_LOGS } from './queries';
 
 export default class Logs {
-  constructor(private readonly apiClient) {
+  public constructor(private readonly apiClient) {
   }
 
   public async list(query: IQueryLog): Promise<Array<ILog>> {

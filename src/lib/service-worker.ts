@@ -11,28 +11,37 @@ interface ValidatorResponse {
 }
 
 export default class ServiceWorker {
-  private configFileName = 'codestore.yaml';
+  private configFiles = {
+    codestore: {
+      filename: 'codestore.yaml',
+      error: new Error('You must be in code.store service folder to invoke this command. Check if codestore.yaml and schema.graphql are exist'),
+    },
+    schema: {
+      filename: 'schema.graphql',
+      error: new Error('Cannot find schema.graphql, restore it or use cs pull'),
+    },
+  };
 
-  private async getYamlPath(): Promise<string> {
-    const path = join(process.cwd(), this.configFileName);
-
+  private async load(configName: 'codestore' | 'schema'): Promise<string> {
+    const { filename, error } = this.configFiles[configName];
+    const path = join(process.cwd(), filename);
     try {
       await PromisifiedFs.access(path);
       return path;
     } catch (e) {
-      throw new Error('You must be in code.store service folder to invoke this command');
+      throw error;
     }
   }
 
   public async loadValuesFromYaml(): Promise<IServiceConfig> {
-    const pathToConfig = await this.getYamlPath();
-    const file = await PromisifiedFs.readFile(pathToConfig);
+    const configPath = await this.load('codestore');
+    const file = await PromisifiedFs.readFile(configPath);
 
     return parse(file.toString()) as IServiceConfig;
   }
 
   public async validateSchema(): Promise<ValidatorResponse> {
-    await this.getYamlPath();
-    return validateSchemaFile(join(process.cwd(), 'schema.graphql'));
+    const schemaPath = await this.load('schema');
+    return validateSchemaFile(schemaPath);
   }
 }
