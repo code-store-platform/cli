@@ -3,13 +3,13 @@ import { yellow } from 'chalk';
 import Command from '../../../lib/command';
 
 export default class Add extends Command {
-  static description = 'Include service to project';
+  public static description = 'Include service to project';
 
-  static args = [
+  public static args = [
     { name: 'serviceId', description: 'Id of the service' },
   ];
 
-  static flags = {
+  public static flags = {
     'project-id': flags.integer({
       required: true,
       name: 'Project ID',
@@ -17,7 +17,7 @@ export default class Add extends Command {
     }),
   };
 
-  async execute() {
+  public async execute(): Promise<void> {
     const { flags: { 'project-id': projectId }, args: { serviceId } } = this.parse(Add);
 
     const { data: { includeService: { status } } } = await this.codestore.Project.includeService(projectId, serviceId);

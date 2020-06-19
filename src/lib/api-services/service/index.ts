@@ -1,8 +1,9 @@
 import { ApolloClient } from 'apollo-boost';
 import {
-  LIST_SERVICES, CREATE_SERVICE, DEPLOY_SERVICE, LIST_BUSINESS_DOMAINS, DELETE_SERVICE, DOWNLOAD_SERVICE, PUSH_SERVICE,
+  LIST_SERVICES, CREATE_SERVICE, DEPLOY_SERVICE, LIST_BUSINESS_DOMAINS, DELETE_SERVICE, DOWNLOAD_SERVICE, PUSH_SERVICE, SINGLE_SERVICE,
 } from './queries';
 import { IService, IServiceCreateResult, IServiceCreate } from '../../../interfaces/service.interface';
+import ServiceStateEnum from '../../../common/constants/service-state.enum';
 
 export default class Service {
   public constructor(
@@ -88,5 +89,29 @@ export default class Service {
     });
 
     return success;
+  }
+
+  public async getService(serviceId: number): Promise<IService> {
+    const { data: { service } } = await this.apiClient.query({
+      query: SINGLE_SERVICE,
+      variables: {
+        id: serviceId,
+      },
+      fetchPolicy: 'no-cache',
+    });
+
+    return service;
+  }
+
+  public async checkServiceDeployed(serviceId: number): Promise<boolean> {
+    return new Promise((resolve) => {
+      const interval = setInterval(async () => {
+        const service = await this.getService(serviceId);
+        if (service.state === ServiceStateEnum.NEW_CONTAINER_IMAGE_AVAILABLE) {
+          resolve(true);
+          clearInterval(interval);
+        }
+      }, 5000);
+    });
   }
 }
