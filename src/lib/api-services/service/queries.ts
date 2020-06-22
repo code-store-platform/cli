@@ -7,6 +7,14 @@ export const LIST_SERVICES = gql`query s($pagination:PaginationOptions){
     }
 }`;
 
+export const SINGLE_SERVICE = gql`query singleService($id: Int!){
+  service(id:{
+    id: $id
+  }){
+    ${SERVICE}
+  }
+}`;
+
 export const CREATE_SERVICE = gql`
     mutation createService(
         $service: CreateService!,
