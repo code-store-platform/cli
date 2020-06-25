@@ -31,6 +31,7 @@ export default class Create extends Command {
 
     if (!proceed) {
       this.log('Project has not been created');
+      return;
     }
 
     const tasks = new Listr<{}>([{
