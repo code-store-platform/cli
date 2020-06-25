@@ -9,6 +9,7 @@ enum Aliases {
   PULL = 'pull',
   PUSH = 'push',
   LOGS = 'logs',
+  GENERATE = 'generate',
 }
 
 export default Aliases;
