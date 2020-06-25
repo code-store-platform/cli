@@ -1,6 +1,6 @@
-import * as inquirer from 'inquirer';
+import inquirer from 'inquirer';
 import { flags } from '@oclif/command';
-import * as clear from 'clear';
+import clear from 'clear';
 import { Listr } from 'listr2';
 import { yellow } from 'chalk';
 import Command from '../../lib/command';

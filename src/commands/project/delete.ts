@@ -1,5 +1,5 @@
 import { yellow } from 'chalk';
-import * as inquirer from 'inquirer';
+import inquirer from 'inquirer';
 import { Listr } from 'listr2';
 import Command from '../../lib/command';
 
