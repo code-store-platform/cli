@@ -1,8 +1,8 @@
 import { yellow } from 'chalk';
-import * as inquirer from 'inquirer';
+import inquirer from 'inquirer';
 import { Listr } from 'listr2';
-import * as clear from 'clear';
-import * as tree from 'tree-node-cli';
+import clear from 'clear';
+import tree from 'tree-node-cli';
 import Command from '../../lib/command';
 import { IServiceCreate } from '../../interfaces/service.interface';
 import { createSuffix } from '../../common/utils';

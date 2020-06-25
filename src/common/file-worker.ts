@@ -1,5 +1,5 @@
 import { createReadStream } from 'fs';
-import * as unzipper from 'unzipper';
+import unzipper from 'unzipper';
 import PromisifiedFs from './promisified-fs';
 import Archiver from './zip-tool';
 

@@ -1,4 +1,4 @@
-import * as archiver from 'archiver-promise';
+import archiver from 'archiver-promise';
 import { join } from 'path';
 import PromisifiedFs from './promisified-fs';
 
