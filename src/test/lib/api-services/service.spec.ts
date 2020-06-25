@@ -1,3 +1,4 @@
+import { ApolloClient } from 'apollo-boost';
 import Service from '../../../lib/api-services/service';
 import { IServiceCreate } from '../../../interfaces/service.interface';
 
@@ -13,7 +14,7 @@ describe('Service Api Service', () => {
   };
 
   beforeAll(async () => {
-    service = new Service(gqlClientMock);
+    service = new Service(gqlClientMock as ApolloClient<any>);
   });
 
   afterEach(() => {

@@ -12,7 +12,6 @@ describe('Who Am I', () => {
     lastName: 'TEST',
   };
 
-
   beforeAll(async () => {
     command = new Whoami([], {} as IConfig);
 
