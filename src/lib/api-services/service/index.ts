@@ -1,6 +1,6 @@
 import { ApolloClient } from 'apollo-boost';
 import {
-  LIST_SERVICES, CREATE_SERVICE, DEPLOY_SERVICE, LIST_BUSINESS_DOMAINS, DELETE_SERVICE, DOWNLOAD_SERVICE, PUSH_SERVICE, SINGLE_SERVICE,
+  LIST_SERVICES, CREATE_SERVICE, DEPLOY_SERVICE, LIST_BUSINESS_DOMAINS, DELETE_SERVICE, DOWNLOAD_SERVICE, PUSH_SERVICE, SINGLE_SERVICE, GENERATE_SERVICE_ENTITIES,
 } from './queries';
 import { IService, IServiceCreateResult, IServiceCreate } from '../../../interfaces/service.interface';
 import ServiceStateEnum from '../../../common/constants/service-state.enum';
@@ -113,5 +113,16 @@ export default class Service {
         }
       }, 5000);
     });
+  }
+
+  public async generateEntities(encodedString: string): Promise<string> {
+    const { data } = await this.apiClient.mutate({
+      mutation: GENERATE_SERVICE_ENTITIES,
+      variables: {
+        base64Service: encodedString,
+      },
+    });
+
+    return data.generateServiceEntities.data;
   }
 }
