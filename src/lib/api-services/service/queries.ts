@@ -60,6 +60,12 @@ export const PUSH_SERVICE = gql`mutation pushService($base64Service: String!, $n
   }
 }`;
 
+export const PROMOTE_SERVICE = gql`mutation promoteService($id: Int!){
+  promoteService(id: $id){
+    ${SERVICE}
+  }
+}`;
+
 export const GENERATE_SERVICE_ENTITIES = gql`mutation generateServiceEntities($base64Service: String!){
   generateServiceEntities(base64Service:$base64Service){
     data

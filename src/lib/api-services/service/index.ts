@@ -1,6 +1,15 @@
 import { ApolloClient } from 'apollo-boost';
 import {
-  LIST_SERVICES, CREATE_SERVICE, DEPLOY_SERVICE, LIST_BUSINESS_DOMAINS, DELETE_SERVICE, DOWNLOAD_SERVICE, PUSH_SERVICE, SINGLE_SERVICE, GENERATE_SERVICE_ENTITIES,
+  LIST_SERVICES,
+  CREATE_SERVICE,
+  DEPLOY_SERVICE,
+  LIST_BUSINESS_DOMAINS,
+  DELETE_SERVICE,
+  DOWNLOAD_SERVICE,
+  PUSH_SERVICE,
+  SINGLE_SERVICE,
+  GENERATE_SERVICE_ENTITIES,
+  PROMOTE_SERVICE,
 } from './queries';
 import { IService, IServiceCreateResult, IServiceCreate } from '../../../interfaces/service.interface';
 import ServiceStateEnum from '../../../common/constants/service-state.enum';
@@ -124,5 +133,16 @@ export default class Service {
     });
 
     return data.generateServiceEntities.data;
+  }
+
+  public async promote(serviceId: number): Promise<IService> {
+    const { data: { promote } } = await this.apiClient.mutate({
+      mutation: PROMOTE_SERVICE,
+      variables: {
+        id: serviceId,
+      },
+    });
+
+    return promote;
   }
 }
