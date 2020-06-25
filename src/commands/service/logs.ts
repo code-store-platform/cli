@@ -8,13 +8,13 @@ import Aliases from '../../common/constants/aliases';
 import { FETCH_INTERVAL, NUMBER_OF_LINES } from '../../common/constants/logs';
 
 export default class Logs extends Command {
-  logs: ILog[] = [];
+  public logs: ILog[] = [];
 
-  static description = 'Print the logs for your services.';
+  public static description = 'Print the logs for your services.';
 
-  static aliases = [Aliases.LOGS];
+  public static aliases = [Aliases.LOGS];
 
-  static flags = {
+  public static flags = {
     follow: flags.boolean({
       char: 'f',
       description: 'Specify if the logs should be streamed.',
@@ -40,23 +40,23 @@ export default class Logs extends Command {
     }),
   };
 
-  async fetch(query: IQueryLog): Promise<Array<ILog>> {
+  public async fetch(query: IQueryLog): Promise<Array<ILog>> {
     const logs = await this.codestore.Logs.list(query);
     return logs.reverse();
   }
 
-  async updateLogs(query: IQueryLog) {
+  public async updateLogs(query: IQueryLog): Promise<void> {
     this.logs = await this.fetch(query);
   }
 
-  render(noHeader: boolean) {
+  public render(noHeader: boolean): void {
     this.renderTable(this.logs.map((log) => ({
       time: bold.white(log.time),
       message: bold.cyan(log.message.trim()),
     })), { time: {}, message: {} }, { 'no-truncate': true, 'no-header': noHeader });
   }
 
-  async execute() {
+  public async execute(): Promise<void> {
     const { flags: { follow, ...query } } = this.parse(Logs);
 
     if (!query.serviceId && !query.projectId) {
@@ -75,8 +75,8 @@ export default class Logs extends Command {
 
     if (follow) {
       setInterval(async () => {
-        if (this.logs.length) { // @ts-ignore
-          query.sinceTime = new Date(this.logs[this.logs.length - 1].time);
+        if (this.logs.length) {
+          (query as any).sinceTime = new Date(this.logs[this.logs.length - 1].time);
         }
         await this.updateLogs(query);
         this.render(true);

@@ -1,5 +1,4 @@
-import * as Express from 'express';
-import { Request, Response } from 'express';
+import Express, { Request, Response } from 'express';
 import { createServer } from 'http';
 import authEmitter from './emitter';
 

@@ -2,7 +2,7 @@ import {
   writeFile, unlink, readdir, readFile, access, stat,
 } from 'fs';
 import { promisify } from 'util';
-import * as rimraf from 'rimraf';
+import rimraf from 'rimraf';
 
 export default class PromisifiedFs {
   public static rimraf = promisify(rimraf);
