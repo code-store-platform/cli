@@ -1,5 +1,5 @@
 {
-  "name": "codestore-cli",
+  "name": "codestore",
   "description": "Command Line Interface of code.store. Add services, deploy, debug, perform all operations from your terminal.",
   "version": "1.2.5",
   "bin": {

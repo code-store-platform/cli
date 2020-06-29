@@ -32,7 +32,7 @@ export default abstract class Command extends Base {
       this.gqlClient = new ApolloClient({
         fetch,
         // does not work when uri gets from config in terminal, should be rechecked
-        uri: 'https://api.codestore.dev/federation-gateway-service/graphql',
+        uri: `${process.env.CODESTORE_GATEWAY_HOST || 'https://api.code.store'}/federation-gateway-service/graphql`,
         headers: {
           Authorization: this.id !== CommandIds.LOGIN && await this.homeFolderService.getToken(),
         },
