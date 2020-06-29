@@ -1,17 +1,18 @@
+import { IConfig } from '@oclif/config';
 import Login from '../../commands/auth/login';
 
 describe('Logout', () => {
   let command: Login;
 
   const codestore = {
-    loginWeb: (a, b) => true,
+    loginWeb: (): object => ({}),
   };
 
   beforeAll(async () => {
-    command = new Login([], []);
+    command = new Login([], {} as IConfig);
 
-    Object.assign(command, {
-      _codestore: codestore,
+    Object.defineProperty(command, 'codestore', {
+      get: () => codestore,
     });
   });
 

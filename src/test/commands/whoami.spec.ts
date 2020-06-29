@@ -1,3 +1,4 @@
+import { IConfig } from '@oclif/config';
 import Whoami from '../../commands/auth/whoami';
 import IUser from '../../interfaces/user.interface';
 
@@ -8,18 +9,16 @@ describe('Who Am I', () => {
     email: 'test@user.com',
     firstName: 'Test',
     id: 1,
-    lastName: 'User',
-  };
-
-  const codestore = {
-    getMe: async () => userExample,
+    lastName: 'TEST',
   };
 
   beforeAll(async () => {
-    command = new Whoami([], []);
+    command = new Whoami([], {} as IConfig);
 
-    Object.assign(command, {
-      _codestore: codestore,
+    Object.defineProperty(command, 'codestore', {
+      get: jest.fn(() => ({
+        getMe: async (): Promise<IUser> => userExample,
+      })),
     });
   });
 

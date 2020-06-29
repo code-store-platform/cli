@@ -1,5 +1,4 @@
-import * as Express from 'express';
-import { Request, Response } from 'express';
+import Express, { Request, Response } from 'express';
 import { createServer } from 'http';
 import authEmitter from './emitter';
 
@@ -24,7 +23,7 @@ app.use('/', async (req: Request, res: Response) => {
     });
   }
   // todo replace with code.store login success page
-  res.redirect('https://code.store');
+  res.redirect('https://app.codestore.dev/cli');
 });
 
 export default createServer(app);

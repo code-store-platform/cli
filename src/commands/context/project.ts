@@ -4,22 +4,22 @@ import { bold } from 'chalk';
 import Command from '../../lib/command';
 
 export default class Project extends Command {
-  static description = 'Manage global project context';
+  public static description = 'Manage global project context';
 
-  static flags = {
+  public static flags = {
     clear: flags.boolean({
       char: 'c',
       description: 'Clear project context',
     }),
   };
 
-  static args = [
+  public static args = [
     {
       name: 'projectID',
     },
   ];
 
-  async execute() {
+  public async execute(): Promise<void> {
     const { flags: userFlags, args } = this.parse(Project);
 
     if (userFlags.clear) {

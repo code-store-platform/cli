@@ -1,17 +1,18 @@
+import { IConfig } from '@oclif/config';
 import Logout from '../../commands/auth/logout';
 
 describe('Logout', () => {
   let command: Logout;
 
   const codestore = {
-    logout: () => true,
+    logout: (): boolean => true,
   };
 
   beforeAll(async () => {
-    command = new Logout([], []);
+    command = new Logout([], {} as IConfig);
 
-    Object.assign(command, {
-      _codestore: codestore,
+    Object.defineProperty(command, 'codestore', {
+      get: () => codestore,
     });
   });
 

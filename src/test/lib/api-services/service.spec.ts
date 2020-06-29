@@ -1,16 +1,20 @@
+import { ApolloClient } from 'apollo-boost';
 import Service from '../../../lib/api-services/service';
 import { IServiceCreate } from '../../../interfaces/service.interface';
 
 describe('Service Api Service', () => {
   let service: Service;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const mockFn = (args): any => ({});
+
   const gqlClientMock = {
-    query: (args) => ({}),
-    mutate: (args) => ({}),
+    query: mockFn,
+    mutate: mockFn,
   };
 
   beforeAll(async () => {
-    service = new Service(gqlClientMock);
+    service = new Service(gqlClientMock as ApolloClient<any>);
   });
 
   afterEach(() => {
@@ -25,13 +29,13 @@ describe('Service Api Service', () => {
         },
       }));
 
-      const data = await service.list(1);
+      const data = await service.list();
 
       expect(spy.mock.calls[0][0]).toMatchObject({
         variables: {
           pagination: {
             page: 1,
-            perPage: 5,
+            perPage: 100,
           },
         },
       });
@@ -39,7 +43,7 @@ describe('Service Api Service', () => {
     });
 
     it('businessDomains', async () => {
-      const spy = jest.spyOn(gqlClientMock, 'query').mockImplementation(async () => ({
+      jest.spyOn(gqlClientMock, 'query').mockImplementation(async () => ({
         data: {
           __type: {
             enumValues: ['CRM'],
@@ -73,26 +77,8 @@ describe('Service Api Service', () => {
       await service.create(serviceExample);
 
       expect(spy.mock.calls[0][0]).toMatchObject({
-        variables: serviceExample,
-      });
-    });
-
-    it('deploy', async () => {
-      const spy = jest.spyOn(gqlClientMock, 'mutate').mockImplementation(async () => ({
-        data: {
-          deployService: {},
-        },
-      }));
-
-      await service.deploy(1, 'test');
-
-      expect(spy.mock.calls[0][0]).toMatchObject({
         variables: {
-          deployment: {
-            serviceId: 1,
-            commitId: 'test',
-            projectId: 0,
-          },
+          service: serviceExample,
         },
       });
     });

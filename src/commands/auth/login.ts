@@ -4,21 +4,24 @@ import Command from '../../lib/command';
 import Aliases from '../../common/constants/aliases';
 
 export default class Login extends Command {
-  static description = 'Authenticate at code.store platform';
+  public static description = 'Authenticate at code.store platform';
 
-  static aliases = [Aliases.LOGIN];
+  public static aliases = [Aliases.LOGIN];
 
-  static hidden = false;
+  public static hidden = false;
 
-  static usage = Aliases.LOGIN;
+  public static usage = Aliases.LOGIN;
 
-  async execute() {
-    this.warn('Login using web');
+  public async execute(): Promise<void> {
     ux.action.start(blue('Starting login process'));
 
     await this.codestore.loginWeb();
 
+    await this.resetApiClient();
+
+    const user = await this.codestore.getMe();
+
     ux.action.stop(blue('Done'));
-    this.log(blue('You have been successfully authenticated to code.store.'));
+    this.log(blue(`👋  Say 'hello' to my little friend! Welcome to code.store dear ${user.firstName}`));
   }
 }

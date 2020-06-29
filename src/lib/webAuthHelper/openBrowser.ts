@@ -1,7 +1,6 @@
-import * as open from 'open';
-import { config } from 'node-config-ts';
+import open from 'open';
+import { ChildProcess } from 'child_process';
 
-// todo replace with deployed auth service
-const redirectUrl = `${config.authApiUrl}/callback`;
+const authLink = `${process.env.CODESTORE_GATEWAY_HOST || 'https://api.code.store'}/authentication-service/authorize?cli=true`;
 
-export default () => open(`${config.auth0Url}?client_id=${config.clientId}&response_type=code&redirect_uri=${redirectUrl}?cli=true&state=STATE&scope=openid+email+profile`);
+export default (): Promise<ChildProcess> => open(authLink);

@@ -1,12 +1,12 @@
-import * as inquirer from 'inquirer';
+import inquirer from 'inquirer';
 import ux from 'cli-ux';
 import { bold } from 'chalk';
 import Command from '../../lib/command';
 
 export default class Clear extends Command {
-  static description = 'Clear all contexts';
+  public static description = 'Clear all contexts';
 
-  async execute() {
+  public async execute(): Promise<void> {
     const data = [
       { context_type: 'Project ID', value: bold.cyan('prj-d28f33cf') },
       { context_type: 'Service ID', value: bold.cyan('srv-2b00042f') }];

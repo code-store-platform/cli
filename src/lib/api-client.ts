@@ -1,26 +1,31 @@
-import { gql } from 'apollo-boost';
+import { ApolloClient, gql } from 'apollo-boost';
 import IUser from '../interfaces/user.interface';
 import { openBrowser, server, emitter } from './webAuthHelper';
-import HomeFolderService from './homeFolderService';
+import HomeFolderService from './home-folder-service';
 import Service from './api-services/service';
 import Project from './api-services/project';
+import Logs from './api-services/logs';
 
 export default class APIClient {
   public readonly Service: Service;
 
   public readonly Project: Project;
 
-  constructor(private readonly homeFolderService: HomeFolderService, private readonly graphqlClient) {
+  public readonly Logs: Logs;
+
+  public constructor(private readonly homeFolderService: HomeFolderService, private readonly graphqlClient: ApolloClient<unknown>) {
     this.Service = new Service(this.graphqlClient);
     this.Project = new Project(this.graphqlClient);
+    this.Logs = new Logs(this.graphqlClient);
   }
 
-  async getMe(): Promise<IUser> {
+  public async getMe(): Promise<IUser> {
     const { data: { me } } = await this.graphqlClient.query({
       query: gql`{
           me{
               email
               id
+              firstName
           }
       }`,
     });
@@ -30,7 +35,7 @@ export default class APIClient {
     throw new Error('User not defined');
   }
 
-  async loginWeb(): Promise<any> {
+  public async loginWeb(): Promise<any> {
     // opening browser. See openBrowser.ts for change configurations
     await openBrowser();
     return new Promise((resolve, reject) => {
@@ -56,7 +61,7 @@ export default class APIClient {
     });
   }
 
-  async logout(): Promise<void> {
+  public async logout(): Promise<void> {
     return this.homeFolderService.removeToken();
   }
 }
