@@ -14,6 +14,11 @@ export default class List extends Command {
   public async execute(): Promise<void> {
     const projects = await this.codestore.Project.list();
 
+    if (!projects.length) {
+      this.error('You talking to me? There are no projects yet, you should try create one using codestore project:create command.');
+      return;
+    }
+
     this.renderTable(projects, {
       id: {
         header: 'Project ID',

@@ -4,7 +4,7 @@ import { Listr } from 'listr2';
 import Command from '../../../lib/command';
 
 export default class Add extends Command {
-  public static description = 'Include service to project';
+  public static description = 'Adds and existing service to your project';
 
   public static args = [
     { name: 'serviceId', description: 'Id of the service' },

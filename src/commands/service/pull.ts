@@ -24,9 +24,16 @@ export default class Pull extends Command {
 
     const { serviceId } = await this.getServiceId(args);
 
+    const service = await this.codestore.Service.getService(serviceId);
+
+    if (!service) {
+      this.log(`Service with id ${serviceId} does not exist`);
+      return;
+    }
+
     const { userAgreed } = await inquirer.prompt([
       {
-        name: 'userAgreed', message: 'Are you sure you want to download latest uploaded code ? Your local changes will be overwritten', type: 'confirm', default: false,
+        name: 'userAgreed', message: `⚠️ You're about to download '${service.name}' service with ID = ${service.id} to your local machine. All local changes, if any, will be overwritten. Go?`, type: 'confirm', default: false,
       },
     ]);
 

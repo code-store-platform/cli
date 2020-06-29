@@ -1,4 +1,4 @@
-import { gql } from 'apollo-boost';
+import { ApolloClient, gql } from 'apollo-boost';
 import IUser from '../interfaces/user.interface';
 import { openBrowser, server, emitter } from './webAuthHelper';
 import HomeFolderService from './home-folder-service';
@@ -13,7 +13,7 @@ export default class APIClient {
 
   public readonly Logs: Logs;
 
-  public constructor(private readonly homeFolderService: HomeFolderService, private readonly graphqlClient) {
+  public constructor(private readonly homeFolderService: HomeFolderService, private readonly graphqlClient: ApolloClient<unknown>) {
     this.Service = new Service(this.graphqlClient);
     this.Project = new Project(this.graphqlClient);
     this.Logs = new Logs(this.graphqlClient);
@@ -25,6 +25,7 @@ export default class APIClient {
           me{
               email
               id
+              firstName
           }
       }`,
     });

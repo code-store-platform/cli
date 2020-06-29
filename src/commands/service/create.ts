@@ -27,7 +27,7 @@ export default class Create extends Command {
     const service = await inquirer.prompt([
       {
         name: 'name',
-        message: 'Service name',
+        message: 'What is your service name',
         validate: (name): string | boolean => {
           if (!name.length) {
             return 'Value should not be empty';
@@ -37,52 +37,57 @@ export default class Create extends Command {
           }
           return true;
         },
-        suffix: createSuffix('The name of the service, will be used as identifier'),
+        suffix: createSuffix('it should be the shortest meaningful name possible, for example: "Meeting-rooms booking"'),
       },
       {
         name: 'problemSolving',
-        message: 'What problem is your service solving?',
+        message: 'Describe what functional problem are you solving with your service?',
         validate: (value): string | boolean => {
           if (value.length >= 140) {
             return 'Value for this field should be less than 140 characters.';
           }
           return true;
         },
-        suffix: createSuffix('Short description of what service is going to solve.'),
-        prefix: '(optional)',
+        suffix: createSuffix('It\'s optional and here is an example: "My service manages meeting rooms and their booking by users"'),
       },
       {
         name: 'howSolving',
-        message: 'How your service is solving this problem',
+        message: 'Describe how you solve it?',
         validate: (value): string | boolean => {
           if (value.length >= 140) {
             return 'Value for this field should be less than 140 characters.';
           }
           return true;
         },
-        prefix: '(optional)',
+        suffix: createSuffix('It\'s optional too and should look something like: "This service provides an API to create, update and delete rooms and another set of queries to manage bookings, cancellations, and search for available rooms. It does not manage payments."'),
       },
       {
         type: 'list',
         name: 'businessDomain',
-        message: 'Business domain of your service:',
+        message: 'What is the most relevant business domain of your service',
         choices,
+        suffix: createSuffix('Use up/down arrows to navigate and hit ENTER to select. Please select \'Other\' as last option'),
       },
       {
         name: 'tags',
-        message: '#tags (up to 5 comma-separated tags)',
+        message: 'Now, the last thing, enter free-hashtags describing your service.',
         validate: (value): string | boolean => {
-          if (value.length >= 25) {
-            return 'Value for this field should be less than 25 characters.';
-          }
-          if (value.split(',').length > 5) {
+          const tags = value.split(',');
+
+          if (tags.length > 5) {
             return 'Please select a maximum of 5 tags.';
           }
+
+          const exception = tags.find((tag) => tag.length > 25);
+
+          if (exception) {
+            return `Tag ${exception} is more than 25 characters`;
+          }
+
           return true;
         },
-        prefix: '(optional)',
+        suffix: createSuffix('Up to 5, comma-separated, no need to add #. Example: hospitality, booking, meeting-rooms, office'),
       },
-      { name: 'private', message: 'Is your service going to be private?', type: 'confirm' },
     ]) as IServiceCreate;
 
     clear();
