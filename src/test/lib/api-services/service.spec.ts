@@ -83,26 +83,6 @@ describe('Service Api Service', () => {
       });
     });
 
-    it('deploy', async () => {
-      const spy = jest.spyOn(gqlClientMock, 'mutate').mockImplementation(async () => ({
-        data: {
-          deployService: {},
-        },
-      }));
-
-      await service.deploy(1, 'test');
-
-      expect(spy.mock.calls[0][0]).toMatchObject({
-        variables: {
-          deployment: {
-            serviceId: 1,
-            commitId: 'test',
-            projectId: 0,
-          },
-        },
-      });
-    });
-
     it('delete', async () => {
       const spy = jest.spyOn(gqlClientMock, 'mutate').mockImplementation(async () => ({
         data: true,

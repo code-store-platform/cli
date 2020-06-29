@@ -1,10 +1,7 @@
 import Command from '../../lib/command';
-import Aliases from '../../common/constants/aliases';
 
 export default class Promote extends Command {
   public static description = 'Promotes service from private env to demo';
-
-  public static aliases = [Aliases.PULL];
 
   public static args = [
     { name: 'id' },

@@ -29,19 +29,30 @@ export default abstract class Command extends Base {
   // do not override this method because it uses execute method to provide base erorr handling logic.
   public async run(): Promise<void> {
     try {
-      this.gqlClient = new ApolloClient({
-        fetch,
-        // does not work when uri gets from config in terminal, should be rechecked
-        uri: 'https://api.codestore.dev/federation-gateway-service/graphql',
-        headers: {
-          Authorization: this.id !== CommandIds.LOGIN && await this.homeFolderService.getToken(),
-        },
-      });
+      await this.setupApiClient(this.id !== CommandIds.LOGIN);
       this._codestore = new APIClient(this.homeFolderService, this.gqlClient);
       await this.execute();
     } catch (e) {
       this.error(e.message);
     }
+  }
+
+  private async setupApiClient(onLogin = false): Promise<void> {
+    this.gqlClient = new ApolloClient({
+      fetch,
+      // does not work when uri gets from config in terminal, should be rechecked
+      uri: 'https://api.codestore.dev/federation-gateway-service/graphql',
+      headers: {
+        Authorization: !onLogin && await this.homeFolderService.getToken(),
+      },
+      onError: (): void => {},
+    });
+    this._codestore = new APIClient(this.homeFolderService, this.gqlClient);
+  }
+
+  // this method is required if we need do actions after login in one command, now it works to get token and receive user info
+  protected async resetApiClient(): Promise<void> {
+    await this.setupApiClient();
   }
 
   // eslint-disable-next-line class-methods-use-this

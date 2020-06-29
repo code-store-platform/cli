@@ -1,8 +1,6 @@
-import { ApolloClient } from 'apollo-boost';
 import {
   LIST_SERVICES,
   CREATE_SERVICE,
-  DEPLOY_SERVICE,
   LIST_BUSINESS_DOMAINS,
   DELETE_SERVICE,
   DOWNLOAD_SERVICE,
@@ -13,20 +11,18 @@ import {
 } from './queries';
 import { IService, IServiceCreateResult, IServiceCreate } from '../../../interfaces/service.interface';
 import ServiceStateEnum from '../../../common/constants/service-state.enum';
+import ApiService from '../base-api-service';
 
-export default class Service {
-  public constructor(
-    private readonly apiClient: ApolloClient<unknown>,
-  ) { }
+export default class Service extends ApiService {
+  public constructor(args) {
+    super(args);
+  }
 
   public async list(): Promise<IService[]> {
-    const { data: { services } } = await this.apiClient.query({
-      query: LIST_SERVICES,
-      variables: {
-        pagination: {
-          page: 1,
-          perPage: 100,
-        },
+    const { data: { services } } = await this.executeQuery(LIST_SERVICES, {
+      pagination: {
+        page: 1,
+        perPage: 100,
       },
     });
 
@@ -34,43 +30,21 @@ export default class Service {
   }
 
   public async create(service: IServiceCreate): Promise<IServiceCreateResult> {
-    const { data: { createService } } = await this.apiClient.mutate({
-      mutation: CREATE_SERVICE,
-      variables: { service },
-    });
+    const { data: { createService } } = await this.executeMutation(CREATE_SERVICE, { service: { ...service, private: true } });
 
     return createService;
   }
 
   public async businessDomains(): Promise<string[]> {
-    const { data: { __type: { enumValues } } } = await this.apiClient.query({
-      query: LIST_BUSINESS_DOMAINS,
-    });
+    const { data: { __type: { enumValues } } } = await this.executeQuery(LIST_BUSINESS_DOMAINS, null);
 
     return enumValues.map((value) => value.name);
   }
 
-  public async deploy(serviceId: number, commitId: string, projectId: number = 0): Promise<IService> {
-    const { data: { deployService } } = await this.apiClient.mutate({
-      mutation: DEPLOY_SERVICE,
-      variables: {
-        deployment: {
-          serviceId,
-          commitId,
-          projectId,
-        },
-      },
-    });
-    return deployService;
-  }
-
   public async delete(id: number): Promise<{ affected: number }> {
-    const { data } = await this.apiClient.mutate({
-      mutation: DELETE_SERVICE,
-      variables: {
-        id: {
-          id,
-        },
+    const { data } = await this.executeMutation(DELETE_SERVICE, {
+      id: {
+        id,
       },
     });
 
@@ -78,36 +52,22 @@ export default class Service {
   }
 
   public async download(id: number): Promise<string> {
-    const result = await this.apiClient.query({
-      query: DOWNLOAD_SERVICE,
-      variables: {
-        id,
-      },
-    });
+    const result = await this.executeQuery(DOWNLOAD_SERVICE, { id });
 
     return result.data.downloadProject.data;
   }
 
   public async push(encodedString: string, releaseNotes: string[]): Promise<boolean> {
-    const { data: { success } } = await this.apiClient.mutate({
-      mutation: PUSH_SERVICE,
-      variables: {
-        base64Service: encodedString,
-        notes: releaseNotes,
-      },
+    const { data: { success } } = await this.executeMutation(PUSH_SERVICE, {
+      base64Service: encodedString,
+      notes: releaseNotes,
     });
 
     return success;
   }
 
   public async getService(serviceId: number): Promise<IService> {
-    const { data: { service } } = await this.apiClient.query({
-      query: SINGLE_SERVICE,
-      variables: {
-        id: serviceId,
-      },
-      fetchPolicy: 'no-cache',
-    });
+    const { data: { service } } = await this.executeQuery(SINGLE_SERVICE, { id: serviceId });
 
     return service;
   }
@@ -125,23 +85,15 @@ export default class Service {
   }
 
   public async generateEntities(encodedString: string): Promise<string> {
-    const { data } = await this.apiClient.mutate({
-      mutation: GENERATE_SERVICE_ENTITIES,
-      variables: {
-        base64Service: encodedString,
-      },
+    const { data } = await this.executeMutation(GENERATE_SERVICE_ENTITIES, {
+      base64Service: encodedString,
     });
 
     return data.generateServiceEntities.data;
   }
 
   public async promote(serviceId: number): Promise<IService> {
-    const { data: { promote } } = await this.apiClient.mutate({
-      mutation: PROMOTE_SERVICE,
-      variables: {
-        id: serviceId,
-      },
-    });
+    const { data: { promote } } = await this.executeMutation(PROMOTE_SERVICE, { id: serviceId });
 
     return promote;
   }
