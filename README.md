@@ -22,7 +22,7 @@ $ npm install -g codestore-cli
 $ codestore COMMAND
 running command...
 $ codestore (-v|--version|version)
-codestore-cli/1.2.2 darwin-x64 node-v12.16.3
+codestore-cli/1.2.5 darwin-x64 node-v12.18.1
 $ codestore --help [COMMAND]
 USAGE
   $ codestore COMMAND
@@ -47,6 +47,7 @@ USAGE
 * [`codestore project:service:remove [SERVICEID]`](#codestore-projectserviceremove-serviceid)
 * [`codestore service:create`](#codestore-servicecreate)
 * [`codestore service:delete`](#codestore-servicedelete)
+* [`codestore service:generate`](#codestore-servicegenerate)
 * [`codestore service:list`](#codestore-servicelist)
 * [`codestore service:logs`](#codestore-servicelogs)
 * [`codestore service:promote [ID]`](#codestore-servicepromote-id)
@@ -256,6 +257,18 @@ USAGE
   $ codestore service:delete
 ```
 
+## `codestore service:generate`
+
+Generate entities and migrations
+
+```
+USAGE
+  $ codestore service:generate
+
+ALIASES
+  $ codestore generate
+```
+
 ## `codestore service:list`
 
 List your services
@@ -289,7 +302,7 @@ ALIASES
 
 ## `codestore service:promote [ID]`
 
-Create new service
+Promotes service from private env to demo
 
 ```
 USAGE

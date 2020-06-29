@@ -1,5 +1,6 @@
 import { flags } from '@oclif/command';
 import { yellow } from 'chalk';
+import { Listr } from 'listr2';
 import Command from '../../../lib/command';
 
 export default class Add extends Command {
@@ -20,7 +21,13 @@ export default class Add extends Command {
   public async execute(): Promise<void> {
     const { flags: { 'project-id': projectId }, args: { serviceId } } = this.parse(Add);
 
-    const { data: { includeService: { status } } } = await this.codestore.Project.includeService(projectId, serviceId);
-    this.log(`Service "${yellow(serviceId)}" is included to project "${yellow(projectId)}", status: ${status}.`);
+    await new Listr<{}>([{
+      title: `Including  service with id "${yellow(serviceId)}" to project "${yellow(projectId)}"`,
+      task: async (ctx, task): Promise<void> => {
+        const { data: { includeService: { status } } } = await this.codestore.Project.includeService(projectId, serviceId);
+        // eslint-disable-next-line no-param-reassign
+        task.title = `Service "${yellow(serviceId)}" is included to project "${yellow(projectId)}", status: ${status}.`;
+      },
+    }]).run();
   }
 }
