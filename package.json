@@ -1,7 +1,7 @@
 {
   "name": "codestore",
   "description": "Command Line Interface of code.store. Add services, deploy, debug, perform all operations from your terminal.",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "bin": {
     "codestore": "./bin/run",
     "cs": "./bin/run"
@@ -94,6 +94,9 @@
       },
       "auth": {
         "description": "Authentication commands, login, logout, whoami"
+      },
+      "project": {
+        "description": "🚧  A project is a particular app or website, where you can (re)use your existing services. It might be your e-commerce project or a logistics mobile application or business web-app. Each time you add a service to a project, we create a separate, isolated instance of your service. Each service reused in a project has its own environments, databases, logs, and billing"
       }
     }
   },
