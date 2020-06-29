@@ -29,6 +29,19 @@ export default abstract class Command extends Base {
   // do not override this method because it uses execute method to provide base erorr handling logic.
   public async run(): Promise<void> {
     try {
+      this.gqlClient = new ApolloClient({
+        fetch,
+        // does not work when uri gets from config in terminal, should be rechecked
+        uri: `${process.env.CODESTORE_GATEWAY_HOST || 'https://api.code.store'}/federation-gateway-service/graphql`,
+        headers: {
+          Authorization: this.id !== CommandIds.LOGIN && await this.homeFolderService.getToken(),
+        },
+      });
+      this._codestore = new APIClient(this.homeFolderService, this.gqlClient);
+      await this.execute();
+    } catch (e) {
+      this.error(e.message);
+    }
       await this.setupApiClient(this.id !== CommandIds.LOGIN);
       this._codestore = new APIClient(this.homeFolderService, this.gqlClient);
       await this.execute();

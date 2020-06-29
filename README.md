@@ -18,11 +18,11 @@ Command Line Interface of code.store. Add services, deploy, debug, perform all o
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g codestore-cli
+$ npm install -g codestore
 $ codestore COMMAND
 running command...
 $ codestore (-v|--version|version)
-codestore-cli/1.2.5 darwin-x64 node-v12.18.1
+codestore/1.2.5 darwin-x64 node-v12.18.1
 $ codestore --help [COMMAND]
 USAGE
   $ codestore COMMAND

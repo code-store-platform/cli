@@ -1,7 +1,7 @@
 {
-  "name": "codestore-cli",
+  "name": "codestore",
   "description": "Command Line Interface of code.store. Add services, deploy, debug, perform all operations from your terminal.",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "bin": {
     "codestore": "./bin/run",
     "cs": "./bin/run"
@@ -48,7 +48,7 @@
     "@types/node": "^10.17.17",
     "@typescript-eslint/eslint-plugin": "^2.22.0",
     "@typescript-eslint/parser": "^2.26.0",
-    "aws-sdk": "^2.656.0",
+    "aws-sdk": "^2.706.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-typescript": "^7.0.0",
     "eslint-plugin-import": "^2.20.1",
