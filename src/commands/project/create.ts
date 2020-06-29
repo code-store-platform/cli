@@ -7,7 +7,7 @@ import Command from '../../lib/command';
 import { createSuffix } from '../../common/utils';
 
 export default class Create extends Command {
-  public static description = 'Creates a new project, where you can then add services';
+  public static description = 'Creates a new project, where you can add services';
 
   public static flags = {
     name: flags.string({
