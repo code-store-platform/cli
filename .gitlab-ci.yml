@@ -11,6 +11,7 @@ publish_npm:
     - apt-get update && apt-get install -y p7zip-full
     - npm install -g @oclif/dev-cli
     - npm install -g typescript
+    - yarn add -D aws-sdk
     - npm version
     - oclif-dev -v
   script:
