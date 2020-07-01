@@ -1,0 +1,35 @@
+stages:
+  - publish_npm
+  - publish_brew
+
+publish_npm:
+  stage: publish_npm
+  image:
+    name: node:12.18.1
+  when: manual
+  before_script:
+    - npm version
+    - npm install -g @oclif/dev-cli
+    - oclif-dev -v
+  script:
+    - oclif-dev pack
+    - oclif-dev publish
+    - npm publish
+  only:
+    - master
+    - develop
+  tags:
+    - eks-dev-infra
+
+publish_brew:
+  stage: publish_brew
+  image:
+    name: node:12.18.1
+  when: manual
+  script:
+    - npm version
+  only:
+    - master
+    - develop
+  tags:
+    - eks-dev-infra
