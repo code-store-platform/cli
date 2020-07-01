@@ -1,3 +1,4 @@
+import { ApolloClient } from 'apollo-boost';
 import APIClient from '../../lib/api-client';
 import HomeFolderService from '../../lib/home-folder-service';
 
@@ -19,7 +20,7 @@ describe('Api Client', () => {
         },
       },
     }),
-  };
+  } as ApolloClient<any>;
 
   beforeAll(async () => {
     const homeFolderService = new HomeFolderService();
