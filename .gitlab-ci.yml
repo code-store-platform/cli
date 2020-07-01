@@ -10,8 +10,10 @@ publish_npm:
   before_script:
     - npm version
     - npm install -g @oclif/dev-cli
+    - npm install -g typescript
     - oclif-dev -v
   script:
+    - npm install
     - oclif-dev pack
     - oclif-dev publish
     - npm publish
