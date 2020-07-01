@@ -8,6 +8,7 @@ publish_npm:
     name: node:12.18.1
   when: manual
   before_script:
+    - apt-get update && apt-get install -y p7zip
     - npm install -g @oclif/dev-cli
     - npm install -g typescript
     - npm version
