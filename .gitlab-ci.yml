@@ -18,6 +18,7 @@ publish_npm:
     - npm install
     - oclif-dev pack
     - oclif-dev publish
+    - npm config set '//registry.npmjs.org::_authToken' "${NPM_TOKEN}"
     - npm publish
   only:
     - master
