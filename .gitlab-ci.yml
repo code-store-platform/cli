@@ -1,4 +1,5 @@
 stages:
+  - publish_s3
   - publish_npm
   - publish_brew
 
@@ -19,6 +20,7 @@ publish_npm:
     - oclif-dev pack
     - oclif-dev publish
     - npm config set '//registry.npmjs.org/::_authToken' "${NPM_TOKEN}"
+    - cat ~/.npmrc
     - npm publish
   only:
     - master
