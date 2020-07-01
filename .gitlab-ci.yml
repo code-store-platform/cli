@@ -8,9 +8,9 @@ publish_npm:
     name: node:12.18.1
   when: manual
   before_script:
-    - npm version
     - npm install -g @oclif/dev-cli
     - npm install -g typescript
+    - npm version
     - oclif-dev -v
   script:
     - npm install
