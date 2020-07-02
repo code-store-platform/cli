@@ -6,7 +6,6 @@ publish_npm:
   stage: publish_npm
   image:
     name: node:12.18.1
-  when: manual
   before_script:
     - apt-get update && apt-get install -y p7zip-full
     - npm install -g @oclif/dev-cli
