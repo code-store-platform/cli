@@ -1,0 +1,53 @@
+stages:
+  - publish_s3
+  - publish_npm
+  - publish_brew
+
+before_script:
+  - apt-get update && apt-get install -y p7zip-full
+  - npm install -g @oclif/dev-cli
+  - npm install -g typescript
+  - npm install -g aws-sdk
+  - npm version
+  - oclif-dev -v
+  - npm install
+  - oclif-dev pack
+
+publish_s3:
+  stage: publish_s3
+  image:
+    name: node:12.18.1
+  script:
+    - oclif-dev publish
+  only:
+    - master
+    - develop
+  tags:
+    - eks-dev-infra
+
+publish_npm:
+  stage: publish_npm
+  image:
+    name: node:12.18.1
+  when: manual
+  script:
+    - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}'>.npmrc
+    - npm publish
+  only:
+    - master
+    - develop
+  tags:
+    - eks-dev-infra
+
+publish_brew:
+  stage: publish_brew
+  image:
+    name: linuxbrew/brew:2.4.2
+  when: manual
+  script:
+    - brew create https://s3.eu-central-1.amazonaws.com/s3.code.store/codestore-v1.2.8/codestore-v1.2.8-darwin-x64.tar.gz
+  only:
+    - master
+    - develop
+  tags:
+    - eks-dev-infra

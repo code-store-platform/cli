@@ -24,6 +24,11 @@ export default class List extends Command {
       return;
     }
 
+    if (!projects.length) {
+      this.error('You talking to me? There are no projects yet, you should try create one using codestore project:create command.');
+      return;
+    }
+
     this.renderTable(projects, {
       id: {
         header: 'Project ID',
