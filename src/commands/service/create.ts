@@ -3,6 +3,7 @@ import inquirer from 'inquirer';
 import { Listr } from 'listr2';
 import clear from 'clear';
 import tree from 'tree-node-cli';
+import { cli } from 'cli-ux';
 import Command from '../../lib/command';
 import { IServiceCreate } from '../../interfaces/service.interface';
 import { createSuffix } from '../../common/utils';
@@ -20,6 +21,8 @@ export default class Create extends Command {
   public static description = 'Create new service';
 
   private structure;
+
+  private serviceId: number;
 
   public async execute(): Promise<void> {
     const choices = await this.codestore.Service.businessDomains();
@@ -100,6 +103,8 @@ export default class Create extends Command {
           createdServiceName, id, commitId,
         };
 
+        this.serviceId = id;
+
         // eslint-disable-next-line no-param-reassign
         task.title = `Created service "${yellow(createdServiceName)}", Service ID: "${yellow(id)}"`;
       },
@@ -129,6 +134,9 @@ export default class Create extends Command {
     ]);
 
     await tasks.run();
+
+    this.log(`Your service on private environment will be available soon by this url : ${this.apiPath}/0/private/${this.serviceId}/graphql`);
+    this.log(`Your service on demo environment will be available soon by this url ${this.apiPath}/0/demo/${this.serviceId}/graphql`);
     this.log('\n');
     this.log(yellow(this.structure));
   }

@@ -14,8 +14,8 @@ export default class List extends Command {
           id,
           name,
           // todo update when resolvers for deployments is ready
-          develop: 'DEPLOYED',
-          demo: 'DEPLOYMENT_IN_PROGRESS',
+          private: ` ${this.apiPath}/0/private/${id}/graphql`,
+          demo: ` ${this.apiPath}/0/demo/${id}/graphql`,
         };
       }));
 
@@ -24,7 +24,7 @@ export default class List extends Command {
         header: 'Service ID',
       },
       name: {},
-      develop: {},
+      private: {},
       demo: {},
     });
   }

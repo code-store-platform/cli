@@ -13,7 +13,32 @@ export const DELETE_PROJECT = gql`mutation deleteProject($id: Int!){
 
 export const LIST_PROJECTS = gql`query projects($pagination: PaginationOptions){
   projects(pagination:$pagination){
+    author{
+      email
+    }
     ${PROJECT}
+    services {
+      id
+    }
+  }
+}`;
+
+export const SINGLE_PROJECT_ENV = gql` query project($id: Int!){
+  project(id:$id){
+    ${PROJECT}
+    services {
+      ${SERVICE}
+    }
+    environments{
+      id
+      name
+      deployments{
+        id
+        status
+        serviceId
+        commitId
+      }
+    }
   }
 }`;
 
@@ -29,5 +54,12 @@ export const SINGLE_PROJECT_INCLUDE_SERVICES = gql` query project($id: Int!){
     services {
     ${SERVICE}
     }
+  }
+}`;
+
+export const PROMOTE_SERVICE_IN_PROJECT = gql`mutation promote($data: PromoteServiceInProject){
+  promoteServiceInProject(input:$data){
+    id
+    commitId
   }
 }`;

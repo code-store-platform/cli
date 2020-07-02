@@ -23,7 +23,7 @@ app.use('/', async (req: Request, res: Response) => {
     });
   }
   // todo replace with code.store login success page
-  res.redirect('https://app.codestore.dev/cli');
+  res.redirect(`${process.env.WEB_URL || 'https://app.code.store'}/account/bonjour`);
 });
 
 export default createServer(app);

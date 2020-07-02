@@ -1,7 +1,12 @@
 import { gql } from 'apollo-boost';
 import IProject from '../../../interfaces/project.interface';
 import {
-  CREATE_PROJECT, DELETE_PROJECT, LIST_PROJECTS, SINGLE_PROJECT, SINGLE_PROJECT_INCLUDE_SERVICES,
+  CREATE_PROJECT,
+  DELETE_PROJECT,
+  LIST_PROJECTS, SINGLE_PROJECT,
+  SINGLE_PROJECT_INCLUDE_SERVICES,
+  SINGLE_PROJECT_ENV,
+  PROMOTE_SERVICE_IN_PROJECT,
 } from './queries';
 import ApiService from '../base-api-service';
 
@@ -59,5 +64,15 @@ export default class Project extends ApiService {
       }) { status }
     }`;
     return this.executeMutation(mutation, null);
+  }
+
+  public async singleWithEnvs(projectId): Promise<any> {
+    return this.executeMutation(SINGLE_PROJECT_ENV, { id: projectId });
+  }
+
+  public async promoteService(data): Promise<any> {
+    console.log(data);
+
+    return this.executeMutation(PROMOTE_SERVICE_IN_PROJECT, { data });
   }
 }
