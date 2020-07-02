@@ -17,7 +17,7 @@ export default class ServiceWorker {
       error: new Error('You must be in code.store service folder to invoke this command. Check if codestore.yaml and schema.graphql are exist'),
     },
     schema: {
-      filename: 'schema.graphql',
+      filename: 'src/schema.graphql',
       error: new Error('Cannot find schema.graphql, restore it or use cs pull'),
     },
   };

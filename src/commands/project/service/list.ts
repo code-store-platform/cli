@@ -11,20 +11,33 @@ export default class List extends Command {
     { name: 'id', required: true },
   ];
 
+  private mapData = (input: any) => {
+    const { data } = input;
+
+    const development = data.project.environments.find((it) => it.name === 'development');
+    const staging = data.project.environments.find((it) => it.name === 'staging');
+    const production = data.project.environments.find((it) => it.name === 'production');
+
+    return data.project.services.map((service) => ({
+      name: service.name,
+      development: development.deployments.find((it) => it.serviceId === service.id).commitId,
+      staging: staging.deployments.find((it) => it.serviceId === service.id).commitId,
+      production: production.deployments.find((it) => it.serviceId === service.id).commitId,
+    }));
+  };
+
   public async execute(): Promise<void> {
     const { args: { id } } = this.parse(List);
 
-    const { services } = await this.codestore.Project.single(+id, true);
+    const data = await this.codestore.Project.singleWithEnvs(+id);
 
     this.log(`Fetching services for project with id ${id}`);
 
-    ux.table(services, {
-      id: {
-        header: 'Service ID',
-      },
+    ux.table(this.mapData(data), {
       name: {},
-      develop: {},
-      demo: {},
+      development: {},
+      staging: {},
+      production: {},
     }, { 'no-truncate': true });
   }
 }

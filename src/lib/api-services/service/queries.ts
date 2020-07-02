@@ -2,7 +2,7 @@ import { gql } from 'apollo-boost';
 import { SERVICE } from '../fields';
 
 export const LIST_SERVICES = gql`query s($pagination:PaginationOptions){
-    services(pagination:$pagination){
+    services(pagination:$pagination, isPrivate: true){
         ${SERVICE}
     }
 }`;

@@ -20,6 +20,8 @@ export default abstract class Command extends Base {
 
   protected gqlClient: ApolloClient<unknown>;
 
+  protected apiPath = process.env.CODESTORE_GATEWAY_HOST || 'https://api.code.store';
+
   public get codestore(): APIClient {
     return this._codestore;
   }
@@ -41,7 +43,7 @@ export default abstract class Command extends Base {
     this.gqlClient = new ApolloClient({
       fetch,
       // does not work when uri gets from config in terminal, should be rechecked
-      uri: `${process.env.CODESTORE_GATEWAY_HOST || 'https://api.code.store'}/federation-gateway-service/graphql`,
+      uri: `${this.apiPath}/federation-gateway-service/graphql`,
       headers: {
         Authorization: !onLogin && await this.homeFolderService.getToken(),
       },

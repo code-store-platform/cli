@@ -25,7 +25,12 @@ export default class ApiService {
         fetchPolicy: 'no-cache',
       });
     } catch (e) {
-      throw this.handleCustomError(e.graphQLErrors[0].message);
+      console.log(e);
+      if (e.graphQLErrors) {
+        throw this.handleCustomError(e.graphQLErrors[0].message);
+      }
+
+      throw this.handleCustomError(e);
     }
   }
 
@@ -36,7 +41,12 @@ export default class ApiService {
         variables,
       });
     } catch (e) {
-      throw this.handleCustomError(e.graphQLErrors[0].message);
+      console.log(e);
+      if (e.graphQLErrors) {
+        throw this.handleCustomError(e.graphQLErrors[0].message);
+      }
+
+      throw this.handleCustomError(e);
     }
   }
 }
