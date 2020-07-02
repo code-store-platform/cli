@@ -38,7 +38,7 @@ update_brew_formula:
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - echo "$SSH_PUBLIC_KEY" > ~/.ssh/id_rsa.pub
     - chmod -R 600 ~/.ssh/*
-    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - git config --global user.email "accounts.main@code.store"
     - git config --global user.name "codeStoreGitHub"
   script:
