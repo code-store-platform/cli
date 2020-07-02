@@ -20,9 +20,9 @@ export default class List extends Command {
 
     return data.project.services.map((service) => ({
       name: service.name,
-      development: development.deployments.find((it) => it.serviceId === service.id).commitId,
-      staging: staging.deployments.find((it) => it.serviceId === service.id).commitId,
-      production: production.deployments.find((it) => it.serviceId === service.id).commitId,
+      development: `${this.apiPath}/${data.project.id}/${development.id}/${service.id}/graphql`,
+      staging: `${this.apiPath}/${data.project.id}/${staging.id}/${service.id}/graphql`,
+      production: `${this.apiPath}/${data.project.id}/${production.id}/${service.id}/graphql`,
     }));
   };
 
