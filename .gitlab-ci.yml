@@ -21,7 +21,6 @@ publish_npm:
     - npm publish
   only:
     - master
-    - develop
   tags:
     - eks-dev-infra
 
@@ -63,6 +62,5 @@ update_brew_formula:
       fi
   only:
     - master
-    - develop
   tags:
     - eks-dev-infra
