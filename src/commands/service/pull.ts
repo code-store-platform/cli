@@ -1,4 +1,5 @@
 import inquirer from 'inquirer';
+import { yellow, blue, yellowBright } from 'chalk';
 import Command from '../../lib/command';
 import Aliases from '../../common/constants/aliases';
 import FileWorker from '../../common/file-worker';
@@ -27,7 +28,10 @@ export default class Pull extends Command {
     const service = await this.codestore.Service.getService(serviceId);
 
     if (!service) {
-      this.log(`Service with id ${serviceId} does not exist`);
+      this.log(`👻 Damn! You've tried to download the service with ${yellowBright(`ID = ${serviceId}`)}, but there is no service with this ID!
+ Check again by listing services you have using ${yellow('codestore service:list')} command, then try again.
+
+ If you still experience this error, ping us here: ${blue('https://spectrum.chat/code-store')}`);
       return;
     }
 
