@@ -22,7 +22,7 @@ $ npm install -g codestore
 $ codestore COMMAND
 running command...
 $ codestore (-v|--version|version)
-codestore/1.2.7 darwin-x64 node-v12.18.1
+codestore/1.2.10 darwin-x64 node-v12.18.1
 $ codestore --help [COMMAND]
 USAGE
   $ codestore COMMAND
@@ -44,6 +44,7 @@ USAGE
 * [`codestore project:list`](#codestore-projectlist)
 * [`codestore project:service:add [SERVICEID]`](#codestore-projectserviceadd-serviceid)
 * [`codestore project:service:list ID`](#codestore-projectservicelist-id)
+* [`codestore project:service:promote [SERVICEID]`](#codestore-projectservicepromote-serviceid)
 * [`codestore project:service:remove [SERVICEID]`](#codestore-projectserviceremove-serviceid)
 * [`codestore service:create`](#codestore-servicecreate)
 * [`codestore service:delete`](#codestore-servicedelete)
@@ -154,7 +155,7 @@ _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.3
 
 ## `codestore project:create`
 
-Creates a new project, where you can then add services
+Creates a new project, where you can add services
 
 ```
 USAGE
@@ -222,6 +223,21 @@ USAGE
 
 ALIASES
   $ codestore project:service:ls
+```
+
+## `codestore project:service:promote [SERVICEID]`
+
+Adds and existing service to your project
+
+```
+USAGE
+  $ codestore project:service:promote [SERVICEID]
+
+ARGUMENTS
+  SERVICEID  Id of the service
+
+OPTIONS
+  --project-id=project-id  (required) Id of the project
 ```
 
 ## `codestore project:service:remove [SERVICEID]`
