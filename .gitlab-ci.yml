@@ -1,36 +1,23 @@
 stages:
-  - publish_s3
   - publish_npm
   - publish_brew
-
-before_script:
-  - apt-get update && apt-get install -y p7zip-full
-  - npm install -g @oclif/dev-cli
-  - npm install -g typescript
-  - npm install -g aws-sdk
-  - npm version
-  - oclif-dev -v
-  - npm install
-  - oclif-dev pack
-
-publish_s3:
-  stage: publish_s3
-  image:
-    name: node:12.18.1
-  script:
-    - oclif-dev publish
-  only:
-    - master
-    - develop
-  tags:
-    - eks-dev-infra
 
 publish_npm:
   stage: publish_npm
   image:
     name: node:12.18.1
   when: manual
+  before_script:
+    - apt-get update && apt-get install -y p7zip-full
+    - npm install -g @oclif/dev-cli
+    - npm install -g typescript
+    - npm install -g aws-sdk
+    - npm version
+    - oclif-dev -v
+    - npm install
+    - oclif-dev pack
   script:
+    - oclif-dev publish
     - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}'>.npmrc
     - npm publish
   only:
@@ -39,13 +26,42 @@ publish_npm:
   tags:
     - eks-dev-infra
 
-publish_brew:
+update_brew_formula:
   stage: publish_brew
   image:
     name: linuxbrew/brew:2.4.2
-  when: manual
+  before_script:
+    - apt-get update && apt-get install -y jq
+    - "which ssh-agent || ( apt-get update -qy && apt-get install openssh-client -qqy )"
+    - eval $(ssh-agent -s)
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - echo "$SSH_PUBLIC_KEY" > ~/.ssh/id_rsa.pub
+    - chmod -R 600 ~/.ssh/*
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - git config --global user.email "accounts.main@code.store"
+    - git config --global user.name "codeStoreGitHub"
   script:
-    - brew create https://s3.eu-central-1.amazonaws.com/s3.code.store/codestore-v1.2.8/codestore-v1.2.8-darwin-x64.tar.gz
+    - git clone https://github.com/code-store-platform/homebrew-brew.git
+    - export VERSION=`cat package.json | jq .version | tr -d '"'`
+    - export URL=https://s3.eu-central-1.amazonaws.com/s3.code.store/codestore-v${VERSION}/codestore-v${VERSION}.tar.gz
+    - curl $URL -o codestore-v${VERSION}.tar.gz
+    - export SHA256SUM=`sha256sum codestore-v${VERSION}.tar.gz | awk '{ print $1 }'`
+    - export FORMULA_VERSION=`cat homebrew-brew/Formula/codestore.rb | grep -P '\d+\.\d+\.\d+(?=.tar.gz")' -o`
+    - echo "FORMULA_VERSION=$FORMULA_VERSION"
+    - echo "VERSION=$VERSION"
+    - echo "SHA256SUM=$SHA256SUM"
+    - >
+      if [ "$FORMULA_VERSION" != "$VERSION" ]; then
+        sed -i "s%  url \".*\"%  url \"$URL\"%" homebrew-brew/Formula/codestore.rb
+        sed -i "s%  sha256 \".*\"%  sha256 \"$SHA256SUM\"%" homebrew-brew/Formula/codestore.rb
+        brew update
+        cp -n homebrew-brew/Formula/codestore.rb $(brew --repository)/Library/Taps/homebrew/homebrew-core/Formula/
+        brew audit --strict --online codestore
+        cd homebrew-brew
+        git add . | git diff-index --quiet HEAD || git commit -m "codestore v$VERSION" && git push
+      fi
   only:
     - master
     - develop

@@ -22,7 +22,7 @@ $ npm install -g codestore
 $ codestore COMMAND
 running command...
 $ codestore (-v|--version|version)
-codestore/1.2.7 darwin-x64 node-v12.18.1
+codestore/1.2.9 darwin-x64 node-v14.2.0
 $ codestore --help [COMMAND]
 USAGE
   $ codestore COMMAND
@@ -154,7 +154,7 @@ _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.3
 
 ## `codestore project:create`
 
-Creates a new project, where you can then add services
+Creates a new project, where you can add services
 
 ```
 USAGE
