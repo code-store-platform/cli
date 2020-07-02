@@ -42,7 +42,7 @@ update_brew_formula:
     - git config --global user.email "accounts.main@code.store"
     - git config --global user.name "codeStoreGitHub"
   script:
-    - git clone https://github.com/code-store-platform/homebrew-brew.git
+    - git clone git@github.com:code-store-platform/homebrew-brew.git
     - export VERSION=`cat package.json | jq .version | tr -d '"'`
     - export URL=https://s3.eu-central-1.amazonaws.com/s3.code.store/codestore-v${VERSION}/codestore-v${VERSION}.tar.gz
     - curl $URL -o codestore-v${VERSION}.tar.gz
