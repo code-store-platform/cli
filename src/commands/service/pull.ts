@@ -17,7 +17,13 @@ export default class Pull extends Command {
     if (args.id) {
       return { serviceId: +args.id };
     }
-    return this.serviceWorker.loadValuesFromYaml();
+    try {
+      return await this.serviceWorker.loadValuesFromYaml();
+    } catch (error) {
+      throw new Error(`🙅‍♀️ Oops! You must be in code.store service folder to invoke this command without arguments.
+Use  ${yellow('cs service:pull ID')}  command to pull a service which doesn’t exist on your local machine yet.
+⚠️ BE CAREFUL! Any local changes might be deleted and lost.`);
+    }
   }
 
   public async execute(): Promise<void> {
