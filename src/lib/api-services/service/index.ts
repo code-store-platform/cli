@@ -8,6 +8,7 @@ import {
   SINGLE_SERVICE,
   GENERATE_SERVICE_ENTITIES,
   PROMOTE_SERVICE,
+  GET_SERVICE_MIGRATIONS,
 } from './queries';
 import { IService, IServiceCreateResult, IServiceCreate } from '../../../interfaces/service.interface';
 import ServiceStateEnum from '../../../common/constants/service-state.enum';
@@ -90,6 +91,14 @@ export default class Service extends ApiService {
     });
 
     return data.generateServiceEntities.data;
+  }
+
+  public async getMigrations(encodedString: string): Promise<string[]> {
+    const { data } = await this.executeQuery(GET_SERVICE_MIGRATIONS, {
+      base64Service: encodedString,
+    });
+
+    return data.getServiceMigrations.data;
   }
 
   public async promote(serviceId: number): Promise<IService> {

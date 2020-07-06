@@ -71,3 +71,9 @@ export const GENERATE_SERVICE_ENTITIES = gql`mutation generateServiceEntities($b
     data
   }
 }`;
+
+export const GET_SERVICE_MIGRATIONS = gql`query getServiceMigrations($base64Service: String!){
+  getServiceMigrations(base64Service:$base64Service){
+    data
+  }
+}`;
