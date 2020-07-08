@@ -1,9 +1,9 @@
 import { parse } from 'yaml';
-import { join } from 'path';
 import { validateSchemaFile } from '@graphql-schema/validate-schema';
 import { DocumentNode } from 'graphql/language';
 import PromisifiedFs from '../common/promisified-fs';
 import IServiceConfig from '../interfaces/service-config.interface';
+import Paths, { join } from '../common/constants/paths';
 
 interface ValidatorResponse {
   source: string;
@@ -13,18 +13,17 @@ interface ValidatorResponse {
 export default class ServiceWorker {
   private configFiles = {
     codestore: {
-      filename: 'codestore.yaml',
+      path: join(Paths.ROOT, 'codestore.yaml'),
       error: new Error('You must be in code.store service folder to invoke this command. Check if codestore.yaml and schema.graphql are exist'),
     },
     schema: {
-      filename: 'src/schema.graphql',
+      path: join(Paths.SRC, 'schema.graphql'),
       error: new Error('Cannot find schema.graphql, restore it or use cs pull'),
     },
   };
 
   private async load(configName: 'codestore' | 'schema'): Promise<string> {
-    const { filename, error } = this.configFiles[configName];
-    const path = join(process.cwd(), filename);
+    const { path, error } = this.configFiles[configName];
     try {
       await PromisifiedFs.access(path);
       return path;
