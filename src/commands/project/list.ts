@@ -12,7 +12,12 @@ export default class List extends Command {
   };
 
   public async execute(): Promise<void> {
-    const projects = await this.codestore.Project.list();
+    const projects = await this.codestore.Project.list()
+      .then((list) => list.map((it) => ({
+        ...it,
+        services: it.services.length,
+        author: it.author.email,
+      })));
 
     if (!projects.length) {
       this.error('You talking to me? There are no projects yet, you should try create one using codestore project:create command.');
@@ -24,7 +29,9 @@ export default class List extends Command {
         header: 'Project ID',
       },
       name: {},
-      status: {},
+      services: {},
+      author: {},
+      description: {},
     });
   }
 }

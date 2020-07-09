@@ -2,7 +2,7 @@ import { gql } from 'apollo-boost';
 import { SERVICE } from '../fields';
 
 export const LIST_SERVICES = gql`query s($pagination:PaginationOptions){
-    services(pagination:$pagination){
+    services(pagination:$pagination, isPrivate: true){
         ${SERVICE}
     }
 }`;
@@ -68,6 +68,12 @@ export const PROMOTE_SERVICE = gql`mutation promoteService($id: Int!){
 
 export const GENERATE_SERVICE_ENTITIES = gql`mutation generateServiceEntities($base64Service: String!){
   generateServiceEntities(base64Service:$base64Service){
+    data
+  }
+}`;
+
+export const GET_SERVICE_MIGRATIONS = gql`query getServiceMigrations($base64Service: String!){
+  getServiceMigrations(base64Service:$base64Service){
     data
   }
 }`;

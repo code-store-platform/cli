@@ -1,10 +1,11 @@
 import inquirer from 'inquirer';
+import { yellow, blue, yellowBright } from 'chalk';
 import Command from '../../lib/command';
 import Aliases from '../../common/constants/aliases';
 import FileWorker from '../../common/file-worker';
 
 export default class Pull extends Command {
-  public static description = 'Create new service';
+  public static description = 'Download an existing service';
 
   public static aliases = [Aliases.PULL];
 
@@ -16,7 +17,13 @@ export default class Pull extends Command {
     if (args.id) {
       return { serviceId: +args.id };
     }
-    return this.serviceWorker.loadValuesFromYaml();
+    try {
+      return await this.serviceWorker.loadValuesFromYaml();
+    } catch (error) {
+      throw new Error(`🙅‍♀️ Oops! You must be in code.store service folder to invoke this command without arguments.
+Use  ${yellow('cs service:pull ID')}  command to pull a service which doesn’t exist on your local machine yet.
+⚠️ BE CAREFUL! Any local changes might be deleted and lost.`);
+    }
   }
 
   public async execute(): Promise<void> {
@@ -27,7 +34,10 @@ export default class Pull extends Command {
     const service = await this.codestore.Service.getService(serviceId);
 
     if (!service) {
-      this.log(`Service with id ${serviceId} does not exist`);
+      this.log(`👻 Damn! You've tried to download the service with ${yellowBright(`ID = ${serviceId}`)}, but there is no service with this ID!
+ Check again by listing services you have using ${yellow('codestore service:list')} command, then try again.
+
+ If you still experience this error, ping us here: ${blue('https://spectrum.chat/code-store')}`);
       return;
     }
 

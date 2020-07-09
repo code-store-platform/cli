@@ -5,7 +5,7 @@ import PromisifiedFs from './promisified-fs';
 export default class Archiver {
   private readonly zipName = 'temporaryUpload.zip';
 
-  private excludeFiles = ['node_modules', '.DS_Store', this.zipName];
+  private excludeFiles = ['node_modules', '.DS_Store', this.zipName, 'dist'];
 
   private archive;
 

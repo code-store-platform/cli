@@ -3,9 +3,10 @@ import inquirer from 'inquirer';
 import { Listr } from 'listr2';
 import clear from 'clear';
 import tree from 'tree-node-cli';
+import { cli } from 'cli-ux';
 import Command from '../../lib/command';
 import { IServiceCreate } from '../../interfaces/service.interface';
-import { createSuffix } from '../../common/utils';
+import { createPrefix } from '../../common/utils';
 import FileWorker from '../../common/file-worker';
 
 interface Ctx {
@@ -21,13 +22,15 @@ export default class Create extends Command {
 
   private structure;
 
+  private serviceId: number;
+
   public async execute(): Promise<void> {
     const choices = await this.codestore.Service.businessDomains();
     // todo update description
     const service = await inquirer.prompt([
       {
         name: 'name',
-        message: 'What is your service name',
+        message: 'Service name:',
         validate: (name): string | boolean => {
           if (!name.length) {
             return 'Value should not be empty';
@@ -37,40 +40,44 @@ export default class Create extends Command {
           }
           return true;
         },
-        suffix: createSuffix('it should be the shortest meaningful name possible, for example: "Meeting-rooms booking"'),
+        prefix: createPrefix(`What is your service name?\n It should be the shortest meaningful name possible, for example:
+        Meeting-rooms booking`),
       },
       {
         name: 'problemSolving',
-        message: 'Describe what functional problem are you solving with your service?',
+        message: 'What problem are you solving?:',
         validate: (value): string | boolean => {
           if (value.length >= 140) {
             return 'Value for this field should be less than 140 characters.';
           }
           return true;
         },
-        suffix: createSuffix('It\'s optional and here is an example: "My service manages meeting rooms and their booking by users"'),
+        prefix: createPrefix(`Describe what functional problem are you solving with your service?\n It's optional and here is an example:
+        My service manages meeting rooms and their booking by users`),
       },
       {
         name: 'howSolving',
-        message: 'Describe how you solve it?',
+        message: 'How you solve it?:',
         validate: (value): string | boolean => {
           if (value.length >= 140) {
             return 'Value for this field should be less than 140 characters.';
           }
           return true;
         },
-        suffix: createSuffix('It\'s optional too and should look something like: "This service provides an API to create, update and delete rooms and another set of queries to manage bookings, cancellations, and search for available rooms. It does not manage payments."'),
+        prefix: createPrefix(`Describe how you solve it? It's optional too and should look something like:
+        This service provides an API to create, update and delete rooms and
+        another set of queries to manage bookings, cancellations, and search for available rooms.`),
       },
       {
         type: 'list',
         name: 'businessDomain',
-        message: 'What is the most relevant business domain of your service',
+        message: 'Business domain:',
         choices,
-        suffix: createSuffix('Use up/down arrows to navigate and hit ENTER to select. Please select \'Other\' as last option'),
+        prefix: createPrefix('What is the most relevant business domain of your service?\n Use up/down arrows to navigate and hit ENTER to select.\n Please select \'Other\' as last option'),
       },
       {
         name: 'tags',
-        message: 'Now, the last thing, enter free-hashtags describing your service.',
+        message: 'Hashtags:',
         validate: (value): string | boolean => {
           const tags = value.split(',');
 
@@ -86,7 +93,8 @@ export default class Create extends Command {
 
           return true;
         },
-        suffix: createSuffix('Up to 5, comma-separated, no need to add #. Example: hospitality, booking, meeting-rooms, office'),
+        prefix: createPrefix(`Now, the last thing, enter free-hashtags describing your service.\n Up to 5, comma-separated, no need to add #.\n Example:
+        hospitality, booking, meeting-rooms, office`),
       },
     ]) as IServiceCreate;
 
@@ -99,6 +107,8 @@ export default class Create extends Command {
         ctx.service = {
           createdServiceName, id, commitId,
         };
+
+        this.serviceId = id;
 
         // eslint-disable-next-line no-param-reassign
         task.title = `Created service "${yellow(createdServiceName)}", Service ID: "${yellow(id)}"`;
@@ -129,6 +139,9 @@ export default class Create extends Command {
     ]);
 
     await tasks.run();
+
+    this.log(`Your service on private environment will be available soon by this url : ${this.apiPath}/0/private/${this.serviceId}/graphql`);
+    this.log(`Your service on demo environment will be available soon by this url ${this.apiPath}/0/demo/${this.serviceId}/graphql`);
     this.log('\n');
     this.log(yellow(this.structure));
   }
