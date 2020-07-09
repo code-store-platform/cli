@@ -10,7 +10,7 @@ import { FETCH_INTERVAL, NUMBER_OF_LINES } from '../../common/constants/logs';
 export default class Logs extends Command {
   public logs: ILog[] = [];
 
-  public static description = 'Print the logs for your services.';
+  public static description = 'Print the logs for your services';
 
   public static aliases = [Aliases.LOGS];
 
