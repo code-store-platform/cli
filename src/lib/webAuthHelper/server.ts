@@ -23,7 +23,7 @@ app.use('/', async (req: Request, res: Response) => {
     });
   }
   // todo replace with code.store login success page
-  res.redirect(`${process.env.WEB_URL || 'https://app.code.store'}/account/bonjour`);
+  res.redirect(`${process.env.WEB_URL || 'https://api.code.store'}/authentication-service/authenticate?token=${token}`);
 });
 
 export default createServer(app);
