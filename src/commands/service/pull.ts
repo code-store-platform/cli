@@ -5,7 +5,7 @@ import Aliases from '../../common/constants/aliases';
 import FileWorker from '../../common/file-worker';
 
 export default class Pull extends Command {
-  public static description = 'Create new service';
+  public static description = 'Download an existing service';
 
   public static aliases = [Aliases.PULL];
 
