@@ -1,351 +1,63 @@
-codestore-cli
-=============
+# code.store CLI [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io) [![License](https://img.shields.io/npm/l/codestore.svg)](https://github.com/code-store-platform/cli/blob/master/package.json) [![Version](https://img.shields.io/npm/v/codestore.svg)](https://npmjs.org/package/codestore)
 
-Use ``npx oclif-dev pack to make a build``
-Use ``env AWS_ACCESS_KEY_ID='' AWS_SECRET_ACCESS_KEY='' npx oclif-dev publish`` to publish build to s3 
+[**Documentation**](https://docs.code.store) 📖    [**Sign Up at code.store**](https://app.code.store)	🍙
 
 Command Line Interface of code.store. Add services, deploy, debug, perform all operations from your terminal.
 
-[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/codestore-cli.svg)](https://npmjs.org/package/codestore-cli)
-[![Downloads/week](https://img.shields.io/npm/dw/codestore-cli.svg)](https://npmjs.org/package/codestore-cli)
-[![License](https://img.shields.io/npm/l/codestore-cli.svg)](https://github.com/code-store-marketplace/codestore-cli/blob/master/package.json)
+## Installation
 
-<!-- toc -->
-* [Usage](#usage)
-* [Commands](#commands)
-<!-- tocstop -->
-# Usage
-<!-- usage -->
-```sh-session
-$ npm install -g codestore
-$ codestore COMMAND
-running command...
-$ codestore (-v|--version|version)
-codestore/1.2.10 darwin-x64 node-v12.18.1
-$ codestore --help [COMMAND]
+### macOS
+
+```bash
+brew tap codestore/brew && brew install codestore
+```
+
+### Ubuntu 16+
+
+```text
+sudo snap install --classic codestore
+```
+
+### NPM
+
+This installation method is not recommended as it does not autoupdate.
+
+```bash
+npm install -g codestore
+```
+
+## Description of commands
+
+For any further information about `code.store` please refer to our [**Documentation**](https://docs.code.store). You can also get information about the available commands directly from the CLI by running `codestore --help` or `cs --help`.
+
+```
+code.store CLI. Add services, deploy, debug, perform all operations from your terminal.
+
+VERSION
+  codestore/X.Y.Z darwin-x64 node-version
+
 USAGE
-  $ codestore COMMAND
-...
-```
-<!-- usagestop -->
-# Commands
-<!-- commands -->
-* [`codestore login`](#codestore-login)
-* [`codestore auth:logout`](#codestore-authlogout)
-* [`codestore whoami`](#codestore-whoami)
-* [`codestore context:clear`](#codestore-contextclear)
-* [`codestore context:list`](#codestore-contextlist)
-* [`codestore context:project [PROJECTID]`](#codestore-contextproject-projectid)
-* [`codestore context:service [SERVICEID]`](#codestore-contextservice-serviceid)
-* [`codestore help [COMMAND]`](#codestore-help-command)
-* [`codestore project:create`](#codestore-projectcreate)
-* [`codestore project:delete [ID]`](#codestore-projectdelete-id)
-* [`codestore project:list`](#codestore-projectlist)
-* [`codestore project:service:add [SERVICEID]`](#codestore-projectserviceadd-serviceid)
-* [`codestore project:service:list ID`](#codestore-projectservicelist-id)
-* [`codestore project:service:promote [SERVICEID]`](#codestore-projectservicepromote-serviceid)
-* [`codestore project:service:remove [SERVICEID]`](#codestore-projectserviceremove-serviceid)
-* [`codestore service:create`](#codestore-servicecreate)
-* [`codestore service:delete`](#codestore-servicedelete)
-* [`codestore service:generate`](#codestore-servicegenerate)
-* [`codestore service:list`](#codestore-servicelist)
-* [`codestore service:logs`](#codestore-servicelogs)
-* [`codestore service:promote [ID]`](#codestore-servicepromote-id)
-* [`codestore service:pull [ID]`](#codestore-servicepull-id)
-* [`codestore service:push`](#codestore-servicepush)
+  $ codestore [COMMAND]
 
-## `codestore login`
-
-Authenticate at code.store platform
-
-```
-USAGE
-  $ codestore login
-
-ALIASES
-  $ codestore login
-```
-
-## `codestore auth:logout`
-
-Clears user credentials and invalidates local session
-
-```
-USAGE
-  $ codestore auth:logout
-
-ALIASES
-  $ codestore logout
-```
-
-## `codestore whoami`
-
-Display the currently logged in user
-
-```
-USAGE
-  $ codestore whoami
-
-ALIASES
-  $ codestore whoami
-```
-
-## `codestore context:clear`
-
-Clear all contexts
-
-```
-USAGE
-  $ codestore context:clear
-```
-
-## `codestore context:list`
-
-List all globally set contexts
-
-```
-USAGE
-  $ codestore context:list
-
-ALIASES
-  $ codestore context:ls
-```
-
-## `codestore context:project [PROJECTID]`
-
-Manage global project context
-
-```
-USAGE
-  $ codestore context:project [PROJECTID]
+COMMANDS
+  auth     Authentication commands, login, logout, whoami
+  context  Manage global Project and Service contexts
+  help     display help for codestore
+  project  🚧 A project is a particular app or website, where you can (re)use your existing services. It might be your e-commerce project or a logistics mobile application or business web-app. Each time you add a service to a
+           project, we create a separate, isolated instance of your service. Each service reused in a project has its own environments, databases, logs, and billing
+  service  Create new service
 
 OPTIONS
-  -c, --clear  Clear project context
+  --version, -v Show version information
+  --help, -h    Show help
 ```
 
-## `codestore context:service [SERVICEID]`
+## Contributing
 
-Manage global service context
+code.store Platform and CLI are in very active development and are constantly improving. Like many other projects on GitHub, this CLI is open-source and you are welcome to notify us about any issues you might encounter.
 
-```
-USAGE
-  $ codestore context:service [SERVICEID]
+We would prefer to treat the community requests in the following order:
+* Create an issue on GitHub. This is a good place to start if you find that something is not working with the CLI.
+* Talk to us in our community on [**Spectrum**](https://spectrum.chat/code-store)
 
-OPTIONS
-  -c, --clear  Clear service context
-```
-
-## `codestore help [COMMAND]`
-
-display help for codestore
-
-```
-USAGE
-  $ codestore help [COMMAND]
-
-ARGUMENTS
-  COMMAND  command to show help for
-
-OPTIONS
-  --all  see all commands in CLI
-```
-
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.3/src/commands/help.ts)_
-
-## `codestore project:create`
-
-Creates a new project, where you can add services
-
-```
-USAGE
-  $ codestore project:create
-
-OPTIONS
-  --description=description  Description of the project
-  --identifier=identifier    Unique identifier of the project. Can contain only a-z, _ and - characters
-  --name=name                Name of the project
-```
-
-## `codestore project:delete [ID]`
-
-Removes project (only if there are no more services inside)
-
-```
-USAGE
-  $ codestore project:delete [ID]
-```
-
-## `codestore project:list`
-
-Lists projects in your organization
-
-```
-USAGE
-  $ codestore project:list
-
-OPTIONS
-  -x, --extended          show extra columns
-  --columns=columns       only show provided columns (comma-separated)
-  --csv                   output is csv format [alias: --output=csv]
-  --filter=filter         filter property by partial string matching, ex: name=foo
-  --no-header             hide table header from output
-  --no-truncate           do not truncate output to fit screen
-  --output=csv|json|yaml  output in a more machine friendly format
-  --sort=sort             property to sort by (prepend '-' for descending)
-
-ALIASES
-  $ codestore project:ls
-```
-
-## `codestore project:service:add [SERVICEID]`
-
-Adds and existing service to your project
-
-```
-USAGE
-  $ codestore project:service:add [SERVICEID]
-
-ARGUMENTS
-  SERVICEID  Id of the service
-
-OPTIONS
-  --project-id=project-id  (required) Id of the project
-```
-
-## `codestore project:service:list ID`
-
-Lists projects in your organization
-
-```
-USAGE
-  $ codestore project:service:list ID
-
-ALIASES
-  $ codestore project:service:ls
-```
-
-## `codestore project:service:promote [SERVICEID]`
-
-Adds and existing service to your project
-
-```
-USAGE
-  $ codestore project:service:promote [SERVICEID]
-
-ARGUMENTS
-  SERVICEID  Id of the service
-
-OPTIONS
-  --project-id=project-id  (required) Id of the project
-```
-
-## `codestore project:service:remove [SERVICEID]`
-
-Exclude service from project
-
-```
-USAGE
-  $ codestore project:service:remove [SERVICEID]
-
-ARGUMENTS
-  SERVICEID  Id of the service
-
-OPTIONS
-  --project-id=project-id  (required) Id of the project
-```
-
-## `codestore service:create`
-
-Create new service
-
-```
-USAGE
-  $ codestore service:create
-```
-
-## `codestore service:delete`
-
-Remove service
-
-```
-USAGE
-  $ codestore service:delete
-```
-
-## `codestore service:generate`
-
-Generate entities and migrations
-
-```
-USAGE
-  $ codestore service:generate
-
-ALIASES
-  $ codestore generate
-```
-
-## `codestore service:list`
-
-List your services
-
-```
-USAGE
-  $ codestore service:list
-
-ALIASES
-  $ codestore service:ls
-```
-
-## `codestore service:logs`
-
-Print the logs for your services.
-
-```
-USAGE
-  $ codestore service:logs
-
-OPTIONS
-  -e, --env=(development|staging|production|demo|private)  [default: development] Project environment.
-  -f, --follow                                             Specify if the logs should be streamed.
-  -n, --num=num                                            [default: 20] Number of most recent log lines to display.
-  -p, --projectId=projectId                                Project ID
-  -s, --serviceId=serviceId                                Service ID
-
-ALIASES
-  $ codestore logs
-```
-
-## `codestore service:promote [ID]`
-
-Promotes service from private env to demo
-
-```
-USAGE
-  $ codestore service:promote [ID]
-```
-
-## `codestore service:pull [ID]`
-
-Create new service
-
-```
-USAGE
-  $ codestore service:pull [ID]
-
-ALIASES
-  $ codestore pull
-```
-
-## `codestore service:push`
-
-Create new service
-
-```
-USAGE
-  $ codestore service:push
-
-ALIASES
-  $ codestore push
-```
-<!-- commandsstop -->
+Of course, if you have fixed a bug or created a feature you are welcome to create a merge request!
