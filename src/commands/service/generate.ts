@@ -38,8 +38,10 @@ export default class Generate extends Command {
       {
         title: 'Reverting extra migrations',
         task: async (ctx, task): Promise<void> => {
-          const migrationsInGit = await this.codestore.Service.getMigrations(ctx.encodedZip);
+          await PromisifiedFs.createFolderIfNotExist(Paths.MIGRATIONS);
           const currentMigrations = await PromisifiedFs.readdir(Paths.MIGRATIONS);
+          const migrationsInGit = await this.codestore.Service.getMigrations(ctx.encodedZip);
+
           for (let i = 0; i < migrationsInGit.length; i += 1) {
             if (migrationsInGit[i] !== currentMigrations[i]) {
               error(`Your migrations don't match migrations in the repository, please try ${yellow('cs pull')}`, { exit: 1 });
