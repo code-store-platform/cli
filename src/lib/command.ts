@@ -12,7 +12,7 @@ const pjson = require('../../package.json');
 export default abstract class Command extends Base {
   private homeFolderService = new HomeFolderService();
 
-  protected serviceWorker = new ServiceWorker();
+  public serviceWorker = new ServiceWorker();
 
   public base = `${pjson.name}@${pjson.version}`;
 
