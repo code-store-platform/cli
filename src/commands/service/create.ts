@@ -3,11 +3,11 @@ import inquirer from 'inquirer';
 import { Listr } from 'listr2';
 import clear from 'clear';
 import tree from 'tree-node-cli';
-import { cli } from 'cli-ux';
 import Command from '../../lib/command';
 import { IServiceCreate } from '../../interfaces/service.interface';
 import { createPrefix } from '../../common/utils';
 import FileWorker from '../../common/file-worker';
+import { installDependencies } from '../../lib/child-cli';
 
 interface Ctx {
   service: {
@@ -134,6 +134,18 @@ export default class Create extends Command {
         await FileWorker.saveZipFromB64(data, createdServiceName);
 
         this.structure = tree(createdServiceName);
+      },
+    },
+    {
+      title: 'Installing dependencies',
+      task: async (ctx): Promise<void> => {
+        try {
+          await installDependencies(ctx.service.createdServiceName);
+        } catch (npmWarnings) {
+          this.log('\n');
+          this.log(npmWarnings);
+          this.log('\n');
+        }
       },
     },
     ]);
