@@ -15,23 +15,8 @@ publish_npm:
     - oclif-dev -v
     - npm install
     - oclif-dev pack
-    - export VERSION=`cat package.json | jq .version | tr -d '"'`
-    - echo $VERSION
-    - cd dist/codestore-v${VERSION}
-    - >
-      for file in codestore-*.tar.gz
-      do
-      if [ -f "$file" ]; then
-      echo $file
-      tar -xf $file codestore/bin/codestore
-      cp codestore/bin/codestore codestore/bin/cs
-      gzip -d $file
-      tar -rvf *.tar codestore/bin/cs
-      gzip *.tar
-      rm -rf codestore
-      fi
-      done
-    - cd ../..
+    - bash ./alias_create.sh
+    - exit 1
   script:
     - oclif-dev publish
     - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}'>.npmrc
