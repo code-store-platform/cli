@@ -15,9 +15,10 @@ publish_npm:
     - oclif-dev -v
     - npm install
     - oclif-dev pack
+    - export VERSION=`cat package.json | jq .version | tr -d '"'`
+    - echo $VERSION
+    - cd dist/codestore-v${VERSION}
     - >
-      export VERSION=`cat package.json | jq .version | tr -d '"'`
-      cd dist/codestore-v${VERSION}
       for file in codestore-*.tar.gz
       do
       if [ -f "$file" ]
@@ -31,7 +32,7 @@ publish_npm:
       rm -rf codestore
       fi
       done
-      cd ../..
+    - cd ../..
   script:
     - oclif-dev publish
     - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}'>.npmrc
