@@ -21,16 +21,15 @@ publish_npm:
     - >
       for file in codestore-*.tar.gz
       do
-      if [ -f "$file" ]
-      then
-      echo $file
-      tar -xf $file codestore/bin/codestore
-      cp codestore/bin/codestore codestore/bin/cs
-      gzip -d $file
-      tar -rvf *.tar codestore/bin/cs
-      gzip *.tar
-      rm -rf codestore
-      fi
+        if [ -f "$file" ]; then
+          echo $file
+          tar -xf $file codestore/bin/codestore
+          cp codestore/bin/codestore codestore/bin/cs
+          gzip -d $file
+          tar -rvf *.tar codestore/bin/cs
+          gzip *.tar
+          rm -rf codestore
+        fi
       done
     - cd ../..
   script:
