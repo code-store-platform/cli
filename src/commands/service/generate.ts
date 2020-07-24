@@ -61,7 +61,7 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
     title: 'Saving generated code',
     task: async (ctx, task): Promise<void> => {
       const { generated } = ctx;
-      if (generated) {
+      if (!generated) {
         error('An error occured', { exit: 1 });
       }
 
@@ -96,6 +96,8 @@ export default class Generate extends Command {
 
     const tasks = new Listr<{ encodedZip: string; generated: string }>(generateFlow(this, error));
 
-    await tasks.run();
+    await tasks.run().catch((e) => {
+      console.log(e);
+    });
   }
 }
