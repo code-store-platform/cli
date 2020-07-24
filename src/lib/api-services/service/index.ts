@@ -58,13 +58,13 @@ export default class Service extends ApiService {
     return result.data.downloadProject.data;
   }
 
-  public async push(encodedString: string, releaseNotes: string[]): Promise<boolean> {
-    const { data: { success } } = await this.executeMutation(PUSH_SERVICE, {
+  public async push(encodedString: string, releaseNotes: string[]): Promise<string> {
+    const { data } = await this.executeMutation(PUSH_SERVICE, {
       base64Service: encodedString,
       notes: releaseNotes,
     });
 
-    return success;
+    return data.pushService.data;
   }
 
   public async getService(serviceId: number): Promise<IService> {

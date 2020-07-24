@@ -56,7 +56,7 @@ export const DOWNLOAD_SERVICE = gql`query downloadProject($id: Int!){
 
 export const PUSH_SERVICE = gql`mutation pushService($base64Service: String!, $notes: [String]!){
   pushService(base64Service:$base64Service, releaseNotes: $notes){
-    success
+    data
   }
 }`;
 

@@ -1,6 +1,6 @@
 # code.store CLI [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io) [![License](https://img.shields.io/npm/l/codestore.svg)](https://github.com/code-store-platform/cli/blob/master/package.json) [![Version](https://img.shields.io/npm/v/codestore.svg)](https://npmjs.org/package/codestore)
 
-[**Documentation**](https://docs.code.store) 📖    [**Sign Up at code.store**](https://app.code.store)	🍙
+[**Documentation**](https://docs.code.store) 	📖	 [**Sign Up at code.store**](https://app.code.store)	 🍙
 
 Command Line Interface of code.store. Add services, deploy, debug, perform all operations from your terminal.
 
