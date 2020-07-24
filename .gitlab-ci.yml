@@ -16,7 +16,6 @@ publish_npm:
     - npm install
     - oclif-dev pack
     - bash ./alias_create.sh
-    - exit 1
   script:
     - oclif-dev publish
     - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}'>.npmrc
