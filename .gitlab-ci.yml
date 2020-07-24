@@ -7,7 +7,7 @@ publish_npm:
   image:
     name: node:12.18.1
   before_script:
-    - apt-get update && apt-get install -y p7zip-full
+    - apt-get update && apt-get install -y p7zip-full jq
     - npm install -g @oclif/dev-cli
     - npm install -g typescript
     - npm install -g aws-sdk
