@@ -22,8 +22,8 @@ app.use('/', async (req: Request, res: Response) => {
       error,
     });
   }
-  // todo replace with code.store login success page
-  res.redirect(`${process.env.WEB_URL || 'https://api.code.store'}/authentication-service/authenticate?token=${token}`);
+
+  res.redirect(`${process.env.CODESTORE_GATEWAY_HOST || 'https://api.code.store'}/authentication-service/authenticate?token=${token}`);
 });
 
 export default createServer(app);

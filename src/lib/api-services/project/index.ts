@@ -15,8 +15,8 @@ export default class Project extends ApiService {
     super(props);
   }
 
-  public async create(name: string): Promise<IProject> {
-    const { data: { createProject } } = await this.executeMutation(CREATE_PROJECT, { data: { name } });
+  public async create(data: { name: string; description: string }): Promise<IProject> {
+    const { data: { createProject } } = await this.executeMutation(CREATE_PROJECT, { data });
 
     return createProject;
   }
@@ -71,8 +71,6 @@ export default class Project extends ApiService {
   }
 
   public async promoteService(data): Promise<any> {
-    console.log(data);
-
     return this.executeMutation(PROMOTE_SERVICE_IN_PROJECT, { data });
   }
 }

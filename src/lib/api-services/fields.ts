@@ -3,6 +3,7 @@ export const PROJECT = `
       name
       status
       description
+      uniqueName
 `;
 
 export const SERVICE = `
@@ -16,4 +17,5 @@ export const SERVICE = `
       displayName
       organizationId
       private
+      uniqueName
 `;

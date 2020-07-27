@@ -96,8 +96,8 @@ export default class Generate extends Command {
 
     const tasks = new Listr<{ encodedZip: string; generated: string }>(generateFlow(this, error));
 
-    await tasks.run().catch((e) => {
-      console.log(e);
+    await tasks.run().catch(() => {
+      throw new Error('Could not complete the generation due to error.');
     });
   }
 }

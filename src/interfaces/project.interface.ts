@@ -6,6 +6,7 @@ export default interface IProject {
   status: string;
   description?: string;
   services?: IService[];
+  uniqueName: string;
   author? : {
     email: string;
   };

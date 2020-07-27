@@ -60,6 +60,7 @@ export default class HomeFolderService {
     }
 
     const data = await this.fs.readFile(this.credentialsPath);
-    return data.toString();
+
+    return data.toString().replace(/\n$/, '');
   }
 }
