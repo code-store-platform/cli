@@ -4,10 +4,19 @@ import { Listr } from 'listr2';
 import Command from '../../lib/command';
 
 export default class Delete extends Command {
-  public static description = 'Remove service';
+  public static description = 'Remove a service';
+
+  public static args = [
+    { name: 'service_id', description: 'ID of the service (optional, if you\'re inside service folder)' },
+  ];
 
   public async execute(): Promise<void> {
-    const { serviceId } = await this.serviceWorker.loadValuesFromYaml();
+    let { args: { service_id: serviceId } } = this.parse(Delete);
+    serviceId = Number(serviceId);
+
+    if (!serviceId) {
+      serviceId = (await this.serviceWorker.loadValuesFromYaml()).serviceId;
+    }
 
     const { result } = await inquirer.prompt([
       { name: 'result', message: `Are you sure you want to delete service with id ${serviceId}`, type: 'confirm' },

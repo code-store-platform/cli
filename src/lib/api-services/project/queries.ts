@@ -1,7 +1,7 @@
 import { gql } from 'apollo-boost';
 import { PROJECT, SERVICE } from '../fields';
 
-export const CREATE_PROJECT = gql`mutation ($data: InputProject!){
+export const CREATE_PROJECT = gql`mutation createProject($data: InputProject!){
   createProject(data:$data){
     ${PROJECT}
   }

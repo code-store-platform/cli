@@ -20,7 +20,7 @@ interface Ctx {
 export default class Create extends Command {
   public static description = 'Create new service';
 
-  private structure;
+  private structure: string;
 
   private serviceId: number;
 

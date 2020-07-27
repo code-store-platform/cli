@@ -98,6 +98,9 @@
       "project": {
         "description": "🚧 A project is a particular app or website, where you can (re)use your existing services. It might be your e-commerce project or a logistics mobile application or business web-app. Each time you add a service to a project, we create a separate, isolated instance of your service. Each service reused in a project has its own environments, databases, logs, and billing"
       },
+      "project:service": {
+        "description": "Manage services inside your project"
+      },
       "service": {
         "description": "Manage your services"
       },

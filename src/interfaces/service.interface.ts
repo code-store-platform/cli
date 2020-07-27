@@ -11,6 +11,7 @@ export interface IService {
   displayName: string;
   organizationId: number;
   private: boolean;
+  uniqueName: string;
 }
 
 export interface IServiceCreateResult {

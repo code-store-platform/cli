@@ -1,25 +1,18 @@
-import { flags } from '@oclif/command';
 import inquirer from 'inquirer';
 import Command from '../../../lib/command';
-import { createSuffix } from '../../../common/utils';
 
 export default class Promote extends Command {
-  public static description = 'Adds and existing service to your project';
+  public static description = 'Promotes service inside the project between Development, Stating and Production environments';
 
   public static args = [
-    { name: 'serviceId', description: 'Id of the service' },
+    { name: 'project_id', required: true, description: '(required) ID of the project' },
+    { name: 'service_id', required: true, description: '(required) ID of the service' },
   ];
 
-  public static flags = {
-    'project-id': flags.integer({
-      required: true,
-      name: 'Project ID',
-      description: 'Id of the project',
-    }),
-  };
-
   public async execute(): Promise<void> {
-    const { flags: { 'project-id': projectId }, args: { serviceId } } = this.parse(Promote);
+    let { args: { project_id: projectId, service_id: serviceId } } = this.parse(Promote);
+    projectId = Number(projectId);
+    serviceId = Number(serviceId);
 
     const { targetEnvironment } = await inquirer.prompt([
       {
@@ -36,7 +29,7 @@ export default class Promote extends Command {
 
     const promoteData = {
       projectId,
-      serviceId: +serviceId,
+      serviceId,
       targetEnvironment,
     };
 

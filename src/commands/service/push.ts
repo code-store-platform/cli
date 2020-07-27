@@ -12,6 +12,8 @@ export default class Push extends Command {
   private splitNotes = (notes: string): string[] => notes.split(';');
 
   public async execute(): Promise<void> {
+    await this.serviceWorker.loadValuesFromYaml();
+
     const { releaseNotes } = await inquirer.prompt([
       {
         name: 'releaseNotes',

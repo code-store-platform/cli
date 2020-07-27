@@ -4,20 +4,15 @@ export default class Promote extends Command {
   public static description = 'Promotes service from private env to demo';
 
   public static args = [
-    { name: 'id' },
+    { name: 'service_id', description: 'ID of the service (optional, if you\'re inside service folder)' },
   ];
 
-  private async getServiceId(args): Promise<{serviceId: number}> {
-    if (args.id) {
-      return { serviceId: +args.id };
-    }
-    return this.serviceWorker.loadValuesFromYaml();
-  }
-
   public async execute(): Promise<void> {
-    const { args } = this.parse(Promote);
+    let { args: { service_id: serviceId } } = this.parse(Promote);
 
-    const { serviceId } = await this.getServiceId(args);
+    if (!serviceId) {
+      serviceId = (await this.serviceWorker.loadValuesFromYaml()).serviceId;
+    }
 
     await this.codestore.Service.promote(serviceId);
 

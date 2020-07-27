@@ -3,15 +3,15 @@ import Command from '../../../lib/command';
 import Aliases from '../../../common/constants/aliases';
 
 export default class List extends Command {
-  public static description = 'Lists projects in your organization';
+  public static description = 'Lists services in your project';
 
   public static aliases = [Aliases.PROJECT_SERVICE_LS];
 
   public static args = [
-    { name: 'id', required: true },
+    { name: 'project_id', required: true, description: '(required) ID of the project' },
   ];
 
-  private mapData = (input: any) => {
+  private mapData = (input: any): { development: string; staging: string; production: string }[] => {
     const { data } = input;
 
     const development = data.project.environments.find((it) => it.name === 'development');
@@ -27,11 +27,12 @@ export default class List extends Command {
   };
 
   public async execute(): Promise<void> {
-    const { args: { id } } = this.parse(List);
+    let { args: { project_id: projectId } } = this.parse(List);
+    projectId = Number(projectId);
 
-    const data = await this.codestore.Project.singleWithEnvs(+id);
+    const data = await this.codestore.Project.singleWithEnvs(projectId);
 
-    this.log(`Fetching services for project with id ${id}`);
+    this.log(`Fetching services for project with id ${projectId}`);
 
     ux.table(this.mapData(data), {
       name: {},

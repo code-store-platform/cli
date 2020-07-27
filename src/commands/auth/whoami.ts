@@ -1,3 +1,4 @@
+import { yellow } from 'chalk';
 import Command from '../../lib/command';
 import IUser from '../../interfaces/user.interface';
 import Aliases from '../../common/constants/aliases';
@@ -10,7 +11,16 @@ export default class Whoami extends Command {
   public static usage = Aliases.WHOAMI;
 
   public async execute(): Promise<void> {
-    const user: IUser = await this.codestore.getMe();
-    this.log(user.email);
+    try {
+      const user: IUser = await this.codestore.getMe();
+      this.log(user.email);
+    } catch (error) {
+      if (error.message === 'GraphQL error: Bad JWT token.') {
+        this.log(`Seems that you're not logged in. Please execute ${yellow(' codestore login ')} command to sign-in again.`);
+        return;
+      }
+
+      this.error(error.message);
+    }
   }
 }
