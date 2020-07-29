@@ -52,7 +52,7 @@ export default abstract class Command extends Base {
         return;
       }
 
-      this.error(e?.message);
+      this.error(e.toString());
     }
   }
 
