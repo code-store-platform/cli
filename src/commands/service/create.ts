@@ -139,13 +139,7 @@ export default class Create extends Command {
     {
       title: 'Installing dependencies',
       task: async (ctx): Promise<void> => {
-        try {
-          await installDependencies(ctx.service.createdServiceName);
-        } catch (npmWarnings) {
-          this.log('\n');
-          this.log(npmWarnings);
-          this.log('\n');
-        }
+        await installDependencies(ctx.service.createdServiceName);
       },
     },
     ]);

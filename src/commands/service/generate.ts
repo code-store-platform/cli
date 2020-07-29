@@ -1,5 +1,6 @@
 import { Listr, ListrTask } from 'listr2';
 import { yellow } from 'chalk';
+import clear from 'clear';
 import Command from '../../lib/command';
 import Aliases from '../../common/constants/aliases';
 import FileWorker from '../../common/file-worker';
@@ -7,7 +8,7 @@ import PromisifiedFs from '../../common/promisified-fs';
 import Paths from '../../common/constants/paths';
 import { revertMigration, runMigration, compile } from '../../lib/child-cli';
 
-export const generateFlow = (context: Command, error: (input: string | Error, options: { exit: number }) => void): ListrTask[] => [
+export const generateFlow = (context: Command, error: (input: string | Error, options?: { exit: number }) => void): ListrTask[] => [
   {
     title: 'Validating schema',
     task: async (): Promise<void> => {
@@ -96,8 +97,11 @@ export default class Generate extends Command {
 
     const tasks = new Listr<{ encodedZip: string; generated: string }>(generateFlow(this, error));
 
-    await tasks.run().catch(() => {
-      throw new Error('Could not complete the generation due to error.');
-    });
+    try {
+      await tasks.run();
+    } catch (e) {
+      clear();
+      throw e;
+    }
   }
 }
