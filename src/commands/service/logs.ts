@@ -41,8 +41,7 @@ export default class Logs extends Command {
   };
 
   public async fetch(query: IQueryLog): Promise<Array<ILog>> {
-    const logs = await this.codestore.Logs.list(query);
-    return logs.reverse();
+    return this.codestore.Logs.list(query);
   }
 
   public async updateLogs(query: IQueryLog): Promise<void> {
