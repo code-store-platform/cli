@@ -12,6 +12,7 @@ import {
 } from './queries';
 import { IService, IServiceCreateResult, IServiceCreate } from '../../../interfaces/service.interface';
 import ServiceStateEnum from '../../../common/constants/service-state.enum';
+import ServiceStatusEnum from '../../../common/constants/service-status.enum';
 import ApiService from '../base-api-service';
 
 export default class Service extends ApiService {
@@ -77,7 +78,7 @@ export default class Service extends ApiService {
     return new Promise((resolve) => {
       const interval = setInterval(async () => {
         const service = await this.getService(serviceId);
-        if (service.state === ServiceStateEnum.NEW_CONTAINER_IMAGE_AVAILABLE) {
+        if (service.state === ServiceStateEnum.NEW_CONTAINER_IMAGE_AVAILABLE && service.status === ServiceStatusEnum.ACTIVE) {
           resolve(true);
           clearInterval(interval);
         }

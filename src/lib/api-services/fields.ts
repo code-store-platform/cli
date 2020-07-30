@@ -10,7 +10,6 @@ export const SERVICE = `
       id
       createdAt
       updatedAt
-      name
       status
       state
       repositoryUrl
@@ -18,4 +17,6 @@ export const SERVICE = `
       organizationId
       private
       uniqueName
+      howSolving
+      problemSolving
 `;
