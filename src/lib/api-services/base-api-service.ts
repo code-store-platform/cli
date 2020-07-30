@@ -28,7 +28,7 @@ export default class ApiService {
         fetchPolicy: 'no-cache',
       });
     } catch (e) {
-      Logger.error(e?.networkError?.result.errors || e);
+      Logger.error(e?.networkError?.result?.errors || e);
 
       if (e.graphQLErrors?.length) {
         throw this.handleCustomError(e.graphQLErrors[0]?.message);
@@ -45,7 +45,7 @@ export default class ApiService {
         variables,
       });
     } catch (e) {
-      Logger.error(e?.networkError?.result.errors || e);
+      Logger.error(e?.networkError?.result?.errors || e);
 
       if (e.graphQLErrors?.length) {
         throw this.handleCustomError(e.graphQLErrors[0].message);

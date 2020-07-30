@@ -1,8 +1,6 @@
-import { red } from 'chalk';
-
 export default class Logger {
   public static error(msg: Error | string): void {
-    this.print(red(msg));
+    this.print(msg);
   }
 
   public static log(...msg: any[]): void {

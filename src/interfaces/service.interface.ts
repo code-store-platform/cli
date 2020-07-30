@@ -3,7 +3,6 @@ export interface IService {
   createdAt: Date;
   updatedAt: Date;
   name: string;
-  description: string;
   status: string;
   state: string;
   repositoryUrl: string;
@@ -12,6 +11,8 @@ export interface IService {
   organizationId: number;
   private: boolean;
   uniqueName: string;
+  howSolving: string;
+  problemSolving: string;
 }
 
 export interface IServiceCreateResult {
