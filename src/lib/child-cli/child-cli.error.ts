@@ -11,6 +11,9 @@ export default class ChildCliError extends Error {
     if (message.toLowerCase().includes('cannot find module')) {
       message += `\nTry run ${yellow('npm install')}`;
     }
+    if (this.command.includes('migration')) {
+      message += `\nTry run ${yellow(this.command)}`;
+    }
 
     return message;
   }

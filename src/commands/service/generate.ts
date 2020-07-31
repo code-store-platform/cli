@@ -8,6 +8,8 @@ import PromisifiedFs from '../../common/promisified-fs';
 import Paths from '../../common/constants/paths';
 import { revertMigration, runMigration, compile } from '../../lib/child-cli';
 
+const firstLine = (str: string): string => str.split('\n')[0].replace(/:$/, '');
+
 export const generateFlow = (context: Command, error: (input: string | Error, options?: { exit: number }) => void): ListrTask[] => [
   {
     title: 'Validating schema',
@@ -41,14 +43,16 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
           error(`Your migrations don't match migrations in the repository, please try ${yellow('cs pull')}`, { exit: 1 });
         }
       }
-
-      for (let i = currentMigrations.length - 1; i >= migrationsInGit.length; i -= 1) {
-        // eslint-disable-next-line no-await-in-loop
-        await revertMigration();
+      try {
+        for (let i = currentMigrations.length - 1; i >= migrationsInGit.length; i -= 1) {
+          // eslint-disable-next-line no-await-in-loop
+          await revertMigration();
+        }
+        // eslint-disable-next-line no-param-reassign
+        task.title = 'Extra migrations were successfully reverted';
+      } catch (e) {
+        task.skip(`Migrations were not reverted: ${firstLine(e.toString())}`);
       }
-
-      // eslint-disable-next-line no-param-reassign
-      task.title = 'Extra migrations were successfully reverted';
     },
   },
   {
@@ -79,10 +83,14 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
   {
     title: 'Running generated migration',
     task: async (ctx, task): Promise<void> => {
-      await runMigration();
+      try {
+        await runMigration();
 
-      // eslint-disable-next-line no-param-reassign
-      task.title = 'Migration ran successfully';
+        // eslint-disable-next-line no-param-reassign
+        task.title = 'Migration ran successfully';
+      } catch (e) {
+        task.skip(`Migrations were not ran: ${firstLine(e.toString())}`);
+      }
     },
   },
 ];
