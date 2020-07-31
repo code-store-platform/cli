@@ -1,4 +1,5 @@
 import inquirer from 'inquirer';
+import { blue } from 'chalk';
 import Command from '../../lib/command';
 import { WrongFolderError } from '../../lib/errors';
 import { createPrefix } from '../../common/utils';
@@ -46,7 +47,7 @@ export default class Promote extends Command {
         service = await this.codestore.Service.promote(serviceId);
       }
 
-      this.log(`Successfully promoted service with id ${service.uniqueName} to demo environment`);
+      this.log(`Successfully promoted service ${blue(service.uniqueName)} to demo environment`);
     } catch (error) {
       this.log(error.message);
     }

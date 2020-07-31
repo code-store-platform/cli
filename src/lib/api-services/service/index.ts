@@ -127,9 +127,9 @@ export default class Service extends ApiService {
   }
 
   public async promoteByUniqueName(uniqueName: string): Promise<IService> {
-    const { data: { promote } } = await this.executeMutation(PROMOTE_SERVICE_BY_UNIQUE_NAME, { uniqueName });
+    const { data: { promoteServiceByUniqueName } } = await this.executeMutation(PROMOTE_SERVICE_BY_UNIQUE_NAME, { uniqueName });
 
-    return promote;
+    return promoteServiceByUniqueName;
   }
 
   public async promote(serviceId: number): Promise<IService> {
