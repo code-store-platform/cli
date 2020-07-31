@@ -30,11 +30,11 @@ export default class Logs extends Command {
       default: Environments.DEVELOPMENT,
       options: Object.values(Environments),
     }),
-    projectId: flags.integer({
+    projectId: flags.string({
       char: 'p',
       description: 'Project ID',
     }),
-    serviceId: flags.integer({
+    serviceId: flags.string({
       char: 's',
       description: 'Service ID',
     }),
@@ -58,18 +58,31 @@ export default class Logs extends Command {
   public async execute(): Promise<void> {
     const { flags: { follow, ...query } } = this.parse(Logs);
 
+    const newQuery: IQueryLog = {
+      num: query.num,
+      env: query.env,
+    };
+    if (query.serviceId) {
+      newQuery.serviceId = (await this.codestore.Service.getServiceByUniqueName(query.serviceId.toString())).id;
+    }
+
+    if (query.projectId) {
+      newQuery.projectId = (await this.codestore.Project.singleByUniqueName(query.projectId.toString())).id;
+    }
+
     if (!query.serviceId && !query.projectId) {
       const { serviceId } = await this.serviceWorker.loadValuesFromYaml();
+
       if (!serviceId) {
         this.error('Please specify the service or project.');
       } else {
-        query.serviceId = serviceId;
+        newQuery.serviceId = serviceId;
       }
     }
 
     this.log(`Displaying logs for environment ${query.env}${query.serviceId ? `, service ${query.serviceId}` : ''}${query.projectId ? `, project ${query.projectId}` : ''}`);
 
-    await this.updateLogs(query);
+    await this.updateLogs(newQuery);
     this.render(false);
 
     if (follow) {
@@ -77,7 +90,7 @@ export default class Logs extends Command {
         if (this.logs.length) {
           (query as any).sinceTime = new Date(this.logs[this.logs.length - 1].time);
         }
-        await this.updateLogs(query);
+        await this.updateLogs(newQuery);
         this.render(true);
       }, FETCH_INTERVAL);
     }

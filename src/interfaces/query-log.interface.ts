@@ -1,4 +1,4 @@
-import Environments from "../common/constants/env.enum";
+import Environments from '../common/constants/env.enum';
 
 export default interface IQueryLog {
   serviceId?: number;
