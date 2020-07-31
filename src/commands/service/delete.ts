@@ -12,7 +12,6 @@ export default class Delete extends Command {
 
   public async execute(): Promise<void> {
     let { args: { service_id: serviceId } } = this.parse(Delete);
-    serviceId = Number(serviceId);
 
     if (!serviceId) {
       serviceId = (await this.serviceWorker.loadValuesFromYaml()).serviceId;
@@ -26,7 +25,7 @@ export default class Delete extends Command {
       const tasks = new Listr<{}>([{
         title: `Removing service ${yellow(serviceId)}`,
         task: async (ctx, task): Promise<void> => {
-          await this.codestore.Service.delete(serviceId);
+          await this.codestore.Service.deleteByUniqueName(serviceId);
 
           // eslint-disable-next-line no-param-reassign
           task.title = 'Service was successfully removed';

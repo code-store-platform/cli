@@ -7,6 +7,7 @@ import FileWorker from '../../common/file-worker';
 import PromisifiedFs from '../../common/promisified-fs';
 import Paths from '../../common/constants/paths';
 import { revertMigration, runMigration, compile } from '../../lib/child-cli';
+import Logger from '../../lib/logger';
 
 const firstLine = (str: string): string => str.split('\n')[0].replace(/:$/, '');
 

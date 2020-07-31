@@ -2,6 +2,7 @@ import inquirer from 'inquirer';
 import Command from '../../lib/command';
 import { WrongFolderError } from '../../lib/errors';
 import { createPrefix } from '../../common/utils';
+import { IService } from '../../interfaces/service.interface';
 
 export default class Promote extends Command {
   public static description = 'Promotes service from private env to demo';
@@ -15,7 +16,7 @@ export default class Promote extends Command {
 
     try {
       if (!serviceId) {
-        serviceId = (await this.serviceWorker.loadValuesFromYaml()).serviceId;
+        serviceId = Number((await this.serviceWorker.loadValuesFromYaml()).serviceId);
       }
     } catch (error) {
       if (error.constructor === WrongFolderError) {
@@ -37,8 +38,17 @@ export default class Promote extends Command {
       }
     }
 
-    await this.codestore.Service.promote(serviceId);
+    try {
+      let service: IService;
+      if (typeof serviceId === 'string') {
+        service = await this.codestore.Service.promoteByUniqueName(serviceId);
+      } else {
+        service = await this.codestore.Service.promote(serviceId);
+      }
 
-    this.log(`Successfully promoted service with id ${serviceId} to demo environment`);
+      this.log(`Successfully promoted service with id ${service.uniqueName} to demo environment`);
+    } catch (error) {
+      this.log(error.message);
+    }
   }
 }

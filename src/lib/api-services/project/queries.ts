@@ -11,6 +11,12 @@ export const DELETE_PROJECT = gql`mutation deleteProject($id: Int!){
   deleteProject(id: $id)
 }`;
 
+export const DELETE_PROJECT_BY_UNIQUE_NAME = gql`mutation deleteProject($uniqueName: String!) {
+  deleteProjectByUniqueName(uniqueName: $uniqueName) {
+    id
+  }
+}`;
+
 export const LIST_PROJECTS = gql`query projects($pagination: PaginationOptions){
   projects(pagination:$pagination){
     author{
@@ -19,6 +25,25 @@ export const LIST_PROJECTS = gql`query projects($pagination: PaginationOptions){
     ${PROJECT}
     services {
       id
+    }
+  }
+}`;
+
+export const SINGLE_PROJECT_ENV_BY_UNIQUE_NAME = gql` query project($id: Int!) {
+  project(uniqueName: $uniqueName) {
+    ${PROJECT}
+    services {
+      ${SERVICE}
+    }
+    environments{
+      id
+      name
+      deployments{
+        id
+        status
+        serviceId
+        commitId
+      }
     }
   }
 }`;
@@ -38,6 +63,21 @@ export const SINGLE_PROJECT_ENV = gql` query project($id: Int!){
         serviceId
         commitId
       }
+    }
+  }
+}`;
+
+export const SINGLE_PROJECT_BY_UNIQUE_NAME = gql` query project($uniqueName: String!) {
+  project(uniqueName: $uniqueName) {
+    ${PROJECT}
+  }
+}`;
+
+export const SINGLE_PROJECT_INCLUDE_SERVICES_BY_UNIQUE_NAME = gql` query project($uniqueName: String!) {
+  project(uniqueName: $uniqueName) {
+    ${PROJECT}
+    services {
+    ${SERVICE}
     }
   }
 }`;

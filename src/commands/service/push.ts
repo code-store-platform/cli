@@ -37,7 +37,7 @@ export default class Push extends Command {
       title: 'Pushing service',
       task: async (ctx, task): Promise<void> => {
         const { encodedZip } = ctx;
-        ctx.generated = await this.codestore.Service.push(encodedZip, this.splitNotes(releaseNotes));
+        ctx.generated = await this.codestore.Service.push(encodedZip, this.splitNotes(releaseNotes), 'test');
 
         if (ctx.generated) {
           // eslint-disable-next-line no-param-reassign

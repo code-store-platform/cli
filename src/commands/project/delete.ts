@@ -11,10 +11,9 @@ export default class Delete extends Command {
   ];
 
   public async execute(): Promise<void> {
-    let { args: { project_id: projectId } } = this.parse(Delete);
-    projectId = Number(projectId);
+    const { args: { project_id: projectId } } = this.parse(Delete);
 
-    const project = await this.codestore.Project.single(projectId);
+    const project = await this.codestore.Project.singleByUniqueName(projectId);
 
     if (!project) {
       this.log('Seems like you are trying to remove project that not exist');
@@ -23,7 +22,7 @@ export default class Delete extends Command {
 
     const { result } = await inquirer.prompt([{
       name: 'result',
-      message: `Are you sure you want to delete project ${yellow(project.name)} (ID = ${yellow(project.id)}) ?`,
+      message: `Are you sure you want to delete project ${yellow(project.name)} (ID = ${yellow(project.uniqueName)}) ?`,
       type: 'confirm',
       default: false,
     }]);
@@ -31,17 +30,17 @@ export default class Delete extends Command {
     if (result) {
       const tasks = new Listr<{}>([{
         title: `Removing project ${yellow(projectId)}`,
-        task: async (ctx, task): Promise<void> => {
-          await this.codestore.Project.delete(projectId);
+        task: async (_, task): Promise<void> => {
+          await this.codestore.Project.delete(project.id);
 
           // eslint-disable-next-line no-param-reassign
-          task.title = `Your project ${yellow(project.name)} with ID = ${yellow(project.id)} doesn't exist anymore.`;
+          task.title = `Your project ${yellow(project.name)} with ID = ${yellow(project.uniqueName)} doesn't exist anymore.`;
         },
       }]);
 
       await tasks.run();
     } else {
-      this.log(`Your project ${yellow(project.name)} with ID = ${yellow(project.id)} was not removed. It's still here. No worries.`);
+      this.log(`Your project ${yellow(project.name)} with ID = ${yellow(project.uniqueName)} was not removed. It's still here. No worries.`);
     }
   }
 }

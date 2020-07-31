@@ -13,8 +13,16 @@ export default class Promote extends Command {
 
   public async execute(): Promise<void> {
     let { args: { project_id: projectId, service_id: serviceId } } = this.parse(Promote);
-    projectId = Number(projectId);
-    serviceId = Number(serviceId);
+
+    if (typeof projectId === 'string') {
+      const project = await this.codestore.Project.singleByUniqueName(projectId);
+      projectId = project.id;
+    }
+
+    if (typeof serviceId === 'string') {
+      const service = await this.codestore.Service.getServiceByUniqueName(serviceId);
+      serviceId = service.id;
+    }
 
     if (!projectId) {
       const projects = await this.codestore.Project.list();

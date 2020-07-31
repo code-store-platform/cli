@@ -10,9 +10,9 @@ export default class List extends Command {
   public async execute(): Promise<void> {
     const projects = await this.codestore.Project.list()
       .then((list) => list.map((project) => ({
-        id: project.id,
-        services: project.services.length,
-        author: project.author.email,
+        id: project.uniqueName,
+        services: project.services!.length,
+        author: project.author!.email,
         description: project.description,
       })));
 
