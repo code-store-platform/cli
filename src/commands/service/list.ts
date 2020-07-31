@@ -16,7 +16,7 @@ export default class List extends Command {
         } = service;
 
         return {
-          id,
+          id: service.uniqueName,
           name,
           // todo update when resolvers for deployments is ready
           private: ` ${this.apiPath}/0/private/${id}/graphql`,

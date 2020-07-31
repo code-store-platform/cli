@@ -12,7 +12,7 @@ const runCommand = async (command): Promise<void> => {
   }
 };
 
-const compile = (): Promise<void> => runCommand('tsc');
+const compile = (): Promise<void> => runCommand('npx tsc');
 
 const runMigration = (): Promise<void> => runCommand('npm run migration:run');
 

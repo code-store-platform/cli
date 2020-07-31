@@ -6,6 +6,7 @@ import Command from '../../lib/command';
 import Aliases from '../../common/constants/aliases';
 import FileWorker from '../../common/file-worker';
 import { WrongFolderError } from '../../lib/errors';
+import { IService } from '../../interfaces/service.interface';
 
 export default class Pull extends Command {
   public static description = 'Download an existing service';
@@ -18,11 +19,10 @@ export default class Pull extends Command {
 
   public async execute(): Promise<void> {
     let { args: { service_id: serviceId } } = this.parse(Pull);
-    serviceId = Number(serviceId);
 
     if (!serviceId) {
       try {
-        serviceId = (await this.serviceWorker.loadValuesFromYaml()).serviceId;
+        serviceId = Number((await this.serviceWorker.loadValuesFromYaml()).serviceId);
       } catch (error) {
         if (error.constructor === WrongFolderError) {
           this.log(`You must be in code.store service folder to invoke this command without arguments.
@@ -34,7 +34,12 @@ ${red('BE CAREFUL! Any local changes might be deleted and lost')}`);
       }
     }
 
-    const service = await this.codestore.Service.getService(serviceId);
+    let service: IService;
+    if (typeof serviceId === 'string') {
+      service = await this.codestore.Service.getServiceByUniqueName(serviceId);
+    } else {
+      service = await this.codestore.Service.getService(serviceId);
+    }
 
     if (!service) {
       this.log(`You've tried to download the service with ${yellowBright(`ID = ${serviceId}`)}, but there is no service with this ID!
@@ -46,12 +51,12 @@ ${red('BE CAREFUL! Any local changes might be deleted and lost')}`);
 
     const { userAgreed } = await inquirer.prompt([
       {
-        name: 'userAgreed', message: `You're about to download '${service.name}' service with ID = ${service.id} to your local machine. All local changes, if any, will be overwritten. Go?`, type: 'confirm', default: false,
+        name: 'userAgreed', message: `You're about to download service with ID = ${service.uniqueName} to your local machine. All local changes, if any, will be overwritten. Go?`, type: 'confirm', default: false,
       },
     ]);
 
     if (userAgreed) {
-      const data = await this.codestore.Service.download(serviceId);
+      const data = await this.codestore.Service.download(service.id);
 
       await FileWorker.saveZipFromB64(data, process.cwd());
     }

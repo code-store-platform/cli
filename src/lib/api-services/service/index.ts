@@ -6,17 +6,22 @@ import {
   DOWNLOAD_SERVICE,
   PUSH_SERVICE,
   SINGLE_SERVICE,
+  SINGLE_SERVICE_BY_UNIQUE_NAME,
   GENERATE_SERVICE_ENTITIES,
   PROMOTE_SERVICE,
   GET_SERVICE_MIGRATIONS,
+  DELETE_SERVICE_BY_UNIQUE_NAME,
+  DOWNLOAD_SERVICE_BY_UNIQUE_NAME,
+  PROMOTE_SERVICE_BY_UNIQUE_NAME,
 } from './queries';
 import { IService, IServiceCreateResult, IServiceCreate } from '../../../interfaces/service.interface';
 import ServiceStateEnum from '../../../common/constants/service-state.enum';
 import ServiceStatusEnum from '../../../common/constants/service-status.enum';
 import ApiService from '../base-api-service';
+import Logger from '../../logger';
 
 export default class Service extends ApiService {
-  public constructor(args) {
+  public constructor(args: any) {
     super(args);
   }
 
@@ -53,19 +58,38 @@ export default class Service extends ApiService {
     return data;
   }
 
+  public async deleteByUniqueName(uniqueName: string): Promise<{ affected: number }> {
+    const { data } = await this.executeMutation(DELETE_SERVICE_BY_UNIQUE_NAME, { uniqueName });
+
+    return data;
+  }
+
   public async download(id: number): Promise<string> {
     const result = await this.executeQuery(DOWNLOAD_SERVICE, { id });
 
     return result.data.downloadProject.data;
   }
 
-  public async push(encodedString: string, releaseNotes: string[]): Promise<string> {
+  public async downloadByUniqueName(uniqueName: string): Promise<string> {
+    const result = await this.executeQuery(DOWNLOAD_SERVICE_BY_UNIQUE_NAME, { uniqueName });
+
+    return result.data.downloadProject.data;
+  }
+
+  public async push(encodedString: string, releaseNotes: string[], description: string): Promise<string> {
     const { data } = await this.executeMutation(PUSH_SERVICE, {
       base64Service: encodedString,
       notes: releaseNotes,
+      description,
     });
 
     return data.pushService.data;
+  }
+
+  public async getServiceByUniqueName(uniqueName: string): Promise<IService> {
+    const { data: { service } } = await this.executeQuery(SINGLE_SERVICE_BY_UNIQUE_NAME, { uniqueName });
+
+    return service;
   }
 
   public async getService(serviceId: number): Promise<IService> {
@@ -100,6 +124,12 @@ export default class Service extends ApiService {
     });
 
     return data.getServiceMigrations.data;
+  }
+
+  public async promoteByUniqueName(uniqueName: string): Promise<IService> {
+    const { data: { promote } } = await this.executeMutation(PROMOTE_SERVICE_BY_UNIQUE_NAME, { uniqueName });
+
+    return promote;
   }
 
   public async promote(serviceId: number): Promise<IService> {

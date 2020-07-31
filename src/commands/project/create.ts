@@ -35,10 +35,10 @@ export default class Create extends Command {
     const tasks = new Listr<{}>([{
       title: `Creating Project ${yellow(name)}`,
       task: async (ctx, task): Promise<void> => {
-        const { id, name: projectName } = await this.codestore.Project.create({ name, description });
+        const { uniqueName, name: projectName } = await this.codestore.Project.create({ name, description });
 
         // eslint-disable-next-line no-param-reassign
-        task.title = `Your service ${projectName} with ID = ${id} has been created!
+        task.title = `Your service ${projectName} with ID = ${uniqueName} has been created!
 You can now add your services there using ${yellow(' codestore project:service ')} command.`;
       },
       options: { persistentOutput: true },
