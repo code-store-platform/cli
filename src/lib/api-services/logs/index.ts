@@ -10,6 +10,7 @@ export default class Logs extends ApiService {
 
   public async list(query: IQueryLog): Promise<Array<ILog>> {
     const { data: { logs } } = await this.executeQuery(GET_LOGS, { query });
+
     return logs;
   }
 }

@@ -7,7 +7,7 @@ export const LIST_SERVICES = gql`query s($pagination:PaginationOptions){
     }
 }`;
 
-export const SINGLE_SERVICE_BY_UNIQUE_NAME = gql`query singleServiceByUniqueName($uniqueName: String!) {
+export const SINGLE_SERVICE_BY_UNIQUE_NAME = gql`query serviceByUniqueName($uniqueName: String!) {
   serviceByUniqueName(uniqueName: $uniqueName) {
     ${SERVICE}
   }

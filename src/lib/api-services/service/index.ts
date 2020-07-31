@@ -87,9 +87,9 @@ export default class Service extends ApiService {
   }
 
   public async getServiceByUniqueName(uniqueName: string): Promise<IService> {
-    const { data: { service } } = await this.executeQuery(SINGLE_SERVICE_BY_UNIQUE_NAME, { uniqueName });
+    const { data: { serviceByUniqueName } } = await this.executeQuery(SINGLE_SERVICE_BY_UNIQUE_NAME, { uniqueName });
 
-    return service;
+    return serviceByUniqueName;
   }
 
   public async getService(serviceId: number): Promise<IService> {
