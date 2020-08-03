@@ -47,7 +47,7 @@ export default class Promote extends Command {
         service = await this.codestore.Service.promote(serviceId);
       }
 
-      this.log(`Successfully promoted service ${blue(service.uniqueName)} to demo environment`);
+      this.log(`Successfully promoted service with ID ${blue(service.uniqueName)} to demo environment`);
     } catch (error) {
       this.log(error.message);
     }

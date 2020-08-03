@@ -1,7 +1,7 @@
 import inquirer from 'inquirer';
 import clear from 'clear';
 import { Listr } from 'listr2';
-import { yellow } from 'chalk';
+import { yellow, blue, bold } from 'chalk';
 import Command from '../../lib/command';
 import { createPrefix } from '../../common/utils';
 
@@ -33,12 +33,12 @@ export default class Create extends Command {
     }
 
     const tasks = new Listr<{}>([{
-      title: `Creating Project ${yellow(name)}`,
+      title: `Creating Project "${bold(name)}"`,
       task: async (ctx, task): Promise<void> => {
         const { uniqueName, name: projectName } = await this.codestore.Project.create({ name, description });
 
         // eslint-disable-next-line no-param-reassign
-        task.title = `Your service ${projectName} with ID = ${uniqueName} has been created!
+        task.title = `Your service "${bold(projectName)}" with ID ${blue(uniqueName)} has been created!
 You can now add your services there using ${yellow(' codestore project:service ')} command.`;
       },
       options: { persistentOutput: true },

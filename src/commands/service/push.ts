@@ -58,6 +58,8 @@ export default class Push extends Command {
       },
     });
 
+    this.log(''); // print just a newline
+
     const tasks = new Listr<{ encodedZip: string; generated: string }>(generate);
 
     await tasks.run();

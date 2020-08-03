@@ -29,7 +29,7 @@ export const LIST_PROJECTS = gql`query projects($pagination: PaginationOptions){
   }
 }`;
 
-export const SINGLE_PROJECT_ENV_BY_UNIQUE_NAME = gql` query project($id: Int!) {
+export const SINGLE_PROJECT_ENV_BY_UNIQUE_NAME = gql` query project($uniqueName: String!) {
   project(uniqueName: $uniqueName) {
     ${PROJECT}
     services {
@@ -97,8 +97,15 @@ export const SINGLE_PROJECT_INCLUDE_SERVICES = gql` query project($id: Int!){
   }
 }`;
 
-export const PROMOTE_SERVICE_IN_PROJECT = gql`mutation promote($data: PromoteServiceInProject){
+export const PROMOTE_SERVICE_IN_PROJECT = gql`mutation promote($data: PromoteServiceInProject!) {
   promoteServiceInProject(input:$data){
+    id
+    commitId
+  }
+}`;
+
+export const PROMOTE_SERVICE_IN_PROJECT_BY_UNIQUE_NAME = gql`mutation promote($data: PromoteServiceInProjectByUniqueName!) {
+  promoteServiceInProjectByUniqueName(input:$data){
     id
     commitId
   }
