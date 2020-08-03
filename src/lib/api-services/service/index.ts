@@ -98,15 +98,27 @@ export default class Service extends ApiService {
     return service;
   }
 
+  public async checkServiceCreated(serviceId: number): Promise<boolean> {
+    return new Promise((resolve) => {
+      const interval = setInterval(async () => {
+        const service = await this.getService(serviceId);
+        if (service.state === ServiceStateEnum.NEW_CONTAINER_IMAGE_AVAILABLE) {
+          resolve(true);
+          clearInterval(interval);
+        }
+      }, 3000);
+    });
+  }
+
   public async checkServiceDeployed(serviceId: number): Promise<boolean> {
     return new Promise((resolve) => {
       const interval = setInterval(async () => {
         const service = await this.getService(serviceId);
-        if (service.state === ServiceStateEnum.NEW_CONTAINER_IMAGE_AVAILABLE && service.status === ServiceStatusEnum.ACTIVE) {
+        if (service.status === ServiceStatusEnum.ACTIVE) {
           resolve(true);
           clearInterval(interval);
         }
-      }, 5000);
+      }, 3000);
     });
   }
 
