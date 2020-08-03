@@ -133,8 +133,8 @@ export default class Service extends ApiService {
   }
 
   public async promote(serviceId: number): Promise<IService> {
-    const { data: { promote } } = await this.executeMutation(PROMOTE_SERVICE, { id: serviceId });
+    const { data: { promoteService } } = await this.executeMutation(PROMOTE_SERVICE, { id: serviceId });
 
-    return promote;
+    return promoteService;
   }
 }
