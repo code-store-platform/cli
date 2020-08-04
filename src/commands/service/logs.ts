@@ -27,20 +27,20 @@ export default class Logs extends Command {
     env: flags.enum({
       char: 'e',
       description: 'Project environment.',
-      default: Environments.DEVELOPMENT,
       options: Object.values(Environments),
     }),
-    projectId: flags.string({
+    projectUniqueName: flags.string({
       char: 'p',
       description: 'Project ID',
     }),
-    serviceId: flags.string({
+    serviceUniqueName: flags.string({
       char: 's',
       description: 'Service ID',
     }),
   };
 
   public async fetch(query: IQueryLog): Promise<Array<ILog>> {
+    console.log(query)
     return this.codestore.Logs.list(query);
   }
 
@@ -58,19 +58,16 @@ export default class Logs extends Command {
   public async execute(): Promise<void> {
     const { flags: { follow, ...query } } = this.parse(Logs);
 
+    const env: Environments = query.env || query.projectUniqueName ? Environments.DEVELOPMENT : Environments.PRIVATE;
+
     const newQuery: IQueryLog = {
       num: query.num,
-      env: query.env,
+      env,
+      serviceUniqueName: query.serviceUniqueName,
+      projectUniqueName: query.projectUniqueName,
     };
-    if (query.serviceId) {
-      newQuery.serviceId = (await this.codestore.Service.getServiceByUniqueName(query.serviceId.toString())).id;
-    }
 
-    if (query.projectId) {
-      newQuery.projectId = (await this.codestore.Project.singleByUniqueName(query.projectId.toString())).id;
-    }
-
-    if (!query.serviceId && !query.projectId) {
+    if (!query.serviceUniqueName && !query.projectUniqueName) {
       const { serviceId } = await this.serviceWorker.loadValuesFromYaml();
 
       if (!serviceId) {
@@ -80,7 +77,7 @@ export default class Logs extends Command {
       }
     }
 
-    this.log(`Displaying logs for environment ${query.env}${query.serviceId ? `, service ${query.serviceId}` : ''}${query.projectId ? `, project ${query.projectId}` : ''}`);
+    this.log(`Displaying logs for environment ${env}${query.serviceUniqueName ? `, service ${query.serviceUniqueName}` : ''}${query.projectUniqueName ? `, project ${query.projectUniqueName}` : ''}`);
 
     await this.updateLogs(newQuery);
     this.render(false);
