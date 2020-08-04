@@ -19,7 +19,8 @@ export default class List extends Command {
     const production = project.environments.find((e) => e.name === 'production');
 
     return project.services.map((service: IService) => ({
-      name: service.uniqueName,
+      id: service.uniqueName,
+      name: service.displayName,
       development: `${this.apiPath}/${project.id}/${development.id}/${service.id}/graphql`,
       staging: `${this.apiPath}/${project.id}/${staging.id}/${service.id}/graphql`,
       production: `${this.apiPath}/${project.id}/${production.id}/${service.id}/graphql`,
@@ -37,6 +38,9 @@ export default class List extends Command {
     }
 
     ux.table(this.mapData(project), {
+      id: {
+        header: 'Service ID',
+      },
       name: {},
       development: {},
       staging: {},

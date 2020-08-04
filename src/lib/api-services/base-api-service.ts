@@ -20,7 +20,7 @@ export default class ApiService {
     return new Error(message);
   }
 
-  protected async executeQuery(query: DocumentNode, variables: object): Promise<any> {
+  protected async executeQuery(query: DocumentNode, variables: object | null): Promise<any> {
     try {
       return await this.apiClient.query({
         query,

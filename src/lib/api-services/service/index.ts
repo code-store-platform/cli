@@ -18,7 +18,6 @@ import { IService, IServiceCreateResult, IServiceCreate } from '../../../interfa
 import ServiceStateEnum from '../../../common/constants/service-state.enum';
 import ServiceStatusEnum from '../../../common/constants/service-status.enum';
 import ApiService from '../base-api-service';
-import Logger from '../../logger';
 
 export default class Service extends ApiService {
   public constructor(args: any) {

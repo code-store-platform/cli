@@ -10,14 +10,14 @@ export default class List extends Command {
     const services = await this.codestore.Service.list()
       .then((serviceList) => serviceList.map((service) => {
         const {
-          name,
+          displayName,
           id,
           status,
         } = service;
 
         return {
           id: service.uniqueName,
-          name,
+          name: displayName,
           // todo update when resolvers for deployments is ready
           private: ` ${this.apiPath}/0/private/${id}/graphql`,
           demo: ` ${this.apiPath}/0/demo/${id}/graphql`,
@@ -34,9 +34,10 @@ export default class List extends Command {
       id: {
         header: 'Service ID',
       },
+      name: {},
       private: {},
-      status: {},
       demo: {},
+      status: {},
     });
   }
 }
