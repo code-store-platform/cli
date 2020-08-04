@@ -88,7 +88,7 @@ export default class Logs extends Command {
     if (follow) {
       setInterval(async () => {
         if (this.logs.length) {
-          (query as any).sinceTime = new Date(this.logs[this.logs.length - 1].time);
+          (newQuery as any).sinceTime = new Date(this.logs[this.logs.length - 1].time);
         }
         await this.updateLogs(newQuery);
         this.render(true);
