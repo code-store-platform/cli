@@ -6,9 +6,9 @@ describe('Api Client', () => {
   let apiClient: APIClient;
 
   const homeFolderServiceMocks = {
-    saveToken: (): void => null,
+    saveToken: (): void | null => null,
     getToken: (): string => 'testtoken',
-    removeToken: (): void => null,
+    removeToken: (): void | null => null,
   };
 
   const gqlClientMock = {
