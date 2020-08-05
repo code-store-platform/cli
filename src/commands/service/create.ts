@@ -1,4 +1,4 @@
-import { yellow, blue, bold } from 'chalk';
+import { blue, bold, yellow } from 'chalk';
 import inquirer from 'inquirer';
 import { Listr } from 'listr2';
 import clear from 'clear';
@@ -148,7 +148,7 @@ export default class Create extends Command {
 
         await FileWorker.saveZipFromB64(data, createdServiceName);
 
-        this.structure = tree(createdServiceName);
+        this.structure = tree(createdServiceName, { exclude: [/node_modules/, /dist/] });
       },
     },
     {
