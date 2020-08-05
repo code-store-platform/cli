@@ -40,7 +40,6 @@ export default class Logs extends Command {
   };
 
   public async fetch(query: IQueryLog): Promise<Array<ILog>> {
-    console.log(query)
     return this.codestore.Logs.list(query);
   }
 
