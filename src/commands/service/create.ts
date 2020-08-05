@@ -1,4 +1,4 @@
-import { yellow } from 'chalk';
+import { yellow, blue, bold } from 'chalk';
 import inquirer from 'inquirer';
 import { Listr } from 'listr2';
 import clear from 'clear';
@@ -20,7 +20,7 @@ interface Ctx {
 export default class Create extends Command {
   public static description = 'Create new service';
 
-  private structure;
+  private structure: string;
 
   private serviceId: number;
 
@@ -35,9 +35,15 @@ export default class Create extends Command {
           if (!name.length) {
             return 'Value should not be empty';
           }
+
           if (name.length >= 35) {
-            return 'Value for this field should be less than 35 characters.';
+            return 'Value for this field should be less than 35 characters';
           }
+
+          if (name.length < 3) {
+            return 'Name must be longer than or equal to 3 characters';
+          }
+
           return true;
         },
         prefix: createPrefix(`What is your service name?\n It should be the shortest meaningful name possible, for example:
@@ -101,9 +107,9 @@ export default class Create extends Command {
     clear();
 
     const tasks = new Listr<Ctx>([{
-      title: `Creating service ${yellow(service.name)}`,
+      title: `Creating service "${bold(service.name)}"`,
       task: async (ctx, task): Promise<void> => {
-        const { service: { displayName: createdServiceName, id }, commitId } = await this.codestore.Service.create(service);
+        const { service: { displayName: createdServiceName, id, uniqueName }, commitId } = await this.codestore.Service.create(service);
         ctx.service = {
           createdServiceName, id, commitId,
         };
@@ -111,17 +117,26 @@ export default class Create extends Command {
         this.serviceId = id;
 
         // eslint-disable-next-line no-param-reassign
-        task.title = `Created service "${yellow(createdServiceName)}", Service ID: "${yellow(id)}"`;
+        task.title = `Created service with ID: ${blue(uniqueName)}`;
       },
       options: { persistentOutput: true },
     },
     {
-      title: 'Creating demo and private environment',
+      title: 'Building the containers for private and demo environments',
+      task: async (ctx, task): Promise<void> => {
+        await this.codestore.Service.checkServiceCreated(ctx.service.id);
+
+        // eslint-disable-next-line no-param-reassign
+        task.title = 'Private and demo environment containers were built';
+      },
+    },
+    {
+      title: 'Deploying to private and demo environments',
       task: async (ctx, task): Promise<void> => {
         await this.codestore.Service.checkServiceDeployed(ctx.service.id);
 
         // eslint-disable-next-line no-param-reassign
-        task.title = 'Deployed to demo and private environment';
+        task.title = 'Deployed to private and demo environments';
       },
     },
     {
@@ -139,21 +154,15 @@ export default class Create extends Command {
     {
       title: 'Installing dependencies',
       task: async (ctx): Promise<void> => {
-        try {
-          await installDependencies(ctx.service.createdServiceName);
-        } catch (npmWarnings) {
-          this.log('\n');
-          this.log(npmWarnings);
-          this.log('\n');
-        }
+        await installDependencies(ctx.service.createdServiceName);
       },
     },
     ]);
 
     await tasks.run();
 
-    this.log(`Your service on private environment will be available soon by this url : ${this.apiPath}/0/private/${this.serviceId}/graphql`);
-    this.log(`Your service on demo environment will be available soon by this url ${this.apiPath}/0/demo/${this.serviceId}/graphql`);
+    this.log(`Your service on private environment is available by this url: ${blue(`${this.apiPath}/0/private/${this.serviceId}/graphql`)}`);
+    this.log(`Your service on demo environment is available by this url: ${blue(`${this.apiPath}/0/demo/${this.serviceId}/graphql`)}`);
     this.log('\n');
     this.log(yellow(this.structure));
   }

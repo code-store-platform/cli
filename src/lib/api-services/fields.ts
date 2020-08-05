@@ -3,17 +3,20 @@ export const PROJECT = `
       name
       status
       description
+      uniqueName
 `;
 
 export const SERVICE = `
       id
       createdAt
       updatedAt
-      name
       status
       state
       repositoryUrl
       displayName
       organizationId
       private
+      uniqueName
+      howSolving
+      problemSolving
 `;

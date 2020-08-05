@@ -1,39 +1,46 @@
 import ux from 'cli-ux';
+import { blue } from 'chalk';
 import Command from '../../../lib/command';
 import Aliases from '../../../common/constants/aliases';
+import { IService } from '../../../interfaces/service.interface';
 
 export default class List extends Command {
-  public static description = 'Lists projects in your organization';
+  public static description = 'Lists services in your project';
 
   public static aliases = [Aliases.PROJECT_SERVICE_LS];
 
   public static args = [
-    { name: 'id', required: true },
+    { name: 'project_id', required: true, description: '(required) ID of the project' },
   ];
 
-  private mapData = (input: any) => {
-    const { data } = input;
+  private mapData = (project: any): { development: string; staging: string; production: string }[] => {
+    const development = project.environments.find((e) => e.name === 'development');
+    const staging = project.environments.find((e) => e.name === 'staging');
+    const production = project.environments.find((e) => e.name === 'production');
 
-    const development = data.project.environments.find((it) => it.name === 'development');
-    const staging = data.project.environments.find((it) => it.name === 'staging');
-    const production = data.project.environments.find((it) => it.name === 'production');
-
-    return data.project.services.map((service) => ({
-      name: service.name,
-      development: `${this.apiPath}/${data.project.id}/${development.id}/${service.id}/graphql`,
-      staging: `${this.apiPath}/${data.project.id}/${staging.id}/${service.id}/graphql`,
-      production: `${this.apiPath}/${data.project.id}/${production.id}/${service.id}/graphql`,
+    return project.services.map((service: IService) => ({
+      id: service.uniqueName,
+      name: service.displayName,
+      development: `${this.apiPath}/${project.id}/${development.id}/${service.id}/graphql`,
+      staging: `${this.apiPath}/${project.id}/${staging.id}/${service.id}/graphql`,
+      production: `${this.apiPath}/${project.id}/${production.id}/${service.id}/graphql`,
     }));
   };
 
   public async execute(): Promise<void> {
-    const { args: { id } } = this.parse(List);
+    const { args: { project_id: projectUniqueName } } = this.parse(List);
 
-    const data = await this.codestore.Project.singleWithEnvs(+id);
+    const project = await this.codestore.Project.singleWithEnvsByUniqueName(projectUniqueName);
 
-    this.log(`Fetching services for project with id ${id}`);
+    if (!project) {
+      this.log(`There is no project with ID ${blue(projectUniqueName)}`);
+      return;
+    }
 
-    ux.table(this.mapData(data), {
+    ux.table(this.mapData(project), {
+      id: {
+        header: 'Service ID',
+      },
       name: {},
       development: {},
       staging: {},

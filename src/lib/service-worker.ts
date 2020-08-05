@@ -1,9 +1,11 @@
 import { parse } from 'yaml';
 import { validateSchemaFile } from '@graphql-schema/validate-schema';
 import { DocumentNode } from 'graphql/language';
+import { yellow } from 'chalk';
 import PromisifiedFs from '../common/promisified-fs';
 import IServiceConfig from '../interfaces/service-config.interface';
 import Paths, { join } from '../common/constants/paths';
+import { WrongFolderError } from './errors';
 
 interface ValidatorResponse {
   source: string;
@@ -14,11 +16,11 @@ export default class ServiceWorker {
   private configFiles = {
     codestore: {
       path: join(Paths.ROOT, 'codestore.yaml'),
-      error: new Error('You must be in code.store service folder to invoke this command. Check if codestore.yaml and schema.graphql are exist'),
+      error: new WrongFolderError('You must be in code.store service folder to invoke this command.\nCheck if codestore.yaml and schema.graphql are exist'),
     },
     schema: {
       path: join(Paths.SRC, 'schema.graphql'),
-      error: new Error('Cannot find schema.graphql, restore it or use cs pull'),
+      error: new WrongFolderError(`Cannot find schema.graphql, make sure that you invoke this command from the service folder or use ${yellow(' cs service:pull ')} to restore your graphql.schema.`),
     },
   };
 

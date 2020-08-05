@@ -1,32 +1,25 @@
-import { flags } from '@oclif/command';
-import { yellow } from 'chalk';
+import { blue, bold } from 'chalk';
 import { Listr } from 'listr2';
 import Command from '../../../lib/command';
 
 export default class Remove extends Command {
-  public static description = 'Exclude service from project';
+  public static description = 'Exclude service from project. This is a potentially destructive operation that might result in a loss of data.';
 
   public static args = [
-    { name: 'serviceId', description: 'Id of the service' },
+    { name: 'project_id', required: true, description: '(required) ID of the project' },
+    { name: 'service_id', required: true, description: '(required) ID of the service' },
   ];
 
-  public static flags = {
-    'project-id': flags.integer({
-      required: true,
-      name: 'Project ID',
-      description: 'Id of the project',
-    }),
-  };
-
   public async execute(): Promise<void> {
-    const { flags: { 'project-id': projectId }, args: { serviceId } } = this.parse(Remove);
+    const { args: { project_id: projectUniqueName, service_id: serviceUniqueName } } = this.parse(Remove);
 
     await new Listr<{}>([{
-      title: `Excluding service with id "${yellow(serviceId)}" from project "${yellow(projectId)}"`,
+      title: `Excluding service with id ${blue(serviceUniqueName)} from project ${blue(projectUniqueName)}`,
       task: async (ctx, task): Promise<void> => {
-        const { data: { excludeService: { status } } } = await this.codestore.Project.excludeService(projectId, serviceId);
+        const { status } = await this.codestore.Project.excludeServiceByUniqueName(projectUniqueName, serviceUniqueName);
+
         // eslint-disable-next-line no-param-reassign
-        task.title = `Service "${yellow(serviceId)}" has been removed from project "${yellow(projectId)}", status: ${status}.`;
+        task.title = `Service ${blue(serviceUniqueName)} has been removed from project ${blue(projectUniqueName)}\nStatus: ${bold(status)}.`;
       },
     }]).run();
   }

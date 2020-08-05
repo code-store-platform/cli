@@ -27,22 +27,20 @@ export default class Logs extends Command {
     env: flags.enum({
       char: 'e',
       description: 'Project environment.',
-      default: Environments.DEVELOPMENT,
       options: Object.values(Environments),
     }),
-    projectId: flags.integer({
+    projectUniqueName: flags.string({
       char: 'p',
       description: 'Project ID',
     }),
-    serviceId: flags.integer({
+    serviceUniqueName: flags.string({
       char: 's',
       description: 'Service ID',
     }),
   };
 
   public async fetch(query: IQueryLog): Promise<Array<ILog>> {
-    const logs = await this.codestore.Logs.list(query);
-    return logs.reverse();
+    return this.codestore.Logs.list(query);
   }
 
   public async updateLogs(query: IQueryLog): Promise<void> {
@@ -59,26 +57,36 @@ export default class Logs extends Command {
   public async execute(): Promise<void> {
     const { flags: { follow, ...query } } = this.parse(Logs);
 
-    if (!query.serviceId && !query.projectId) {
+    const env: Environments = query.env || query.projectUniqueName ? Environments.DEVELOPMENT : Environments.PRIVATE;
+
+    const newQuery: IQueryLog = {
+      num: query.num,
+      env,
+      serviceUniqueName: query.serviceUniqueName,
+      projectUniqueName: query.projectUniqueName,
+    };
+
+    if (!query.serviceUniqueName && !query.projectUniqueName) {
       const { serviceId } = await this.serviceWorker.loadValuesFromYaml();
+
       if (!serviceId) {
         this.error('Please specify the service or project.');
       } else {
-        query.serviceId = serviceId;
+        newQuery.serviceId = serviceId;
       }
     }
 
-    this.log(`Displaying logs for environment ${query.env}${query.serviceId ? `, service ${query.serviceId}` : ''}${query.projectId ? `, project ${query.projectId}` : ''}`);
+    this.log(`Displaying logs for environment ${env}${query.serviceUniqueName ? `, service ${query.serviceUniqueName}` : ''}${query.projectUniqueName ? `, project ${query.projectUniqueName}` : ''}`);
 
-    await this.updateLogs(query);
+    await this.updateLogs(newQuery);
     this.render(false);
 
     if (follow) {
       setInterval(async () => {
         if (this.logs.length) {
-          (query as any).sinceTime = new Date(this.logs[this.logs.length - 1].time);
+          (newQuery as any).sinceTime = new Date(this.logs[this.logs.length - 1].time);
         }
-        await this.updateLogs(query);
+        await this.updateLogs(newQuery);
         this.render(true);
       }, FETCH_INTERVAL);
     }
