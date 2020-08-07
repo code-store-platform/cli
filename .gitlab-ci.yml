@@ -55,9 +55,6 @@ update_brew_formula:
       if [ "$FORMULA_VERSION" != "$VERSION" ]; then
         sed -i "s%  url \".*\"%  url \"$URL\"%" homebrew-brew/Formula/codestore.rb
         sed -i "s%  sha256 \".*\"%  sha256 \"$SHA256SUM\"%" homebrew-brew/Formula/codestore.rb
-        brew update
-        cp -n homebrew-brew/Formula/codestore.rb $(brew --repository)/Library/Taps/homebrew/homebrew-core/Formula/
-        brew audit codestore
         cd homebrew-brew
         git add . | git diff-index --quiet HEAD || git commit -m "codestore v$VERSION" && git push
       fi
