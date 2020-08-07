@@ -14,6 +14,7 @@ interface Ctx {
     id: number;
     createdServiceName: string;
     commitId: string;
+    uniqueName: string;
   };
 }
 
@@ -111,7 +112,7 @@ export default class Create extends Command {
       task: async (ctx, task): Promise<void> => {
         const { service: { displayName: createdServiceName, id, uniqueName }, commitId } = await this.codestore.Service.create(service);
         ctx.service = {
-          createdServiceName, id, commitId,
+          createdServiceName, id, commitId, uniqueName,
         };
 
         this.serviceId = id;
@@ -142,19 +143,19 @@ export default class Create extends Command {
     {
       title: 'Downloading service template',
       task: async (ctx): Promise<void> => {
-        const { id, createdServiceName } = ctx.service;
+        const { id, uniqueName } = ctx.service;
 
         const data = await this.codestore.Service.download(id);
 
-        await FileWorker.saveZipFromB64(data, createdServiceName);
+        await FileWorker.saveZipFromB64(data, uniqueName);
 
-        this.structure = tree(createdServiceName, { exclude: [/node_modules/, /dist/] });
+        this.structure = tree(uniqueName, { exclude: [/node_modules/, /dist/] });
       },
     },
     {
       title: 'Installing dependencies',
       task: async (ctx): Promise<void> => {
-        await installDependencies(ctx.service.createdServiceName);
+        await installDependencies(ctx.service.uniqueName);
       },
     },
     ]);

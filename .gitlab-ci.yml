@@ -44,10 +44,10 @@ update_brew_formula:
   script:
     - git clone git@github.com:code-store-platform/homebrew-brew.git
     - export VERSION=`cat package.json | jq .version | tr -d '"'`
-    - export URL=https://s3.code.store/codestore-v${VERSION}/codestore-v${VERSION}.tar.gz
-    - curl $URL -o codestore-v${VERSION}.tar.gz
+    - export URL=https://s3.code.store/codestore-v${VERSION}/codestore-v${VERSION}-darwin-x64.tar.gz
+    - curl $URL -o codestore-v${VERSION}-darwin-x64.tar.gz
     - export SHA256SUM=`sha256sum codestore-v${VERSION}.tar.gz | awk '{ print $1 }'`
-    - export FORMULA_VERSION=`cat homebrew-brew/Formula/codestore.rb | grep -P '\d+\.\d+\.\d+(?=.tar.gz")' -o`
+    - export FORMULA_VERSION=`cat homebrew-brew/Formula/codestore.rb | grep -P '\d+\.\d+\.\d+(?=\-darwin-x64.tar.gz")' -o`
     - echo "FORMULA_VERSION=$FORMULA_VERSION"
     - echo "VERSION=$VERSION"
     - echo "SHA256SUM=$SHA256SUM"
