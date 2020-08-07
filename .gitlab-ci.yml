@@ -46,7 +46,7 @@ update_brew_formula:
     - export VERSION=`cat package.json | jq .version | tr -d '"'`
     - export URL=https://s3.code.store/codestore-v${VERSION}/codestore-v${VERSION}-darwin-x64.tar.gz
     - curl $URL -o codestore-v${VERSION}-darwin-x64.tar.gz
-    - export SHA256SUM=`sha256sum codestore-v${VERSION}.tar.gz | awk '{ print $1 }'`
+    - export SHA256SUM=`sha256sum codestore-v${VERSION}-darwin-x64.tar.gz | awk '{ print $1 }'`
     - export FORMULA_VERSION=`cat homebrew-brew/Formula/codestore.rb | grep -P '\d+\.\d+\.\d+(?=\-darwin-x64.tar.gz")' -o`
     - echo "FORMULA_VERSION=$FORMULA_VERSION"
     - echo "VERSION=$VERSION"
@@ -57,7 +57,7 @@ update_brew_formula:
         sed -i "s%  sha256 \".*\"%  sha256 \"$SHA256SUM\"%" homebrew-brew/Formula/codestore.rb
         brew update
         cp -n homebrew-brew/Formula/codestore.rb $(brew --repository)/Library/Taps/homebrew/homebrew-core/Formula/
-        brew audit --strict --online codestore
+        brew audit codestore
         cd homebrew-brew
         git add . | git diff-index --quiet HEAD || git commit -m "codestore v$VERSION" && git push
       fi
