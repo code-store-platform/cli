@@ -97,6 +97,20 @@ export default class GraphqlLoader {
     return this.resolvers;
   }
 
+  public async getResolversInArray(): Promise<{queryResolvers?: string[]; mutationResolvers?: string[]}> {
+    await this.loadResolvers();
+
+    const { Query: query, Mutation: mutation } = this.resolvers;
+
+    const queryResolvers = query ? Object.keys(query) : undefined;
+    const mutationResolvers = mutation ? Object.keys(mutation) : undefined;
+
+    return {
+      queryResolvers,
+      mutationResolvers,
+    };
+  }
+
   public getTypeDefs(): DocumentNode {
     return gql`${fs.readFileSync(this.schemaPath, 'utf8')}`;
   }

@@ -24,6 +24,7 @@ export const flow = (context: { localConfiguration; command: Command}): ListrTas
     title: 'Validating schema',
     task: async (): Promise<void> => {
       await context.command.serviceWorker.validateSchema();
+      await context.command.serviceWorker.validateQueriesAndMutations();
     },
   },
 ];
