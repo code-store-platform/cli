@@ -1,4 +1,4 @@
-interface IDbConfig {
+export interface IDbConfig {
   port: number;
   username: string;
   password: string;

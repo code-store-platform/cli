@@ -1,29 +1,18 @@
-import fs from 'fs';
 import { createConnection, Connection } from 'typeorm';
 import path from 'path';
 import { logger } from 'codestore-utils';
-import { IRepositories, IConnector } from './interfaces/database.interface';
-import { IConfig } from './interfaces/config.interface';
+import { IDbConfig } from '../../interfaces/service-config.interface';
 
 export default class DatabaseConnector {
   private entitiesPath = path.join(process.cwd(), 'src', 'data', 'entities', '*.ts');
 
   private migrationsPath = path.join(process.cwd(), 'src', 'data', 'migrations', '*.ts');
 
-  public constructor(private readonly config: IConfig) {
+  public constructor(private readonly config: IDbConfig) {
   }
 
-  public async getDbConnector(): Promise<IConnector> {
-    const connection = await this.createConnection();
-    const repositories = await this.loadModels(connection);
-
-    const context = this.constructor.name;
-    logger.log(`Loaded entities: ${Object.keys(repositories)}`, context);
-
-    return {
-      connection,
-      repositories,
-    };
+  public async getDbConnection(): Promise<Connection> {
+    return this.createConnection();
   }
 
   private async createConnection(): Promise<Connection> {
@@ -33,7 +22,7 @@ export default class DatabaseConnector {
 
     const connection = await createConnection({
       type: 'postgres',
-      ...this.config.db,
+      ...this.config,
       entities: [
         path.normalize(this.entitiesPath),
       ],
@@ -41,42 +30,8 @@ export default class DatabaseConnector {
       name: 'default',
     });
 
-    logger.log(`Successfully connected to database ${this.config.db.database}`, context);
-
-    logger.log('Running migrations', context);
-    try {
-      await connection.runMigrations();
-    } catch (e) {
-      await connection.undoLastMigration();
-      await connection.runMigrations();
-    }
+    logger.log(`Successfully connected to database ${this.config.database}`, context);
 
     return connection;
-  }
-
-  private async loadModels(connection: Connection): Promise<IRepositories> {
-    let modelFiles;
-    try {
-      modelFiles = fs.readdirSync(path.join(process.cwd(), 'src', 'data', 'entities'))
-        .filter((file) => /.ts$/.test(file))
-        .map(async (modelFile) => import(`${path.join(process.cwd(), 'src', 'data', 'entities')}/${modelFile}`));
-    } catch (e) {
-      if (e?.code !== 'ENOENT') {
-        logger.error(e, undefined, this.constructor.name);
-      }
-      return {};
-    }
-
-    const loadedEntities = await Promise.all(modelFiles) as any[];
-
-    return loadedEntities.reduce((prev, next) => {
-      const value: any = Object.values(next)[0];
-      const { name } = value;
-
-      return {
-        ...prev,
-        [name]: connection.getRepository(value),
-      };
-    }, {});
   }
 }

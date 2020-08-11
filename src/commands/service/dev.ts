@@ -8,14 +8,22 @@ import compile from '../../lib/compiler';
 export const flow = (context: { localConfiguration; command: Command}): ListrTask[] => [
   {
     title: 'Installing dependencies',
-    task: async (): Promise<void> => {
+    task: async (ctx, task): Promise<void> => {
       await installDependencies();
+      // eslint-disable-next-line no-param-reassign
+      task.title = 'Packages were installed';
     },
   },
   {
     title: 'Compiling code',
     task: async (): Promise<void> => {
       await compile(await context.command.serviceWorker.loadResolversPaths(), context.command);
+    },
+  },
+  {
+    title: 'Validating schema',
+    task: async (): Promise<void> => {
+      await context.command.serviceWorker.validateSchema();
     },
   },
 ];
