@@ -16,6 +16,9 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
     title: 'Validating schema',
     task: async (): Promise<void> => {
       await context.serviceWorker.validateSchema();
+      if (context.id !== 'service:generate') {
+        await context.serviceWorker.validateQueriesAndMutations();
+      }
     },
   },
   {

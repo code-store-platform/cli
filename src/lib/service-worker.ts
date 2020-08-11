@@ -2,10 +2,13 @@ import { parse } from 'yaml';
 import { validateSchemaFile } from '@graphql-schema/validate-schema';
 import { DocumentNode } from 'graphql/language';
 import { yellow } from 'chalk';
+import { buildSchema, introspectionFromSchema } from 'graphql';
 import PromisifiedFs from '../common/promisified-fs';
 import IServiceConfig from '../interfaces/service-config.interface';
 import Paths, { join } from '../common/constants/paths';
 import { WrongFolderError } from './errors';
+import GraphqlLoader from './launcher/GraphQLLoader';
+import { loadSchemaFields, findDiff } from '../common/utils';
 
 interface ValidatorResponse {
   source: string;
@@ -46,6 +49,31 @@ export default class ServiceWorker {
     return validateSchemaFile(schemaPath);
   }
 
+  public async validateQueriesAndMutations(): Promise<void> {
+    const data = await PromisifiedFs.readFile(await this.load('schema'));
+
+    const schema = buildSchema(data.toString());
+
+    const introspection = introspectionFromSchema(schema);
+
+    const loadedSchemaQueries = loadSchemaFields(introspection, 'Query');
+    const loadedSchemaMutations = loadSchemaFields(introspection, 'Mutation');
+
+    const { queryResolvers, mutationResolvers } = await new GraphqlLoader().getResolversInArray();
+
+    const queriesErrors = findDiff(queryResolvers, loadedSchemaQueries);
+    const mutationsErrors = findDiff(mutationResolvers, loadedSchemaMutations);
+
+    if (queriesErrors && queriesErrors.length) {
+      throw new Error(`${queriesErrors} queries are not defined in schema`);
+    }
+
+    if (mutationsErrors && mutationsErrors.length) {
+      throw new Error(`${mutationsErrors} mutations are not defined in schema`);
+    }
+  }
+
+  // eslint-disable-next-line class-methods-use-this
   public async loadResolversPaths(): Promise<string[]> {
     const basePath = join(process.cwd(), 'src', 'resolvers');
     const queriesPath = join(basePath, 'queries');
