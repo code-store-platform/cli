@@ -7,7 +7,6 @@ import Command from '../../lib/command';
 import { IServiceCreate } from '../../interfaces/service.interface';
 import { createPrefix } from '../../common/utils';
 import FileWorker from '../../common/file-worker';
-import { installDependencies } from '../../lib/child-cli';
 
 interface Ctx {
   service: {
@@ -150,12 +149,6 @@ export default class Create extends Command {
         await FileWorker.saveZipFromB64(data, uniqueName);
 
         this.structure = tree(uniqueName, { exclude: [/node_modules/, /dist/] });
-      },
-    },
-    {
-      title: 'Installing dependencies',
-      task: async (ctx): Promise<void> => {
-        await installDependencies(ctx.service.uniqueName);
       },
     },
     ]);

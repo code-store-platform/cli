@@ -36,6 +36,8 @@ export default class APIClient {
   }
 
   public async loginWeb(): Promise<any> {
+    await this.homeFolderService.removeToken();
+
     // opening browser. See openBrowser.ts for change configurations
     await openBrowser();
     return new Promise((resolve, reject) => {

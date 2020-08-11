@@ -45,4 +45,19 @@ export default class ServiceWorker {
     const schemaPath = await this.load('schema');
     return validateSchemaFile(schemaPath);
   }
+
+  public async loadResolversPaths(): Promise<string[]> {
+    const basePath = join(process.cwd(), 'src', 'resolvers');
+    const queriesPath = join(basePath, 'queries');
+    const mutationsPath = join(basePath, 'mutations');
+
+    const queries = await PromisifiedFs.readdir(queriesPath).then((data) => data
+      .filter((file) => /.ts$/.test(file))
+      .map((file) => join(queriesPath, file)));
+    const mutations = await PromisifiedFs.readdir(mutationsPath).then((data) => data
+      .filter((file) => /.ts$/.test(file))
+      .map((file) => join(mutationsPath, file)));
+
+    return [...queries, ...mutations, join(process.cwd(), 'resolvers.ts')];
+  }
 }

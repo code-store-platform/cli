@@ -1,7 +1,7 @@
 {
   "name": "codestore",
   "description": "code.store CLI. Add services, deploy, debug, perform all operations from your terminal.",
-  "version": "1.4.15",
+  "version": "1.5.0",
   "bin": {
     "codestore": "./bin/run",
     "cs": "./bin/run"
@@ -27,11 +27,13 @@
     "@types/inquirer": "^6.5.0",
     "@types/jest": "^25.2.1",
     "apollo-boost": "^0.4.7",
+    "apollo-server-express": "^2.16.1",
     "archiver-promise": "^1.0.0",
     "axios": "^0.19.2",
     "chalk": "^3.0.0",
     "clear": "^0.1.0",
     "cli-ux": "^5.4.5",
+    "codestore-utils": "^1.1.2",
     "completion": "^1.0.1",
     "cross-fetch": "^3.0.4",
     "enquirer": "^2.3.5",
@@ -44,10 +46,12 @@
     "open": "^7.0.3",
     "ora": "^4.0.3",
     "os": "^0.1.1",
+    "pg": "^8.3.0",
     "rimraf": "^3.0.2",
     "tabtab": "^3.0.2",
     "tree-node-cli": "^1.3.0",
     "ts-jest": "^25.3.1",
+    "typeorm": "^0.2.25",
     "unzipper": "^0.10.11",
     "yaml": "^1.10.0",
     "zip-a-folder": "0.0.12"
@@ -66,7 +70,7 @@
     "nyc": "^14.1.1",
     "ts-node": "^8.6.2",
     "tsconfig-paths": "^3.9.0",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.7"
   },
   "engines": {
     "node": ">=8.0.0"
