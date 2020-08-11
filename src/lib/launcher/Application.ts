@@ -9,12 +9,14 @@ export default class Application {
   private dbLoader: DatabaseLoader;
 
   public constructor(public readonly config: IConfig) {
-    this.dbLoader = new DatabaseLoader(config);
+    this.dbLoader = new DatabaseLoader(config.db);
   }
 
   public async buildServer(): Promise<ApolloServer> {
     try {
-      const { connection, repositories }: any = await this.dbLoader.getDbConnector();
+      const connection = await this.dbLoader.getDbConnection();
+
+      await connection.runMigrations();
 
       return new ApolloServer({
         playground: true,
@@ -25,7 +27,6 @@ export default class Application {
         context: (): object => ({
           db: {
             connection,
-            repositories,
           },
         }),
       });

@@ -6,5 +6,4 @@ export interface IRepositories {
 
 export interface IConnector {
   connection: Connection;
-  repositories: IRepositories;
 }

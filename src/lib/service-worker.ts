@@ -58,6 +58,6 @@ export default class ServiceWorker {
       .filter((file) => /.ts$/.test(file))
       .map((file) => join(mutationsPath, file)));
 
-    return [...queries, ...mutations, join(process.cwd(), 'resolvers.ts')];
+    return [...queries, ...mutations, join(process.cwd(), 'src', 'resolvers', 'resolvers.ts')];
   }
 }

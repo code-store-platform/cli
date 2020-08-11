@@ -3,11 +3,13 @@ import ApolloClient from 'apollo-boost';
 import fetch from 'cross-fetch';
 import ux from 'cli-ux';
 import { yellow } from 'chalk';
+import { Connection } from 'typeorm';
 import APIClient from './api-client';
 import HomeFolderService from './home-folder-service';
 import CommandIds from '../common/constants/commandIds';
 import ServiceWorker from './service-worker';
 import { WrongFolderError } from './errors';
+import DatabaseLoader from './launcher/DatabaseLoader';
 
 const pjson = require('../../package.json');
 
@@ -77,5 +79,19 @@ export default abstract class Command extends Base {
   // eslint-disable-next-line class-methods-use-this
   protected renderTable(data: object[], schema: any, options: object = { 'no-truncate': true }): void {
     ux.table(data, schema, options);
+  }
+
+  public async getDatabaseConnection(): Promise<Connection> {
+    const { localConfiguration } = await this.serviceWorker.loadValuesFromYaml();
+
+    if (!localConfiguration) {
+      throw new Error('Cannot find localConfiguration in codestore.yaml');
+    }
+
+    if (!localConfiguration || !localConfiguration.database) {
+      throw new Error('There is no database configuration in codestore.yaml');
+    }
+
+    return new DatabaseLoader(localConfiguration.database).getDbConnection();
   }
 }

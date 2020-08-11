@@ -1,5 +1,7 @@
 import { Listr, ListrTask } from 'listr2';
 import clear from 'clear';
+import { yellow } from 'chalk';
+import { logger } from 'codestore-utils';
 import Command from '../../lib/command';
 import Aliases from '../../common/constants/aliases';
 import FileWorker from '../../common/file-worker';
@@ -31,7 +33,7 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
       ctx.encodedZip = await FileWorker.zipFolder();
     },
   },
-  /* {
+  {
     title: 'Reverting extra migrations',
     task: async (ctx, task): Promise<void> => {
       const currentMigrations = await PromisifiedFs.readdir(Paths.MIGRATIONS);
@@ -42,19 +44,23 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
           error(`Your migrations don't match migrations in the repository, please try ${yellow('cs pull')}`, { exit: 1 });
         }
       }
+      const connection = await context.getDatabaseConnection();
       try {
         for (let i = currentMigrations.length - 1; i >= migrationsInGit.length; i -= 1) {
           // eslint-disable-next-line no-await-in-loop
-          await revertMigration();
+          await connection.undoLastMigration();
         }
+
+        await connection.close();
         // eslint-disable-next-line no-param-reassign
         task.title = 'Extra migrations were successfully reverted';
       } catch (e) {
-        console.log(e);
+        logger.error(e);
+        await connection.close();
         task.skip(`Migrations were not reverted: ${firstLine(e.toString())}`);
       }
     },
-  }, */
+  },
   {
     title: 'Uploading service to the generator',
     task: async (ctx): Promise<void> => {
@@ -80,19 +86,6 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
       task.title = 'Generated code has been saved';
     },
   },
-  /* {
-    title: 'Running generated migration',
-    task: async (ctx, task): Promise<void> => {
-      try {
-        await runMigration();
-
-        // eslint-disable-next-line no-param-reassign
-        task.title = 'Migration ran successfully';
-      } catch (e) {
-        task.skip(`Migrations were not ran: ${firstLine(e.toString())}`);
-      }
-    },
-  }, */
 ];
 
 export default class Generate extends Command {
