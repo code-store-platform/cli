@@ -1,7 +1,7 @@
 {
   "name": "codestore",
   "description": "code.store CLI. Add services, deploy, debug, perform all operations from your terminal.",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "bin": {
     "codestore": "./bin/run",
     "cs": "./bin/run"
@@ -36,28 +36,23 @@
     "clear": "^0.1.0",
     "cli-ux": "^5.4.5",
     "codestore-utils": "^1.1.2",
+    "common-module": "^3.7.0",
     "completion": "^1.0.1",
     "cross-fetch": "^3.0.4",
     "enquirer": "^2.3.5",
     "express": "^4.17.1",
     "graphql": "^14.6.0",
     "inquirer": "^7.1.0",
-    "jest": "^25.2.7",
     "listr2": "^2.0.1",
     "node-config-ts": "^3.0.4",
     "open": "^7.0.3",
-    "ora": "^4.0.3",
     "os": "^0.1.1",
     "pg": "^8.3.0",
-    "rimraf": "^3.0.2",
-    "tabtab": "^3.0.2",
     "tree-node-cli": "^1.3.0",
-    "ts-jest": "^25.3.1",
     "typeorm": "^0.2.25",
+    "typescript": "^3.9.7",
     "unzipper": "^0.10.11",
-    "yaml": "^1.10.0",
-    "zip-a-folder": "0.0.12",
-    "typescript": "^3.9.7"
+    "yaml": "^1.10.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.2",
@@ -72,7 +67,9 @@
     "jest-runner-eslint": "^0.7.6",
     "nyc": "^14.1.1",
     "ts-node": "^8.6.2",
-    "typescript": "^3.9.7"
+    "typescript": "^3.9.7",
+    "jest": "^25.2.7",
+    "ts-jest": "^25.3.1"
   },
   "engines": {
     "node": ">=8.0.0"
