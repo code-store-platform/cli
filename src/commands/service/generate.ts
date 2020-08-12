@@ -2,10 +2,10 @@ import { Listr, ListrTask } from 'listr2';
 import clear from 'clear';
 import { yellow } from 'chalk';
 import { logger } from 'codestore-utils';
+import { PromisifiedFs } from 'common-module';
 import Command from '../../lib/command';
 import Aliases from '../../common/constants/aliases';
 import FileWorker from '../../common/file-worker';
-import PromisifiedFs from '../../common/promisified-fs';
 import Paths from '../../common/constants/paths';
 import compile from '../../lib/compiler';
 

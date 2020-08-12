@@ -1,7 +1,7 @@
 import { join } from 'path';
 import * as ts from 'typescript';
+import { PromisifiedFs } from 'common-module';
 import Command from './command';
-import PromisifiedFs from '../common/promisified-fs';
 
 export default async (files: any, command: Command): Promise<void> => {
   const program = ts.createProgram(files, {
