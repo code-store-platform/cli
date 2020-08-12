@@ -18,7 +18,7 @@ const runMigration = (): Promise<void> => runCommand('npm run migration:run');
 
 const revertMigration = (): Promise<void> => runCommand('npm run migration:revert');
 
-const installDependencies = (serviceName: string): Promise<void> => runCommand(`cd ${serviceName} && npm install`);
+const installDependencies = (serviceName?: string): Promise<void> => (serviceName ? runCommand(`cd ${serviceName} && npm install`) : runCommand('npm install'));
 
 export {
   compile,

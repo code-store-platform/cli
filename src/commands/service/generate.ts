@@ -1,13 +1,13 @@
 import { Listr, ListrTask } from 'listr2';
-import { yellow } from 'chalk';
 import clear from 'clear';
+import { yellow } from 'chalk';
+import { logger } from 'codestore-utils';
 import Command from '../../lib/command';
 import Aliases from '../../common/constants/aliases';
 import FileWorker from '../../common/file-worker';
 import PromisifiedFs from '../../common/promisified-fs';
 import Paths from '../../common/constants/paths';
-import { revertMigration, runMigration, compile } from '../../lib/child-cli';
-import Logger from '../../lib/logger';
+import compile from '../../lib/compiler';
 
 const firstLine = (str: string): string => str.split('\n')[0].replace(/:$/, '');
 
@@ -16,13 +16,16 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
     title: 'Validating schema',
     task: async (): Promise<void> => {
       await context.serviceWorker.validateSchema();
+      if (context.id !== 'service:generate') {
+        await context.serviceWorker.validateQueriesAndMutations();
+      }
     },
   },
   {
     title: 'Compiling your code',
     task: async (): Promise<void> => {
       await PromisifiedFs.rimraf(Paths.DIST);
-      await compile();
+      await compile(await context.serviceWorker.loadResolversPaths(), context);
     },
   },
   {
@@ -44,14 +47,19 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
           error(`Your migrations don't match migrations in the repository, please try ${yellow('cs pull')}`, { exit: 1 });
         }
       }
+      const connection = await context.getDatabaseConnection();
       try {
         for (let i = currentMigrations.length - 1; i >= migrationsInGit.length; i -= 1) {
           // eslint-disable-next-line no-await-in-loop
-          await revertMigration();
+          await connection.undoLastMigration();
         }
+
+        await connection.close();
         // eslint-disable-next-line no-param-reassign
         task.title = 'Extra migrations were successfully reverted';
       } catch (e) {
+        logger.error(e);
+        await connection.close();
         task.skip(`Migrations were not reverted: ${firstLine(e.toString())}`);
       }
     },
@@ -75,23 +83,10 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
       await PromisifiedFs.rimraf(Paths.ENTITIES);
       await PromisifiedFs.rimraf(Paths.DIST);
       await FileWorker.saveZipFromB64(generated, Paths.DATA);
-      await compile();
+      await compile(await context.serviceWorker.loadResolversPaths(), context);
 
       // eslint-disable-next-line no-param-reassign
       task.title = 'Generated code has been saved';
-    },
-  },
-  {
-    title: 'Running generated migration',
-    task: async (ctx, task): Promise<void> => {
-      try {
-        await runMigration();
-
-        // eslint-disable-next-line no-param-reassign
-        task.title = 'Migration ran successfully';
-      } catch (e) {
-        task.skip(`Migrations were not ran: ${firstLine(e.toString())}`);
-      }
     },
   },
 ];
