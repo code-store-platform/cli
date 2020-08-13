@@ -6,9 +6,11 @@ import { logger } from 'codestore-utils';
 import { IResolver } from './interfaces/graphql.interface';
 
 export default class GraphqlLoader {
-  private resolversPath = join(process.cwd(), 'src', 'resolvers');
+  // private resolversPath = join(process.cwd(), 'src', 'resolvers');
 
   private schemaPath = join(process.cwd(), 'src', 'schema.graphql');
+
+  private resolversPath = join(process.cwd(), 'temp', 'resolvers');
 
   private resolvers: IResolvers = {};
 
@@ -20,7 +22,7 @@ export default class GraphqlLoader {
     let files;
 
     try {
-      files = fs.readdirSync(normalizedPath).filter((file) => /.ts$/.test(file));
+      files = fs.readdirSync(normalizedPath).filter((file) => /.js$/.test(file));
     } catch (e) {
       if (e?.code !== 'ENOENT') {
         logger.error(e, undefined, this.constructor.name);
@@ -55,7 +57,7 @@ export default class GraphqlLoader {
   }
 
   private async loadResolversFromFile(): Promise<void> {
-    const resolversFile = await import(path.join(this.resolversPath, 'resolvers.ts'));
+    const resolversFile = await import(path.join(this.resolversPath, 'resolvers.js'));
 
     this.resolvers.Query = {
       ...this.resolvers.Query,

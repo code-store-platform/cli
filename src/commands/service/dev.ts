@@ -5,6 +5,7 @@ import { bootstrap } from '../../lib/launcher';
 import { installDependencies } from '../../lib/child-cli';
 import compile from '../../lib/compiler';
 
+
 export const flow = (context: { localConfiguration; command: Command}): ListrTask[] => [
   {
     title: 'Installing dependencies',

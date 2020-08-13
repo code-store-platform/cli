@@ -7,8 +7,8 @@ export default async (files: any, command: Command): Promise<void> => {
   const program = ts.createProgram(files, {
     declaration: true,
     importHelpers: true,
-    module: 1, // commonjs
-    target: 4, // es2017
+    module: ts.ModuleKind.CommonJS, // commonjs
+    target: ts.ScriptTarget.ES2017, // es2017
     esModuleInterop: true,
     strictNullChecks: true,
     emitDecoratorMetadata: true,
@@ -32,5 +32,5 @@ export default async (files: any, command: Command): Promise<void> => {
     }
   });
 
-  await PromisifiedFs.rimraf(join(process.cwd(), 'temp'));
+  // await PromisifiedFs.rimraf(join(process.cwd(), 'temp'));
 };
