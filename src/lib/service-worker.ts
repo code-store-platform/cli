@@ -88,4 +88,21 @@ export default class ServiceWorker {
 
     return [...queries, ...mutations, join(process.cwd(), 'src', 'resolvers', 'resolvers.ts')];
   }
+
+  public async loadEntitiesAndMutationsPaths(): Promise<string[]> {
+    const entities = join(process.cwd(), 'src', 'data', 'entities');
+    const migrations = join(process.cwd(), 'src', 'data', 'migrations');
+
+    const entitiesPaths = await PromisifiedFs.readdir(entities).then((data) => data
+      .filter((file) => /.ts$/.test(file))
+      .map((file) => join(entities, file)));
+
+    const migrationsPaths = await PromisifiedFs.readdir(migrations).then((data) => data
+      .filter((file) => /.ts$/.test(file))
+      .map((file) => join(migrations, file)));
+
+    return [
+      ...entitiesPaths, ...migrationsPaths,
+    ];
+  }
 }

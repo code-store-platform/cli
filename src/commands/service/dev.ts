@@ -5,6 +5,7 @@ import { bootstrap } from '../../lib/launcher';
 import { installDependencies } from '../../lib/child-cli';
 import compile from '../../lib/compiler';
 
+
 export const flow = (context: { localConfiguration; command: Command}): ListrTask[] => [
   {
     title: 'Installing dependencies',
@@ -17,7 +18,7 @@ export const flow = (context: { localConfiguration; command: Command}): ListrTas
   {
     title: 'Compiling code',
     task: async (): Promise<void> => {
-      await compile(await context.command.serviceWorker.loadResolversPaths(), context.command);
+      await compile([...await context.command.serviceWorker.loadResolversPaths(), ...await context.command.serviceWorker.loadEntitiesAndMutationsPaths()], context.command);
     },
   },
   {

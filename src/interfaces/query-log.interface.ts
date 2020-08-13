@@ -5,7 +5,7 @@ export default interface IQueryLog {
   projectUniqueName?: string;
   serviceId?: number;
   projectId?: number;
-  env?: Environments;
+  env?: Environments | string;
   sinceTime?: Date;
   num?: number;
 }
