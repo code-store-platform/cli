@@ -1,7 +1,13 @@
 import * as ts from 'typescript';
+import { PromisifiedFs } from 'codestore-utils';
+import path from 'path';
 import Command from './command';
+import paths from '../common/constants/paths';
 
 export default async (files: any, command: Command): Promise<void> => {
+  // cleaning-up before compilation
+  await PromisifiedFs.rimraf(path.join(process.cwd(), paths.BUILD));
+
   const program = ts.createProgram(files, {
     declaration: true,
     importHelpers: true,
@@ -12,7 +18,7 @@ export default async (files: any, command: Command): Promise<void> => {
     emitDecoratorMetadata: true,
     experimentalDecorators: true,
     strict: false,
-    outDir: '.build',
+    outDir: paths.BUILD,
     rootDir: 'src',
   });
   const emitResult = program.emit();
@@ -30,6 +36,4 @@ export default async (files: any, command: Command): Promise<void> => {
       command.log(ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n'));
     }
   });
-
-  // await PromisifiedFs.rimraf(join(process.cwd(), 'temp'));
 };
