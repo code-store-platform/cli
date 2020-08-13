@@ -1,5 +1,5 @@
 import { createReadStream } from 'fs';
-import { PromisifiedFs } from 'common-module';
+import { PromisifiedFs } from 'codestore-utils';
 import unzipper from 'unzipper';
 import Archiver from './zip-tool';
 
