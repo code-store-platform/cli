@@ -1,6 +1,6 @@
 import { createReadStream } from 'fs';
+import { PromisifiedFs } from 'common-module';
 import unzipper from 'unzipper';
-import PromisifiedFs from './promisified-fs';
 import Archiver from './zip-tool';
 
 export default class FileWorker {

@@ -1,6 +1,6 @@
 import archiver from 'archiver-promise';
+import { PromisifiedFs } from 'common-module';
 import { join } from 'path';
-import PromisifiedFs from './promisified-fs';
 
 export default class Archiver {
   private readonly zipName = 'temporaryUpload.zip';
