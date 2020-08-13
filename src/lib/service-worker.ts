@@ -1,19 +1,16 @@
 import { parse } from 'yaml';
-import { validateSchemaFile } from '@graphql-schema/validate-schema';
-import { DocumentNode } from 'graphql/language';
+import { loadSchema } from '@graphql-tools/load';
+import {
+  validate, buildSchema, introspectionFromSchema, parse as graphqlParse,
+} from 'graphql';
 import { yellow } from 'chalk';
 import { PromisifiedFs } from 'common-module';
-import { buildSchema, introspectionFromSchema } from 'graphql';
+import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 import IServiceConfig from '../interfaces/service-config.interface';
 import Paths, { join } from '../common/constants/paths';
 import { WrongFolderError } from './errors';
 import GraphqlLoader from './launcher/GraphQLLoader';
 import { loadSchemaFields, findDiff } from '../common/utils';
-
-interface ValidatorResponse {
-  source: string;
-  schema: DocumentNode;
-}
 
 export default class ServiceWorker {
   private configFiles = {
@@ -44,9 +41,12 @@ export default class ServiceWorker {
     return parse(file.toString()) as IServiceConfig;
   }
 
-  public async validateSchema(): Promise<ValidatorResponse> {
+  public async validateSchema(): Promise<void> {
     const schemaPath = await this.load('schema');
-    return validateSchemaFile(schemaPath);
+    const loadSchemaOptions = { loaders: [new GraphQLFileLoader()] };
+    const schema = await loadSchema(schemaPath, loadSchemaOptions);
+    const documentAST = graphqlParse(await PromisifiedFs.readFile(schemaPath, 'utf8'));
+    validate(schema, documentAST);
   }
 
   public async validateQueriesAndMutations(): Promise<void> {
