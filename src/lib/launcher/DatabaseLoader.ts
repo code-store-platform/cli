@@ -4,9 +4,9 @@ import { logger } from 'codestore-utils';
 import { IDbConfig } from '../../interfaces/service-config.interface';
 
 export default class DatabaseConnector {
-  private entitiesPath = path.join(process.cwd(), 'src', 'data', 'entities', '*.ts');
+  private entitiesPath = path.join(process.cwd(), 'temp', 'data', 'entities', '*.js');
 
-  private migrationsPath = path.join(process.cwd(), 'src', 'data', 'migrations', '*.ts');
+  private migrationsPath = path.join(process.cwd(), 'temp', 'data', 'migrations', '*.js');
 
   public constructor(private readonly config: IDbConfig) {
   }
