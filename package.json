@@ -1,7 +1,7 @@
 {
   "name": "codestore",
   "description": "code.store CLI. Add services, deploy, debug, perform all operations from your terminal.",
-  "version": "1.5.5",
+  "version": "1.5.6",
   "bin": {
     "codestore": "./bin/run",
     "cs": "./bin/run"
@@ -17,7 +17,6 @@
   "license": "MIT",
   "bugs": "https://github.com/code-store-platform/cli/issues",
   "dependencies": {
-    "@graphql-schema/validate-schema": "^1.0.1",
     "@graphql-tools/graphql-file-loader": "^6.0.16",
     "@graphql-tools/load": "^6.0.16",
     "@oclif/command": "^1.5.19",
