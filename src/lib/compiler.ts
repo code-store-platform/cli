@@ -1,6 +1,6 @@
 import { join } from 'path';
 import * as ts from 'typescript';
-import { PromisifiedFs } from 'common-module';
+import { PromisifiedFs } from 'codestore-utils';
 import Command from './command';
 
 export default async (files: any, command: Command): Promise<void> => {

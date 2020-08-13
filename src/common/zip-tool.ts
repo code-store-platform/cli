@@ -1,5 +1,5 @@
 import archiver from 'archiver-promise';
-import { PromisifiedFs } from 'common-module';
+import { PromisifiedFs } from 'codestore-utils';
 import { join } from 'path';
 
 export default class Archiver {
