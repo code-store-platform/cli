@@ -81,6 +81,7 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
       await PromisifiedFs.rimraf(Paths.MIGRATIONS);
       await PromisifiedFs.rimraf(Paths.ENTITIES);
       await PromisifiedFs.rimraf(Paths.DIST);
+      await PromisifiedFs.rimraf(Paths.BUILD);
       await FileWorker.saveZipFromB64(generated, Paths.DATA);
       await compile(await context.serviceWorker.loadResolversPaths(), context);
 
