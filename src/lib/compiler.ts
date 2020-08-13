@@ -1,6 +1,4 @@
-import { join } from 'path';
 import * as ts from 'typescript';
-import { PromisifiedFs } from 'codestore-utils';
 import Command from './command';
 
 export default async (files: any, command: Command): Promise<void> => {
@@ -14,7 +12,8 @@ export default async (files: any, command: Command): Promise<void> => {
     emitDecoratorMetadata: true,
     experimentalDecorators: true,
     strict: false,
-    outDir: 'temp',
+    outDir: '.build',
+    rootDir: 'src',
   });
   const emitResult = program.emit();
 

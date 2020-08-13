@@ -4,13 +4,14 @@ import { gql, IResolvers } from 'apollo-server-express';
 import { DocumentNode } from 'graphql';
 import { logger } from 'codestore-utils';
 import { IResolver } from './interfaces/graphql.interface';
+import paths from '../../common/constants/paths';
 
 export default class GraphqlLoader {
   // private resolversPath = join(process.cwd(), 'src', 'resolvers');
 
   private schemaPath = join(process.cwd(), 'src', 'schema.graphql');
 
-  private resolversPath = join(process.cwd(), 'temp', 'resolvers');
+  private resolversPath = join(paths.BUILD, 'resolvers');
 
   private resolvers: IResolvers = {};
 
