@@ -1,8 +1,7 @@
 import { Listr, ListrTask } from 'listr2';
 import clear from 'clear';
 import { yellow } from 'chalk';
-import { logger } from 'codestore-utils';
-import { PromisifiedFs } from 'common-module';
+import { logger, PromisifiedFs } from 'codestore-utils';
 import Command from '../../lib/command';
 import Aliases from '../../common/constants/aliases';
 import FileWorker from '../../common/file-worker';

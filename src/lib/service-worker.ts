@@ -4,7 +4,7 @@ import {
   validate, buildSchema, introspectionFromSchema, parse as graphqlParse,
 } from 'graphql';
 import { yellow } from 'chalk';
-import { PromisifiedFs } from 'common-module';
+import { PromisifiedFs } from 'codestore-utils';
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 import IServiceConfig from '../interfaces/service-config.interface';
 import Paths, { join } from '../common/constants/paths';
