@@ -57,8 +57,7 @@ export default class Logs extends Command {
   public async execute(): Promise<void> {
     const { flags: { follow, ...query } } = this.parse(Logs);
 
-
-    let env: Environments = query.env;
+    let { env } = query;
     if (!env) env = query.projectUniqueName ? Environments.DEVELOPMENT : Environments.PRIVATE;
 
     const newQuery: IQueryLog = {
