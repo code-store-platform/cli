@@ -1,34 +1,8 @@
 import { logger } from 'codestore-utils';
-import { Listr, ListrTask } from 'listr2';
 import Command from '../../lib/command';
 import { bootstrap } from '../../lib/launcher';
 import { installDependencies } from '../../lib/child-cli';
 import compile from '../../lib/compiler';
-
-
-export const flow = (context: { localConfiguration; command: Command}): ListrTask[] => [
-  {
-    title: 'Installing dependencies',
-    task: async (ctx, task): Promise<void> => {
-      await installDependencies();
-      // eslint-disable-next-line no-param-reassign
-      task.title = 'Packages were installed';
-    },
-  },
-  {
-    title: 'Compiling code',
-    task: async (): Promise<void> => {
-      await compile([...await context.command.serviceWorker.loadResolversPaths(), ...await context.command.serviceWorker.loadEntitiesAndMutationsPaths()], context.command);
-    },
-  },
-  {
-    title: 'Validating schema',
-    task: async (): Promise<void> => {
-      await context.command.serviceWorker.validateSchema();
-      await context.command.serviceWorker.validateQueriesAndMutations();
-    },
-  },
-];
 
 export default class Dev extends Command {
   public static description = 'Launch your service locally';
@@ -46,11 +20,20 @@ export default class Dev extends Command {
       throw new Error('There is no database configuration in codestore.yaml');
     }
 
-    await new Listr<{}>(flow({ localConfiguration, command: this })).run();
+    logger.log('Installing dependencies', 'NPM');
+    await installDependencies();
+
+    logger.log('Compiling typescript code', 'TypeScript');
+    await compile([...await this.serviceWorker.loadResolversPaths(), ...await this.serviceWorker.loadEntitiesAndMutationsPaths()], this);
+
+    logger.log('Validating schema', 'GraphQL');
+    await this.serviceWorker.validateSchema();
+    logger.log('Validating queries and mutations', 'GraphQL');
+    await this.serviceWorker.validateQueriesAndMutations();
 
     const { database, application } = localConfiguration;
 
-    logger.log('Starting development server');
+    logger.log('Starting development server', 'INFO');
 
     await bootstrap({
       db: database,
