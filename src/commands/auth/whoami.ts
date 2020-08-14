@@ -13,7 +13,7 @@ export default class Whoami extends Command {
   public async execute(): Promise<void> {
     try {
       const user: IUser = await this.codestore.getMe();
-      this.log(user.email);
+      this.log(`You're ${user.firstName}, officially ${user.lastName} using ${user.email} as main email${user?.organization?.name ? ` and working for ${user.organization.name}` : ''}. Oh, and you're amazing!`);
     } catch (error) {
       if (error.message === 'GraphQL error: Bad JWT token.') {
         this.log(`Seems that you're not logged in. Please execute ${yellow(' codestore login ')} command to sign-in again.`);

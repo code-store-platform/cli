@@ -22,10 +22,14 @@ export default class APIClient {
   public async getMe(): Promise<IUser> {
     const { data: { me } } = await this.graphqlClient.query({
       query: gql`{
-          me{
-              email
-              id
-              firstName
+          me {
+            email
+            id
+            firstName
+            lastName
+            organization {
+              name
+            }
           }
       }`,
     });
