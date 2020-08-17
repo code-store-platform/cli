@@ -18,12 +18,18 @@ export default class List extends Command {
     const staging = project.environments.find((e) => e.name === 'staging');
     const production = project.environments.find((e) => e.name === 'production');
 
+    const versionName = (env: any, serviceId: number): string => env
+      ?.deployments
+      ?.find((deployment) => deployment.serviceId === serviceId)
+      ?.version
+      ?.name;
+
     return project.services.map((service: IService) => ({
       id: service.uniqueName,
       name: service.displayName,
-      development: `${this.apiPath}/${project.id}/${development.id}/${service.id}/graphql`,
-      staging: `${this.apiPath}/${project.id}/${staging.id}/${service.id}/graphql`,
-      production: `${this.apiPath}/${project.id}/${production.id}/${service.id}/graphql`,
+      development: versionName(development, service.id),
+      staging: versionName(staging, service.id),
+      production: versionName(production, service.id),
     }));
   };
 

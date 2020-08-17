@@ -115,7 +115,7 @@ export default class Project extends ApiService {
   }
 
   public async singleWithEnvsByUniqueName(uniqueName: string): Promise<any> {
-    const { data: { project } } = await this.executeMutation(SINGLE_PROJECT_ENV_BY_UNIQUE_NAME, { uniqueName });
+    const { data: { project } } = await this.executeQuery(SINGLE_PROJECT_ENV_BY_UNIQUE_NAME, { uniqueName });
 
     return project;
   }
