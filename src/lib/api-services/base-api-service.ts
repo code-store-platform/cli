@@ -1,20 +1,22 @@
 import { ApolloClient, DocumentNode } from 'apollo-boost';
 import Logger from '../logger';
+import { NotAuthorizedError } from '../errors';
 
 export default class ApiService {
   public constructor(
     protected readonly apiClient: ApolloClient<unknown>,
   ) {}
 
-  private errors = new Map([
-    ['Unauthorized', 'Live long and prosper, friend 🖖. Seems that you\'re not logged in. Please execute cs auth:login command to sign-in again.'],
+  private errors = new Map<string, Error>([
+    ['Unauthorized', new NotAuthorizedError()],
+    ['Bad JWT token.', new NotAuthorizedError()],
   ]);
 
   private handleCustomError(message: string): Error {
     const error = this.errors.get(message);
 
     if (error) {
-      return new Error(error);
+      return error;
     }
 
     return new Error(message);
@@ -28,7 +30,7 @@ export default class ApiService {
         fetchPolicy: 'no-cache',
       });
     } catch (e) {
-      Logger.error(e?.networkError?.result?.errors || e);
+      Logger.error(e);
 
       if (e.graphQLErrors?.length) {
         throw this.handleCustomError(e.graphQLErrors[0]?.message);
@@ -45,7 +47,7 @@ export default class ApiService {
         variables,
       });
     } catch (e) {
-      Logger.error(e?.networkError?.result?.errors || e);
+      Logger.error(e);
 
       if (e.graphQLErrors?.length) {
         throw this.handleCustomError(e.graphQLErrors[0].message);

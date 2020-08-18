@@ -2,14 +2,14 @@ import { Command as Base } from '@oclif/command';
 import ApolloClient from 'apollo-boost';
 import fetch from 'cross-fetch';
 import ux from 'cli-ux';
-import { yellow } from 'chalk';
 import { Connection } from 'typeorm';
 import APIClient from './api-client';
 import HomeFolderService from './home-folder-service';
 import CommandIds from '../common/constants/commandIds';
 import ServiceWorker from './service-worker';
-import { WrongFolderError } from './errors';
+import { BaseCodestoreError, NotAuthorizedError } from './errors';
 import DatabaseLoader from './launcher/DatabaseLoader';
+import Logger from './logger';
 
 const pjson = require('../../package.json');
 
@@ -39,12 +39,11 @@ export default abstract class Command extends Base {
       this._codestore = new APIClient(this.homeFolderService, this.gqlClient);
       await this.execute();
     } catch (e) {
-      if (e?.message === 'Bad JWT token.') {
-        this.log(`Seems that you're not logged in. Please execute ${yellow(' codestore login ')} command to sign-in again.`);
-        return;
+      if (e?.constructor === NotAuthorizedError) {
+        this.homeFolderService.removeToken().catch(Logger.error);
       }
 
-      if (e?.constructor === WrongFolderError) {
+      if (e instanceof BaseCodestoreError) {
         this.log(e.message);
         return;
       }
