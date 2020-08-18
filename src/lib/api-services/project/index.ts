@@ -17,10 +17,6 @@ import {
 import ApiService from '../base-api-service';
 
 export default class Project extends ApiService {
-  public constructor(props) {
-    super(props);
-  }
-
   public async create(data: { name: string; description: string }): Promise<IProject> {
     const { data: { createProject } } = await this.executeMutation(CREATE_PROJECT, { data });
 
@@ -120,7 +116,7 @@ export default class Project extends ApiService {
     return project;
   }
 
-  public async singleWithEnvs(projectId): Promise<any> {
+  public async singleWithEnvs(projectId: number): Promise<any> {
     const { data: { project } } = await this.executeMutation(SINGLE_PROJECT_ENV, { id: projectId });
 
     return project;

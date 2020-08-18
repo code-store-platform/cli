@@ -20,10 +20,6 @@ import ServiceStatusEnum from '../../../common/constants/service-status.enum';
 import ApiService from '../base-api-service';
 
 export default class Service extends ApiService {
-  public constructor(args: any) {
-    super(args);
-  }
-
   public async list(): Promise<IService[]> {
     const { data: { services } } = await this.executeQuery(LIST_SERVICES, {
       pagination: {
