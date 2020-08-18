@@ -53,16 +53,12 @@ export default class APIClient {
         const { success, token, error } = result;
 
         if (success) {
-          this.homeFolderService.saveToken(token);
+          this.homeFolderService.saveToken(token)
+            .then(() => server.close(() => resolve()))
+            .catch((e) => server.close(() => reject(e)));
+        } else {
+          server.close(() => reject(error));
         }
-
-        server.close(() => {
-          if (success) {
-            resolve();
-          } else {
-            reject(error);
-          }
-        });
       });
     });
   }

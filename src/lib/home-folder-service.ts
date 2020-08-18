@@ -3,7 +3,7 @@ import { homedir } from 'os';
 import { PromisifiedFs } from 'codestore-utils';
 import HomeFileNames from '../common/constants/home.file.names';
 import HomeFolderNames from '../common/constants/home.folder.names';
-import {NotAuthorizedError} from './errors';
+import { NotAuthorizedError } from './errors';
 
 export default class HomeFolderService {
   private homePath = join(homedir(), HomeFolderNames.CODESTORE);
@@ -46,7 +46,7 @@ export default class HomeFolderService {
   }
 
   public async getToken(): Promise<string> {
-    if (!await this.isHomeFolderExists()) {
+    if (!await this.isHomeFolderExists() || await this.isTokenFileEmpty()) {
       throw new NotAuthorizedError();
     }
 
