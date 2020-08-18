@@ -46,7 +46,7 @@ export default class HomeFolderService {
   }
 
   public async getToken(): Promise<string> {
-    if (!await this.isHomeFolderExists() || this.isTokenFileEmpty()) {
+    if (!await this.isHomeFolderExists()) {
       throw new NotAuthorizedError();
     }
 
