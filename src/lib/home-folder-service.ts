@@ -49,7 +49,7 @@ export default class HomeFolderService {
 
   public async removeToken(): Promise<void> {
     if (!await this.isHomeFolderExists()) {
-      throw new Error('Please login.');
+      await this.createHomeFolder();
     }
     return this.writeFileInHomeFolder(HomeFileNames.CREDENTIALS, '');
   }
