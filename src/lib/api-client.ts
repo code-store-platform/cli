@@ -3,11 +3,14 @@ import IUser from '../interfaces/user.interface';
 import { openBrowser, server, emitter } from './webAuthHelper';
 import HomeFolderService from './home-folder-service';
 import Service from './api-services/service';
+import Deployment from './api-services/deployment';
 import Project from './api-services/project';
 import Logs from './api-services/logs';
 
 export default class APIClient {
   public readonly Service: Service;
+
+  public readonly Deployment: Deployment;
 
   public readonly Project: Project;
 
@@ -15,6 +18,7 @@ export default class APIClient {
 
   public constructor(private readonly homeFolderService: HomeFolderService, private readonly graphqlClient: ApolloClient<unknown>) {
     this.Service = new Service(this.graphqlClient);
+    this.Deployment = new Deployment(this.graphqlClient);
     this.Project = new Project(this.graphqlClient);
     this.Logs = new Logs(this.graphqlClient);
   }

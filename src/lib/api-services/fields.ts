@@ -20,3 +20,14 @@ export const SERVICE = `
       howSolving
       problemSolving
 `;
+
+export const DEPLOYMENT = `
+      id
+      createdAt
+      updatedAt
+      environmentId
+      serviceId
+      status
+      commitId
+      endpoint
+`;
