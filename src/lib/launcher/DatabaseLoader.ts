@@ -6,7 +6,7 @@ import paths from '../../common/constants/paths';
 export default class DatabaseConnector {
   private static entitiesPath = path.join(paths.BUILD, 'data', 'entities', '*.js');
 
-  private static migrationsPath = path.join(paths.BUILD, 'data', 'migrations');
+  private static migrationsPath = path.join(paths.BUILD, 'data', 'migrations', '*js');
 
   public static async createConnection(config: IDbConfig): Promise<Connection> {
     return createConnection({

@@ -30,4 +30,7 @@ export const DEPLOYMENT = `
       status
       commitId
       endpoint
+      environment {
+        name
+      }
 `;

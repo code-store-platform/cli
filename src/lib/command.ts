@@ -10,6 +10,7 @@ import ServiceWorker from './service-worker';
 import { BaseCodestoreError, NotAuthorizedError } from './errors';
 import DatabaseLoader from './launcher/DatabaseLoader';
 import Logger from './logger';
+import { IDeployment } from '../interfaces/deployment.interface';
 
 const pjson = require('../../package.json');
 
@@ -92,5 +93,13 @@ export default abstract class Command extends Base {
     }
 
     return DatabaseLoader.createConnection(localConfiguration.database);
+  }
+
+  protected createEndpoint(deployment: IDeployment| undefined, serviceId: number, env: 'private' | 'demo'): string {
+    if (deployment && deployment.endpoint) {
+      const shortedEndpoint = deployment.endpoint.split('-').join('');
+      return `${this.apiPath}/${shortedEndpoint}/graphql`;
+    }
+    return ` ${this.apiPath}/0/${env}/${serviceId}/graphql`;
   }
 }
