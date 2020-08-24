@@ -7,6 +7,7 @@ import Command from '../../lib/command';
 import { IServiceCreate } from '../../interfaces/service.interface';
 import { createPrefix } from '../../common/utils';
 import FileWorker from '../../common/file-worker';
+import Environments from "../../common/constants/env.enum";
 
 interface Ctx {
   service: {
@@ -155,8 +156,12 @@ export default class Create extends Command {
 
     await tasks.run();
 
-    this.log(`Your service on private environment is available by this url: ${blue(`${this.apiPath}/0/private/${this.serviceId}/graphql`)}`);
-    this.log(`Your service on demo environment is available by this url: ${blue(`${this.apiPath}/0/demo/${this.serviceId}/graphql`)}`);
+    const { deployments } = await this.codestore.Service.getService(this.serviceId);
+    const privateDeployment = deployments?.find((deployment) => deployment.environment.name === Environments.PRIVATE);
+    const demoDeployment = deployments?.find((deployment) => deployment.environment.name === Environments.DEMO);
+
+    this.log(`Your service on private environment is available by this url: ${blue(`${this.createEndpoint(privateDeployment, this.serviceId, 'private')}`)}`);
+    this.log(`Your service on demo environment is available by this url: ${blue(`${this.createEndpoint(demoDeployment, this.serviceId, 'demo')}`)}`);
     this.log('\n');
     this.log(yellow(this.structure));
   }
