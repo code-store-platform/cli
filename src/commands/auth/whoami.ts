@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import Command from '../../lib/command';
 import IUser from '../../interfaces/user.interface';
 import Aliases from '../../common/constants/aliases';
@@ -13,7 +14,7 @@ export default class Whoami extends Command {
   public async execute(): Promise<void> {
     try {
       const user: IUser = await this.codestore.getMe();
-      this.log(`You're ${user.firstName}, officially ${user.lastName} using ${user.email} as main email${user?.organization?.name ? ` and working for ${user.organization.name}` : ''}. Oh, and you're amazing!`);
+      this.log(`You're ${chalk.cyan(user.firstName)}, officially ${chalk.cyan(user.lastName)} using ${chalk.cyan(user.email)} as main email${user?.organization?.name ? ` and working for ${chalk.cyan(user.organization.name)}` : ''}. Oh, and you're amazing!`);
     } catch (error) {
       if (error.message === 'GraphQL error: Bad JWT token.') {
         throw new NotAuthorizedError();
