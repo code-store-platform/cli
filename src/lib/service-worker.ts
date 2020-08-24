@@ -94,16 +94,23 @@ export default class ServiceWorker {
     const entities = join(process.cwd(), 'src', 'data', 'entities');
     const migrations = join(process.cwd(), 'src', 'data', 'migrations');
 
-    const entitiesPaths = await PromisifiedFs.readdir(entities).then((data) => data
-      .filter((file) => /.ts$/.test(file))
-      .map((file) => join(entities, file)));
-
-    const migrationsPaths = await PromisifiedFs.readdir(migrations).then((data) => data
-      .filter((file) => /.ts$/.test(file))
-      .map((file) => join(migrations, file)));
+    const entitiesPaths = await this.loadFilePaths(entities);
+    const migrationsPaths = await this.loadFilePaths(migrations);
 
     return [
       ...entitiesPaths, ...migrationsPaths,
     ];
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private async loadFilePaths(path: string): Promise<string[]> {
+    try {
+      return await PromisifiedFs.readdir(path).then((data) => data
+        .filter((file) => /.ts$/.test(file))
+        .map((file) => join(path, file)));
+    } catch (e) {
+      if (e.code !== 'ENOENT') throw e;
+      return [];
+    }
   }
 }
