@@ -9,4 +9,7 @@ export interface IDeployment {
   status: DeploymentStatusEnum;
   commitId: string;
   endpoint: string;
+  environment: {
+    name: string;
+  };
 }

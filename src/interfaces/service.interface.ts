@@ -1,3 +1,5 @@
+import { IDeployment } from './deployment.interface';
+
 export interface IService {
   id: number;
   createdAt: Date;
@@ -13,6 +15,7 @@ export interface IService {
   uniqueName: string;
   howSolving: string;
   problemSolving: string;
+  deployments?: IDeployment[];
 }
 
 export interface IServiceCreateResult {
