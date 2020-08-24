@@ -10,6 +10,9 @@ describe('Who Am I', () => {
     firstName: 'Test',
     id: 1,
     lastName: 'TEST',
+    organization: {
+      name: 'test',
+    },
   };
 
   beforeAll(async () => {
