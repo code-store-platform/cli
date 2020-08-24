@@ -1,4 +1,5 @@
 import { ApolloServer } from 'apollo-server-express';
+import { logger } from 'codestore-utils';
 import GraphqlLoader from './GraphQLLoader';
 import DatabaseLoader from './DatabaseLoader';
 import { IConfig } from './interfaces/config.interface';
@@ -6,17 +7,19 @@ import { IConfig } from './interfaces/config.interface';
 export default class Application {
   private gqlLoader: GraphqlLoader = new GraphqlLoader();
 
-  private dbLoader: DatabaseLoader;
-
-  public constructor(public readonly config: IConfig) {
-    this.dbLoader = new DatabaseLoader(config.db);
-  }
+  public constructor(public readonly config: IConfig) {}
 
   public async buildServer(): Promise<ApolloServer> {
     try {
-      const connection = await this.dbLoader.getDbConnection();
+      logger.log('Connecting to database', 'Database');
+
+      const connection = await DatabaseLoader.createConnection(this.config.db);
+
+      logger.log('Successfully connected', 'Database');
 
       await connection.runMigrations();
+
+      logger.log('Migrations ran', 'Database');
 
       return new ApolloServer({
         playground: true,

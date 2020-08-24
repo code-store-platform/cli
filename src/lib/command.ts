@@ -91,6 +91,6 @@ export default abstract class Command extends Base {
       throw new Error('There is no database configuration in codestore.yaml');
     }
 
-    return new DatabaseLoader(localConfiguration.database).getDbConnection();
+    return DatabaseLoader.createConnection(localConfiguration.database);
   }
 }

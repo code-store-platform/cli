@@ -17,7 +17,7 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
     title: 'Compiling your code',
     task: async (): Promise<void> => {
       await installDependencies();
-      await compile(await context.serviceWorker.loadResolversPaths(), context);
+      await compile(await context.serviceWorker.loadResolversPaths());
     },
   },
   {
@@ -44,6 +44,9 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
         task.skip(`Migrations were not reverted: ${firstLine(e.toString())}`);
       };
 
+      // eslint-disable-next-line no-param-reassign
+      task.output = 'Creating connection to database';
+
       let connection: Connection;
       try {
         connection = await context.getDatabaseConnection();
@@ -53,6 +56,10 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
       }
 
       const currentMigrations = await PromisifiedFs.readdir(Paths.MIGRATIONS);
+
+      // eslint-disable-next-line no-param-reassign
+      task.output = 'Getting migrations from latest uploaded service version';
+
       const migrationsInGit = await context.codestore.Service.getMigrations(ctx.encodedZip);
 
       for (let i = 0; i < migrationsInGit.length; i += 1) {
@@ -60,7 +67,11 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
           error(`Your migrations don't match migrations in the repository, please try ${yellow('cs pull')}`, { exit: 1 });
         }
       }
+
       try {
+        // eslint-disable-next-line no-param-reassign
+        task.output = 'Removing migrations';
+
         for (let i = currentMigrations.length - 1; i >= migrationsInGit.length; i -= 1) {
           // eslint-disable-next-line no-await-in-loop
           await connection.undoLastMigration();
@@ -73,6 +84,9 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
       } finally {
         await connection.close();
       }
+    },
+    options: {
+      bottomBar: true,
     },
   },
   {
@@ -95,7 +109,7 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
       await PromisifiedFs.rimraf(Paths.DIST);
       await PromisifiedFs.rimraf(Paths.BUILD);
       await FileWorker.saveZipFromB64(generated, Paths.DATA);
-      await compile(await context.serviceWorker.loadResolversPaths(), context);
+      await compile(await context.serviceWorker.loadResolversPaths());
 
       // eslint-disable-next-line no-param-reassign
       task.title = 'Generated code has been saved';
