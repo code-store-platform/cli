@@ -1,7 +1,7 @@
 {
   "name": "codestore",
   "description": "code.store CLI. Add services, deploy, debug, perform all operations from your terminal.",
-  "version": "1.8.5",
+  "version": "1.8.6",
   "bin": {
     "codestore": "./bin/run",
     "cs": "./bin/run"
