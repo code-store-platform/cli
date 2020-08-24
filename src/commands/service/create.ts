@@ -7,7 +7,7 @@ import Command from '../../lib/command';
 import { IServiceCreate } from '../../interfaces/service.interface';
 import { createPrefix } from '../../common/utils';
 import FileWorker from '../../common/file-worker';
-import Environments from "../../common/constants/env.enum";
+import Environments from '../../common/constants/env.enum';
 
 interface Ctx {
   service: {
@@ -156,7 +156,7 @@ export default class Create extends Command {
 
     await tasks.run();
 
-    const { deployments } = await this.codestore.Service.getService(this.serviceId);
+    const { deployments } = await this.codestore.Service.getService(this.serviceId, true);
     const privateDeployment = deployments?.find((deployment) => deployment.environment.name === Environments.PRIVATE);
     const demoDeployment = deployments?.find((deployment) => deployment.environment.name === Environments.DEMO);
 

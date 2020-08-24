@@ -33,6 +33,17 @@ export const SINGLE_SERVICE = gql`query singleService($id: Int!){
   }
 }`;
 
+export const SINGLE_SERVICE_INCLUDING_DEPLOYMENTS = gql`query singleService($id: Int!){
+  service(id:{
+    id: $id
+  }){
+    ${SERVICE}
+    deployments {
+      ${DEPLOYMENT}
+    }
+  }
+}`;
+
 export const CREATE_SERVICE = gql`
     mutation createService(
         $service: CreateService!,
