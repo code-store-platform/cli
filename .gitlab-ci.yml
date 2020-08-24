@@ -13,7 +13,7 @@ publish_npm:
     - npm install -g aws-sdk
     - npm version
     - oclif-dev -v
-    - npm install
+    - npm ci
     - oclif-dev pack
     - bash ./alias_create.sh
   script:
