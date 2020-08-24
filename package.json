@@ -1,7 +1,7 @@
 {
   "name": "codestore",
   "description": "code.store CLI. Add services, deploy, debug, perform all operations from your terminal.",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "bin": {
     "codestore": "./bin/run",
     "cs": "./bin/run"
@@ -23,24 +23,37 @@
     "@oclif/config": "^1.14.0",
     "@oclif/errors": "^1.3.3",
     "@oclif/plugin-help": "^2.2.3",
+    "@types/archiver": "^3.1.0",
     "@types/express": "^4.17.3",
     "@types/inquirer": "^6.5.0",
     "apollo-boost": "^0.4.7",
     "apollo-server-express": "^2.16.1",
     "archiver-promise": "^1.0.0",
+    "axios": "^0.19.2",
+    "boxen": "^4.2.0",
     "chalk": "^3.0.0",
     "clear": "^0.1.0",
     "cli-ux": "^5.4.5",
     "codestore-utils": "1.1.4",
     "completion": "^1.0.1",
     "cross-fetch": "^3.0.4",
+    "debug": "^4.1.1",
     "enquirer": "^2.3.5",
     "express": "^4.17.1",
     "graphql": "^14.6.0",
+    "has-yarn": "^2.1.0",
     "inquirer": "^7.1.0",
+    "is-ci": "^2.0.0",
+    "is-installed-globally": "^0.3.2",
+    "is-yarn-global": "^0.3.0",
+    "latest-version": "^5.1.0",
     "listr2": "^2.0.1",
     "node-config-ts": "^3.0.4",
     "open": "^7.0.3",
+    "os": "^0.1.1",
+    "pg": "^8.3.0",
+    "semver": "^7.3.2",
+    "semver-diff": "^3.1.1",
     "tree-node-cli": "^1.3.0",
     "typeorm": "^0.2.25",
     "typescript": "^3.9.7",
@@ -55,12 +68,12 @@
     "eslint": "^6.8.0",
     "eslint-config-airbnb-typescript": "^7.0.0",
     "eslint-plugin-import": "^2.20.1",
+    "globby": "^10.0.2",
     "jest": "^25.2.7",
     "jest-runner-eslint": "^0.7.6",
     "nyc": "^14.1.1",
     "ts-jest": "^25.3.1",
-    "ts-node": "^8.6.2",
-    "typescript": "^3.9.7"
+    "ts-node": "^8.6.2"
   },
   "engines": {
     "node": ">=8.0.0"
@@ -82,6 +95,9 @@
     "plugins": [
       "@oclif/plugin-help"
     ],
+    "hooks": {
+      "init": "./lib/hooks/init/update-checker"
+    },
     "topics": {
       "context": {
         "description": "Manage global Project and Service contexts"
@@ -109,7 +125,8 @@
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "test": "jest --coverage --runInBand --detectOpenHandles",
     "start": "node ./bin/run",
-    "lint": "eslint '{src,apps,libs,test}/**/*.ts' --fix"
+    "lint": "eslint '{src,apps,libs,test}/**/*.ts' --fix",
+    "build": "rm -rf lib && tsc -b"
   },
   "types": "lib/index.d.ts",
   "jest": {
