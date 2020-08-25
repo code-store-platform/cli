@@ -162,6 +162,9 @@ export default abstract class Command extends Base {
   }
 
   public static getServiceUrl({ endpoint }: {endpoint: string}): string {
+    if (endpoint !== 'federation-gateway-service') {
+      return `${this.apiPath}/${endpoint.split('-').join('')}/graphql`;
+    }
     return `${this.apiPath}/${endpoint}/graphql`;
   }
 }

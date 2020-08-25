@@ -6,7 +6,7 @@ export type Resolver = (deployment: IDeployment) => string;
 export type Field = { name: string; resolve: Resolver };
 export type CreateRowResult = { name: string;[key: string]: string };
 
-const versionResolver: Resolver = (deployment: IDeployment): string => deployment.version.name;
+const versionResolver: Resolver = (deployment: IDeployment): string => (deployment.version ? deployment.version.name : '');
 const deployedResolver: Resolver = (deployment: IDeployment): string => new Date(+deployment.updatedAt).toLocaleString();
 const urlResolver: Resolver = (deployment: IDeployment): string => Command.getServiceUrl(deployment);
 
