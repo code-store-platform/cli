@@ -52,7 +52,16 @@ export default class Info extends Command {
   public async execute(): Promise<void> {
     const { args } = this.parse(Info);
 
-    const service = await this.chooseService(args, 'Choose which service you want to display information about');
+    let service;
+
+    if (!args.serviceArgs) {
+      try {
+        const { serviceId } = await this.serviceWorker.loadValuesFromYaml();
+        service = await this.codestore.Service.getService(serviceId);
+      } catch (e) {
+        service = await this.chooseService(args, 'Choose which service you want to display information about');
+      }
+    }
     if (!service) return;
 
     const deployments = await this.codestore.Deployment.getDeploymentsForService(service.id);
