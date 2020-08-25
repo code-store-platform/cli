@@ -3,6 +3,8 @@ import ApolloClient from 'apollo-boost';
 import fetch from 'cross-fetch';
 import ux from 'cli-ux';
 import { Connection } from 'typeorm';
+import inquirer from 'inquirer';
+import { yellow, blue } from 'chalk';
 import APIClient from './api-client';
 import HomeFolderService from './home-folder-service';
 import CommandIds from '../common/constants/commandIds';
@@ -10,7 +12,9 @@ import ServiceWorker from './service-worker';
 import { BaseCodestoreError, NotAuthorizedError } from './errors';
 import DatabaseLoader from './launcher/DatabaseLoader';
 import Logger from './logger';
-import { IDeployment } from '../interfaces/deployment.interface';
+import IService from '../interfaces/service.interface';
+import IProject from '../interfaces/project.interface';
+import { createPrefix } from '../common/utils';
 
 const pjson = require('../../package.json');
 
@@ -25,7 +29,7 @@ export default abstract class Command extends Base {
 
   protected gqlClient: ApolloClient<unknown>;
 
-  protected apiPath = process.env.CODESTORE_GATEWAY_HOST || 'https://api.code.store';
+  public static apiPath = process.env.CODESTORE_GATEWAY_HOST || 'https://api.code.store';
 
   public get codestore(): APIClient {
     return this._codestore;
@@ -62,11 +66,11 @@ export default abstract class Command extends Base {
     this.gqlClient = new ApolloClient({
       fetch,
       // does not work when uri gets from config in terminal, should be rechecked
-      uri: `${this.apiPath}/federation-gateway-service/graphql`,
+      uri: Command.getServiceUrl({ endpoint: 'federation-gateway-service' }),
       headers: {
         Authorization: !onLogin && await this.homeFolderService.getToken(),
       },
-      onError: (): void => {},
+      onError: (): void => { },
     });
     this._codestore = new APIClient(this.homeFolderService, this.gqlClient);
   }
@@ -95,11 +99,69 @@ export default abstract class Command extends Base {
     return DatabaseLoader.createConnection(localConfiguration.database);
   }
 
-  protected createEndpoint(deployment: IDeployment| undefined, serviceId: number, env: 'private' | 'demo'): string {
-    if (deployment && deployment.endpoint) {
-      const shortedEndpoint = deployment.endpoint.split('-').join('');
-      return `${this.apiPath}/${shortedEndpoint}/graphql`;
+  protected async chooseService(args: { [key: string]: string }, prefix: string, inputServices?: IService[]): Promise<IService | undefined> {
+    const services = inputServices || await this.codestore.Service.list();
+    const { serviceArg } = args;
+
+    if (!services.length) {
+      this.log(`There are no services yet, try creating one using ${yellow('codestore service:create')} command.`);
+      return undefined;
     }
-    return ` ${this.apiPath}/0/${env}/${serviceId}/graphql`;
+
+    const foundService = services.find((service) => service.uniqueName === serviceArg);
+    if (foundService) return foundService;
+
+    if (serviceArg) {
+      this.log(`Service with id ${blue(serviceArg)} does not exist`);
+    }
+
+    const serviceMap = new Map(services.map((s) => [
+      `${s.uniqueName}\t${s.problemSolving}`,
+      s,
+    ]));
+
+    const { choosedService } = await inquirer.prompt({
+      type: 'list',
+      name: 'choosedService',
+      message: 'Service:',
+      prefix: createPrefix(prefix),
+      choices: Array.from(serviceMap.keys()),
+    });
+    return serviceMap.get(choosedService);
+  }
+
+  protected async chooseProject(args: { [key: string]: string }, prefix: string): Promise<IProject | undefined> {
+    const projects = await this.codestore.Project.list();
+    const { projectArg } = args;
+
+    if (!projects.length) {
+      this.log(`There are no projects yet, try creating one using ${yellow('codestore project:create')} command.`);
+      return undefined;
+    }
+
+    const foundProject = projects.find((project) => project.uniqueName === projectArg);
+    if (foundProject) return foundProject;
+
+    if (projectArg) {
+      this.log(`Project with id ${blue(projectArg)} does not exist`);
+    }
+
+    const projectMap = new Map(projects.map((s) => [
+      `${s.uniqueName}\t${s.description}`,
+      s,
+    ]));
+
+    const { choosedProject } = await inquirer.prompt({
+      type: 'list',
+      name: 'choosedProject',
+      message: 'Project:',
+      prefix: createPrefix(prefix),
+      choices: Array.from(projectMap.keys()),
+    });
+    return projectMap.get(choosedProject);
+  }
+
+  public static getServiceUrl({ endpoint }: {endpoint: string}): string {
+    return `${this.apiPath}/${endpoint}/graphql`;
   }
 }

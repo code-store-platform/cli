@@ -1,4 +1,5 @@
-import { IService } from './service.interface';
+import IService from './service.interface';
+import IEnvironment from './environment.interface';
 
 export default interface IProject {
   id: number;
@@ -7,7 +8,8 @@ export default interface IProject {
   description?: string;
   services?: IService[];
   uniqueName: string;
-  author? : {
+  author?: {
     email: string;
   };
+  environments?: IEnvironment[];
 }

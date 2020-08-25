@@ -1,4 +1,7 @@
 import DeploymentStatusEnum from '../common/constants/deployment-status.enum';
+import IVersion from './version.interface';
+import IEnvironment from './environment.interface';
+import IService from './service.interface';
 
 export interface IDeployment {
   id: number;
@@ -9,7 +12,7 @@ export interface IDeployment {
   status: DeploymentStatusEnum;
   commitId: string;
   endpoint: string;
-  environment: {
-    name: string;
-  };
+  version: IVersion;
+  environment: IEnvironment;
+  service?: IService;
 }

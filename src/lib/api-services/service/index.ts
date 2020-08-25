@@ -16,7 +16,7 @@ import {
   LIST_SERVICE_INCLUDE_DEPLOYMENTS,
   SINGLE_SERVICE_INCLUDING_DEPLOYMENTS,
 } from './queries';
-import { IService, IServiceCreateResult, IServiceCreate } from '../../../interfaces/service.interface';
+import IService, { IServiceCreateResult, IServiceCreate } from '../../../interfaces/service.interface';
 import ServiceStateEnum from '../../../common/constants/service-state.enum';
 import ServiceStatusEnum from '../../../common/constants/service-status.enum';
 import ApiService from '../base-api-service';
