@@ -2,7 +2,7 @@ import ux from 'cli-ux';
 import { blue } from 'chalk';
 import Command from '../../../lib/command';
 import Aliases from '../../../common/constants/aliases';
-import { IService } from '../../../interfaces/service.interface';
+import IService from '../../../interfaces/service.interface';
 
 export default class List extends Command {
   public static description = 'Lists services in your project';

@@ -3,7 +3,7 @@ import { bold } from 'chalk';
 import Command from '../../lib/command';
 import ILog from '../../interfaces/log.interface';
 import IQueryLog from '../../interfaces/query-log.interface';
-import Environments from '../../common/constants/env.enum';
+import EnvironmentEnum from '../../common/constants/environment.enum';
 import Aliases from '../../common/constants/aliases';
 import { FETCH_INTERVAL, NUMBER_OF_LINES } from '../../common/constants/logs';
 
@@ -27,7 +27,7 @@ export default class Logs extends Command {
     env: flags.enum({
       char: 'e',
       description: 'Project environment.',
-      options: Object.values(Environments),
+      options: Object.values(EnvironmentEnum),
     }),
     projectUniqueName: flags.string({
       char: 'p',
@@ -58,7 +58,7 @@ export default class Logs extends Command {
     const { flags: { follow, ...query } } = this.parse(Logs);
 
     let { env } = query;
-    if (!env) env = query.projectUniqueName ? Environments.DEVELOPMENT : Environments.PRIVATE;
+    if (!env) env = query.projectUniqueName ? EnvironmentEnum.DEVELOPMENT : EnvironmentEnum.PRIVATE;
 
     const newQuery: IQueryLog = {
       num: query.num,

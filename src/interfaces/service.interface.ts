@@ -1,6 +1,6 @@
 import { IDeployment } from './deployment.interface';
 
-export interface IService {
+export default interface IService {
   id: number;
   createdAt: Date;
   updatedAt: Date;

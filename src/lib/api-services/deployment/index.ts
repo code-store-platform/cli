@@ -1,4 +1,4 @@
-import { GET_DEPLOYMENT } from './queries';
+import * as queries from './queries';
 import ApiService from '../base-api-service';
 import { IDeployment } from '../../../interfaces/deployment.interface';
 import DeploymentStatusEnum from '../../../common/constants/deployment-status.enum';
@@ -9,11 +9,36 @@ export default class Deployment extends ApiService {
   }
 
   public async getDeployment(serviceId: number): Promise<IDeployment> {
-    const { data } = await this.executeQuery(GET_DEPLOYMENT, {
+    const { data } = await this.executeQuery(queries.GET_DEPLOYMENT, {
       serviceId,
     });
 
     return data.deploymentByServiceAndEnvironment;
+  }
+
+  public async getDeploymentsForService(serviceId: number): Promise<IDeployment[]> {
+    const { data } = await this.executeQuery(queries.GET_DEPLOYMENTS_FOR_SERVICE, {
+      serviceId,
+    });
+
+    return data.deploymentsForService;
+  }
+
+  public async getDeploymentsForServices(serviceIds: number[]): Promise<IDeployment[]> {
+    const { data } = await this.executeQuery(queries.GET_DEPLOYMENTS_FOR_SERVICES, {
+      serviceIds,
+    });
+
+    return data.deploymentsForServices;
+  }
+
+  public async getDeploymentsForProjectService(projectId: number, serviceId: number): Promise<IDeployment[]> {
+    const { data } = await this.executeQuery(queries.GET_DEPLOYMENTS_FOR_PROJECT_SERVICE, {
+      projectId,
+      serviceId,
+    });
+
+    return data.deploymentsForProjectService;
   }
 
   public async checkDeployment(serviceId: number): Promise<boolean> {

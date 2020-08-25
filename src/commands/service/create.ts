@@ -7,7 +7,8 @@ import Command from '../../lib/command';
 import { IServiceCreate } from '../../interfaces/service.interface';
 import { createPrefix } from '../../common/utils';
 import FileWorker from '../../common/file-worker';
-import Environments from '../../common/constants/env.enum';
+import * as ServiceInfo from './info';
+import { serviceEnvironments } from '../../common/constants/environment.enum';
 
 interface Ctx {
   service: {
@@ -156,12 +157,14 @@ export default class Create extends Command {
 
     await tasks.run();
 
-    const { deployments } = await this.codestore.Service.getService(this.serviceId, true);
-    const privateDeployment = deployments?.find((deployment) => deployment.environment.name === Environments.PRIVATE);
-    const demoDeployment = deployments?.find((deployment) => deployment.environment.name === Environments.DEMO);
+    const deployments = await this.codestore.Deployment.getDeploymentsForService(this.serviceId);
+    const deploymentTo = ServiceInfo.deploymentsToEnvronments(deployments, serviceEnvironments);
 
-    this.log(`Your service on private environment is available by this url: ${blue(`${this.createEndpoint(privateDeployment, this.serviceId, 'private')}`)}`);
-    this.log(`Your service on demo environment is available by this url: ${blue(`${this.createEndpoint(demoDeployment, this.serviceId, 'demo')}`)}`);
+    Object.keys(deploymentTo).forEach((environment) => {
+      this.log(`Your service on ${environment} environment is available by this url: ${
+        blue(Command.getServiceUrl(deploymentTo[environment]!))
+      }`);
+    });
     this.log('\n');
     this.log(yellow(this.structure));
   }
