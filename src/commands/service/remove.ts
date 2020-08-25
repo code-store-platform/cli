@@ -3,7 +3,7 @@ import inquirer from 'inquirer';
 import { Listr } from 'listr2';
 import Command from '../../lib/command';
 
-export default class Delete extends Command {
+export default class Remove extends Command {
   public static description = 'Remove a service';
 
   public static args = [
@@ -11,7 +11,7 @@ export default class Delete extends Command {
   ];
 
   public async execute(): Promise<void> {
-    let { args: { service_id: serviceId } } = this.parse(Delete);
+    let { args: { service_id: serviceId } } = this.parse(Remove);
 
     if (!serviceId) {
       serviceId = (await this.serviceWorker.loadValuesFromYaml()).serviceId;
@@ -25,7 +25,8 @@ export default class Delete extends Command {
       const tasks = new Listr<{}>([{
         title: `Removing service ${yellow(serviceId)}`,
         task: async (ctx, task): Promise<void> => {
-          await this.codestore.Service.deleteByUniqueName(serviceId);
+          const { uniqueName } = await this.codestore.Service.getService(serviceId);
+          await this.codestore.Service.deleteByUniqueName(uniqueName);
 
           // eslint-disable-next-line no-param-reassign
           task.title = 'Service was successfully removed';

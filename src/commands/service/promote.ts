@@ -2,6 +2,7 @@ import { blue } from 'chalk';
 import Command from '../../lib/command';
 import { WrongFolderError } from '../../lib/errors';
 import IService from '../../interfaces/service.interface';
+import Aliases from '../../common/constants/aliases';
 
 export default class Promote extends Command {
   public static description = 'Promotes service from private env to demo';
@@ -9,6 +10,8 @@ export default class Promote extends Command {
   public static args = [
     { name: 'serviceArg', description: 'ID of the service (optional)' },
   ];
+
+  public static aliases = [Aliases.PROMOTE];
 
   public async execute(): Promise<void> {
     const { args } = this.parse(Promote);

@@ -10,6 +10,7 @@ enum Aliases {
   PUSH = 'push',
   LOGS = 'logs',
   GENERATE = 'generate',
+  PROMOTE = 'promote'
 }
 
 export default Aliases;
