@@ -16,11 +16,11 @@ export default class ServiceWorker {
   private configFiles = {
     codestore: {
       path: join(Paths.ROOT, 'codestore.yaml'),
-      error: new WrongFolderError('You must be in code.store service folder to invoke this command.\nCheck if codestore.yaml and schema.graphql are exist'),
+      error: new WrongFolderError('You must be in code.store service root folder to invoke this command.\nCheck if codestore.yaml and schema.graphql exist.'),
     },
     schema: {
       path: join(Paths.SRC, 'schema.graphql'),
-      error: new WrongFolderError(`Cannot find schema.graphql, make sure that you invoke this command from the service folder or use ${yellow(' cs service:pull ')} to restore your graphql.schema.`),
+      error: new WrongFolderError(`Cannot find schema.graphql, make sure that you invoke this command from the service root folder or use ${yellow('cs service:pull')} to restore your graphql.schema.`),
     },
   };
 
@@ -93,16 +93,23 @@ export default class ServiceWorker {
     const entities = join(process.cwd(), 'src', 'data', 'entities');
     const migrations = join(process.cwd(), 'src', 'data', 'migrations');
 
-    const entitiesPaths = await PromisifiedFs.readdir(entities).then((data) => data
-      .filter((file) => /.ts$/.test(file))
-      .map((file) => join(entities, file)));
-
-    const migrationsPaths = await PromisifiedFs.readdir(migrations).then((data) => data
-      .filter((file) => /.ts$/.test(file))
-      .map((file) => join(migrations, file)));
+    const entitiesPaths = await this.loadFilePaths(entities);
+    const migrationsPaths = await this.loadFilePaths(migrations);
 
     return [
       ...entitiesPaths, ...migrationsPaths,
     ];
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private async loadFilePaths(path: string): Promise<string[]> {
+    try {
+      return await PromisifiedFs.readdir(path).then((data) => data
+        .filter((file) => /.ts$/.test(file))
+        .map((file) => join(path, file)));
+    } catch (e) {
+      if (e.code !== 'ENOENT') throw e;
+      return [];
+    }
   }
 }

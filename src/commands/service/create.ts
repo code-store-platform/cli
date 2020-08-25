@@ -7,6 +7,8 @@ import Command from '../../lib/command';
 import { IServiceCreate } from '../../interfaces/service.interface';
 import { createPrefix } from '../../common/utils';
 import FileWorker from '../../common/file-worker';
+import * as ServiceInfo from './info';
+import { serviceEnvironments } from '../../common/constants/environment.enum';
 
 interface Ctx {
   service: {
@@ -155,8 +157,14 @@ export default class Create extends Command {
 
     await tasks.run();
 
-    this.log(`Your service on private environment is available by this url: ${blue(`${this.apiPath}/0/private/${this.serviceId}/graphql`)}`);
-    this.log(`Your service on demo environment is available by this url: ${blue(`${this.apiPath}/0/demo/${this.serviceId}/graphql`)}`);
+    const deployments = await this.codestore.Deployment.getDeploymentsForService(this.serviceId);
+    const deploymentTo = ServiceInfo.deploymentsToEnvronments(deployments, serviceEnvironments);
+
+    Object.keys(deploymentTo).forEach((environment) => {
+      this.log(`Your service on ${environment} environment is available by this url: ${
+        blue(Command.getServiceUrl(deploymentTo[environment]!))
+      }`);
+    });
     this.log('\n');
     this.log(yellow(this.structure));
   }

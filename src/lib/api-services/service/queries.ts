@@ -1,10 +1,19 @@
 import { gql } from 'apollo-boost';
-import { SERVICE } from '../fields';
+import { SERVICE, DEPLOYMENT } from '../fields';
 
 export const LIST_SERVICES = gql`query s($pagination:PaginationOptions){
     services(pagination:$pagination, isPrivate: true){
         ${SERVICE}
     }
+}`;
+
+export const LIST_SERVICE_INCLUDE_DEPLOYMENTS = gql`query s($pagination:PaginationOptions){
+  services(pagination:$pagination, isPrivate: true){
+    ${SERVICE}
+    deployments {
+      ${DEPLOYMENT}
+    }
+  }
 }`;
 
 export const SINGLE_SERVICE_BY_UNIQUE_NAME = gql`query serviceByUniqueName($uniqueName: String!) {
@@ -13,12 +22,25 @@ export const SINGLE_SERVICE_BY_UNIQUE_NAME = gql`query serviceByUniqueName($uniq
   }
 }`;
 
-
 export const SINGLE_SERVICE = gql`query singleService($id: Int!){
   service(id:{
     id: $id
   }){
     ${SERVICE}
+    deployments {
+      ${DEPLOYMENT}
+    }
+  }
+}`;
+
+export const SINGLE_SERVICE_INCLUDING_DEPLOYMENTS = gql`query singleService($id: Int!){
+  service(id:{
+    id: $id
+  }){
+    ${SERVICE}
+    deployments {
+      ${DEPLOYMENT}
+    }
   }
 }`;
 

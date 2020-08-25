@@ -13,19 +13,19 @@ import {
   DELETE_SERVICE_BY_UNIQUE_NAME,
   DOWNLOAD_SERVICE_BY_UNIQUE_NAME,
   PROMOTE_SERVICE_BY_UNIQUE_NAME,
+  LIST_SERVICE_INCLUDE_DEPLOYMENTS,
+  SINGLE_SERVICE_INCLUDING_DEPLOYMENTS,
 } from './queries';
-import { IService, IServiceCreateResult, IServiceCreate } from '../../../interfaces/service.interface';
+import IService, { IServiceCreateResult, IServiceCreate } from '../../../interfaces/service.interface';
 import ServiceStateEnum from '../../../common/constants/service-state.enum';
 import ServiceStatusEnum from '../../../common/constants/service-status.enum';
 import ApiService from '../base-api-service';
 
 export default class Service extends ApiService {
-  public constructor(args: any) {
-    super(args);
-  }
+  public async list(includeDeployments?: boolean): Promise<IService[]> {
+    const query = includeDeployments ? LIST_SERVICE_INCLUDE_DEPLOYMENTS : LIST_SERVICES;
 
-  public async list(): Promise<IService[]> {
-    const { data: { services } } = await this.executeQuery(LIST_SERVICES, {
+    const { data: { services } } = await this.executeQuery(query, {
       pagination: {
         page: 1,
         perPage: 100,
@@ -91,8 +91,10 @@ export default class Service extends ApiService {
     return serviceByUniqueName;
   }
 
-  public async getService(serviceId: number): Promise<IService> {
-    const { data: { service } } = await this.executeQuery(SINGLE_SERVICE, { id: serviceId });
+  public async getService(serviceId: number, includeDeployments? : boolean): Promise<IService> {
+    const query = includeDeployments ? SINGLE_SERVICE_INCLUDING_DEPLOYMENTS : SINGLE_SERVICE;
+
+    const { data: { service } } = await this.executeQuery(query, { id: serviceId });
 
     return service;
   }

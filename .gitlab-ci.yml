@@ -13,7 +13,7 @@ publish_npm:
     - npm install -g aws-sdk
     - npm version
     - oclif-dev -v
-    - npm install
+    - npm ci
     - oclif-dev pack
     - bash ./alias_create.sh
   script:
@@ -21,7 +21,7 @@ publish_npm:
     - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}'>.npmrc
     - npm publish
   only:
-    - master
+    - tags
   tags:
     - eks-dev-infra
 
@@ -60,6 +60,6 @@ update_brew_formula:
         git add . | git diff-index --quiet HEAD || git commit -m "codestore v$VERSION" && git push
       fi
   only:
-    - master
+    - tags
   tags:
     - eks-dev-infra

@@ -6,7 +6,7 @@ import Command from '../../lib/command';
 import Aliases from '../../common/constants/aliases';
 import FileWorker from '../../common/file-worker';
 import { WrongFolderError } from '../../lib/errors';
-import { IService } from '../../interfaces/service.interface';
+import IService from '../../interfaces/service.interface';
 
 export default class Pull extends Command {
   public static description = 'Download an existing service';

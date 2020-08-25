@@ -1,16 +1,25 @@
 import { Listr, ListrTask } from 'listr2';
 import clear from 'clear';
 import { yellow } from 'chalk';
-import { logger, PromisifiedFs } from 'codestore-utils';
+import { PromisifiedFs } from 'codestore-utils';
+import { Connection } from 'typeorm';
 import Command from '../../lib/command';
 import Aliases from '../../common/constants/aliases';
 import FileWorker from '../../common/file-worker';
 import Paths from '../../common/constants/paths';
 import compile from '../../lib/compiler';
+import { installDependencies } from '../../lib/child-cli';
 
-const firstLine = (str: string): string => str.split('\n')[0].replace(/:$/, '');
+const firstLine = (str: string): string => str.split('\n')[0].replace(/:$/, '').replace(/error: /g, '');
 
 export const generateFlow = (context: Command, error: (input: string | Error, options?: { exit: number }) => void): ListrTask[] => [
+  {
+    title: 'Compiling your code',
+    task: async (): Promise<void> => {
+      await installDependencies();
+      await compile(await context.serviceWorker.loadResolversPaths());
+    },
+  },
   {
     title: 'Validating schema',
     task: async (): Promise<void> => {
@@ -18,13 +27,6 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
       if (context.id !== 'service:generate') {
         await context.serviceWorker.validateQueriesAndMutations();
       }
-    },
-  },
-  {
-    title: 'Compiling your code',
-    task: async (): Promise<void> => {
-      await PromisifiedFs.rimraf(Paths.DIST);
-      await compile(await context.serviceWorker.loadResolversPaths(), context);
     },
   },
   {
@@ -38,7 +40,26 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
   {
     title: 'Reverting extra migrations',
     task: async (ctx, task): Promise<void> => {
+      const skip = (e: Error): void => {
+        task.skip(`Migrations were not reverted: ${firstLine(e.toString())}`);
+      };
+
+      // eslint-disable-next-line no-param-reassign
+      task.output = 'Creating connection to database';
+
+      let connection: Connection;
+      try {
+        connection = await context.getDatabaseConnection();
+      } catch (e) {
+        skip(e);
+        return;
+      }
+
       const currentMigrations = await PromisifiedFs.readdir(Paths.MIGRATIONS);
+
+      // eslint-disable-next-line no-param-reassign
+      task.output = 'Getting migrations from latest uploaded service version';
+
       const migrationsInGit = await context.codestore.Service.getMigrations(ctx.encodedZip);
 
       for (let i = 0; i < migrationsInGit.length; i += 1) {
@@ -46,21 +67,26 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
           error(`Your migrations don't match migrations in the repository, please try ${yellow('cs pull')}`, { exit: 1 });
         }
       }
-      const connection = await context.getDatabaseConnection();
+
       try {
+        // eslint-disable-next-line no-param-reassign
+        task.output = 'Removing migrations';
+
         for (let i = currentMigrations.length - 1; i >= migrationsInGit.length; i -= 1) {
           // eslint-disable-next-line no-await-in-loop
           await connection.undoLastMigration();
         }
 
-        await connection.close();
         // eslint-disable-next-line no-param-reassign
         task.title = 'Extra migrations were successfully reverted';
       } catch (e) {
-        logger.error(e);
+        skip(e);
+      } finally {
         await connection.close();
-        task.skip(`Migrations were not reverted: ${firstLine(e.toString())}`);
       }
+    },
+    options: {
+      bottomBar: true,
     },
   },
   {
@@ -83,7 +109,7 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
       await PromisifiedFs.rimraf(Paths.DIST);
       await PromisifiedFs.rimraf(Paths.BUILD);
       await FileWorker.saveZipFromB64(generated, Paths.DATA);
-      await compile(await context.serviceWorker.loadResolversPaths(), context);
+      await compile(await context.serviceWorker.loadResolversPaths());
 
       // eslint-disable-next-line no-param-reassign
       task.title = 'Generated code has been saved';

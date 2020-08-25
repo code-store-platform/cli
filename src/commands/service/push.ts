@@ -4,6 +4,7 @@ import Command from '../../lib/command';
 import Aliases from '../../common/constants/aliases';
 import { generateFlow } from './generate';
 import { createPrefix } from '../../common/utils';
+import DeploymentStatusEnum from '../../common/constants/deployment-status.enum';
 
 export default class Push extends Command {
   public static description = 'Push local changes to Private environment';
@@ -13,7 +14,12 @@ export default class Push extends Command {
   private splitNotes = (notes: string): string[] => notes.split(';');
 
   public async execute(): Promise<void> {
-    await this.serviceWorker.loadValuesFromYaml();
+    const { serviceId } = await this.serviceWorker.loadValuesFromYaml();
+    const service = await this.codestore.Deployment.getDeployment(serviceId);
+    if (service.status !== DeploymentStatusEnum.DEPLOYED) {
+      this.log('Your service is deploing, please try again later');
+      return;
+    }
 
     const { releaseNotes, description } = await inquirer.prompt([
       {
@@ -55,6 +61,17 @@ export default class Push extends Command {
           // eslint-disable-next-line no-param-reassign
           task.title = 'Service has been pushed';
         }
+      },
+    });
+
+    // wait for deployment in the last place
+    generate.push({
+      title: 'Deploying to private environment',
+      task: async (ctx, task): Promise<void> => {
+        await this.codestore.Deployment.checkDeployment(serviceId);
+
+        // eslint-disable-next-line no-param-reassign
+        task.title = 'Deployed to private environment';
       },
     });
 

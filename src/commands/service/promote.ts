@@ -1,19 +1,18 @@
-import inquirer from 'inquirer';
 import { blue } from 'chalk';
 import Command from '../../lib/command';
 import { WrongFolderError } from '../../lib/errors';
-import { createPrefix } from '../../common/utils';
-import { IService } from '../../interfaces/service.interface';
+import IService from '../../interfaces/service.interface';
 
 export default class Promote extends Command {
   public static description = 'Promotes service from private env to demo';
 
   public static args = [
-    { name: 'service_id', description: 'ID of the service (optional)' },
+    { name: 'serviceArg', description: 'ID of the service (optional)' },
   ];
 
   public async execute(): Promise<void> {
-    let { args: { service_id: serviceId } } = this.parse(Promote);
+    const { args } = this.parse(Promote);
+    let { serviceArg: serviceId } = args;
 
     try {
       if (!serviceId) {
@@ -21,21 +20,9 @@ export default class Promote extends Command {
       }
     } catch (error) {
       if (error.constructor === WrongFolderError) {
-        const services = await this.codestore.Service.list();
-        const map = new Map(services.map((s) => [
-          `${s.id}\t${s.displayName}\t${s.problemSolving}`,
-          s.id,
-        ]));
-        const { service } = await inquirer.prompt<{service: string}>([
-          {
-            type: 'list',
-            name: 'service',
-            message: 'Service:',
-            prefix: createPrefix('Choose a service which you want to promote'),
-            choices: Array.from(map).map((it) => it[0]),
-          },
-        ]);
-        serviceId = map.get(service);
+        const service = await this.chooseService(args, 'Choose a service which you want to promote');
+        if (!service) return;
+        serviceId = service.id;
       }
     }
 

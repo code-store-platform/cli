@@ -1,25 +1,16 @@
 import { join } from 'path';
 import { homedir } from 'os';
-import {
-  mkdir, readdir, readFile, writeFile, stat, access,
-} from 'fs';
-import { promisify } from 'util';
+import { PromisifiedFs } from 'codestore-utils';
 import HomeFileNames from '../common/constants/home.file.names';
 import HomeFolderNames from '../common/constants/home.folder.names';
+import { NotAuthorizedError } from './errors';
 
 export default class HomeFolderService {
   private homePath = join(homedir(), HomeFolderNames.CODESTORE);
 
   private credentialsPath = join(this.homePath, HomeFileNames.CREDENTIALS);
 
-  private fs = {
-    mkdir: promisify(mkdir),
-    readdir: promisify(readdir),
-    readFile: promisify(readFile),
-    writeFile: promisify(writeFile),
-    stat: promisify(stat),
-    access: promisify(access),
-  };
+  private fs = PromisifiedFs;
 
   private async isHomeFolderExists(): Promise<boolean> {
     try {
@@ -55,12 +46,24 @@ export default class HomeFolderService {
   }
 
   public async getToken(): Promise<string> {
-    if (!await this.isHomeFolderExists()) {
-      throw new Error('Please login.');
+    if (!await this.isHomeFolderExists() || await this.isTokenFileEmpty()) {
+      throw new NotAuthorizedError();
     }
 
     const data = await this.fs.readFile(this.credentialsPath);
 
     return data.toString().replace(/\n$/, '');
+  }
+
+  private async isTokenFileEmpty(): Promise<boolean> {
+    try {
+      const stats = await this.fs.stat(this.credentialsPath);
+      if (!stats.isFile()) return true;
+
+      const f = await this.fs.readFile(this.credentialsPath);
+      return f.toString() === '';
+    } catch (e) {
+      return false;
+    }
   }
 }

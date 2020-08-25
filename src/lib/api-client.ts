@@ -3,11 +3,14 @@ import IUser from '../interfaces/user.interface';
 import { openBrowser, server, emitter } from './webAuthHelper';
 import HomeFolderService from './home-folder-service';
 import Service from './api-services/service';
+import Deployment from './api-services/deployment';
 import Project from './api-services/project';
 import Logs from './api-services/logs';
 
 export default class APIClient {
   public readonly Service: Service;
+
+  public readonly Deployment: Deployment;
 
   public readonly Project: Project;
 
@@ -15,6 +18,7 @@ export default class APIClient {
 
   public constructor(private readonly homeFolderService: HomeFolderService, private readonly graphqlClient: ApolloClient<unknown>) {
     this.Service = new Service(this.graphqlClient);
+    this.Deployment = new Deployment(this.graphqlClient);
     this.Project = new Project(this.graphqlClient);
     this.Logs = new Logs(this.graphqlClient);
   }
@@ -22,10 +26,14 @@ export default class APIClient {
   public async getMe(): Promise<IUser> {
     const { data: { me } } = await this.graphqlClient.query({
       query: gql`{
-          me{
-              email
-              id
-              firstName
+          me {
+            email
+            id
+            firstName
+            lastName
+            organization {
+              name
+            }
           }
       }`,
     });
@@ -49,16 +57,12 @@ export default class APIClient {
         const { success, token, error } = result;
 
         if (success) {
-          this.homeFolderService.saveToken(token);
+          this.homeFolderService.saveToken(token)
+            .then(() => server.close(() => resolve()))
+            .catch((e) => server.close(() => reject(e)));
+        } else {
+          server.close(() => reject(error));
         }
-
-        server.close(() => {
-          if (success) {
-            resolve();
-          } else {
-            reject(error);
-          }
-        });
       });
     });
   }

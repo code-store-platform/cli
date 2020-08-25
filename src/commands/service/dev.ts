@@ -24,7 +24,7 @@ export default class Dev extends Command {
     await installDependencies();
 
     logger.log('Compiling typescript code', 'TypeScript');
-    await compile([...await this.serviceWorker.loadResolversPaths(), ...await this.serviceWorker.loadEntitiesAndMutationsPaths()], this);
+    await compile([...await this.serviceWorker.loadResolversPaths(), ...await this.serviceWorker.loadEntitiesAndMutationsPaths()]);
 
     logger.log('Validating schema', 'GraphQL');
     await this.serviceWorker.validateSchema();

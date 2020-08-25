@@ -1,11 +1,11 @@
-import Environments from '../common/constants/env.enum';
+import EnvironmentEnum from '../common/constants/environment.enum';
 
 export default interface IQueryLog {
   serviceUniqueName?: string;
   projectUniqueName?: string;
   serviceId?: number;
   projectId?: number;
-  env?: Environments | string;
+  env?: EnvironmentEnum | string;
   sinceTime?: Date;
   num?: number;
 }

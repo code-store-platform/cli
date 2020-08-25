@@ -36,13 +36,12 @@ export const SINGLE_PROJECT_ENV_BY_UNIQUE_NAME = gql` query project($uniqueName:
       ${SERVICE}
     }
     environments{
-      id
       name
       deployments{
-        id
-        status
         serviceId
-        commitId
+        version{
+          name
+        }
       }
     }
   }

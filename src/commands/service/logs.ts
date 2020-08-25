@@ -1,9 +1,9 @@
 import { flags } from '@oclif/command';
-import { bold } from 'chalk';
+import { white, yellow, green } from 'chalk';
 import Command from '../../lib/command';
 import ILog from '../../interfaces/log.interface';
 import IQueryLog from '../../interfaces/query-log.interface';
-import Environments from '../../common/constants/env.enum';
+import EnvironmentEnum from '../../common/constants/environment.enum';
 import Aliases from '../../common/constants/aliases';
 import { FETCH_INTERVAL, NUMBER_OF_LINES } from '../../common/constants/logs';
 
@@ -27,7 +27,7 @@ export default class Logs extends Command {
     env: flags.enum({
       char: 'e',
       description: 'Project environment.',
-      options: Object.values(Environments),
+      options: Object.values(EnvironmentEnum),
     }),
     projectUniqueName: flags.string({
       char: 'p',
@@ -47,18 +47,20 @@ export default class Logs extends Command {
     this.logs = await this.fetch(query);
   }
 
-  public render(noHeader: boolean): void {
-    this.renderTable(this.logs.map((log) => ({
-      time: bold.white(log.time),
-      message: bold.cyan(log.message.trim()),
-    })), { time: {}, message: {} }, { 'no-truncate': true, 'no-header': noHeader });
+  public render(): void {
+    this.logs.forEach((log) => {
+      const time = white(new Date(log.time).toISOString());
+      const context = log.context ? yellow(`[${log.context.trim()}] `) : '';
+      const message = green(log.message.trim());
+      this.log(`${time} ${context}${message}`);
+    });
   }
 
   public async execute(): Promise<void> {
     const { flags: { follow, ...query } } = this.parse(Logs);
 
     let { env } = query;
-    if (!env) env = query.projectUniqueName ? Environments.DEVELOPMENT : Environments.PRIVATE;
+    if (!env) env = query.projectUniqueName ? EnvironmentEnum.DEVELOPMENT : EnvironmentEnum.PRIVATE;
 
     const newQuery: IQueryLog = {
       num: query.num,
@@ -80,7 +82,7 @@ export default class Logs extends Command {
     this.log(`Displaying logs for environment ${env}${query.serviceUniqueName ? `, service ${query.serviceUniqueName}` : ''}${query.projectUniqueName ? `, project ${query.projectUniqueName}` : ''}`);
 
     await this.updateLogs(newQuery);
-    this.render(false);
+    this.render();
 
     if (follow) {
       setInterval(async () => {
@@ -88,7 +90,7 @@ export default class Logs extends Command {
           (newQuery as any).sinceTime = new Date(this.logs[this.logs.length - 1].time);
         }
         await this.updateLogs(newQuery);
-        this.render(true);
+        this.render();
       }, FETCH_INTERVAL);
     }
   }
