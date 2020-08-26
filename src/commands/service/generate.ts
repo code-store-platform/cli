@@ -9,8 +9,19 @@ import FileWorker from '../../common/file-worker';
 import Paths from '../../common/constants/paths';
 import compile from '../../lib/compiler';
 import { installDependencies } from '../../lib/child-cli';
+import { generateChecksumForFile } from '../../common/utils';
 
 const firstLine = (str: string): string => str.split('\n')[0].replace(/:$/, '').replace(/error: /g, '');
+
+export const migrationsAreActual = async (context: Command): Promise<boolean> => {
+  const checksum = await generateChecksumForFile(context.serviceWorker.schemaPath);
+
+  const migrations = await PromisifiedFs.readdir(Paths.MIGRATIONS);
+  const lastMigration = migrations.pop();
+  const lastMigrationChecksum = lastMigration?.split('_').pop()?.replace(/\.ts/g, '');
+
+  return checksum === lastMigrationChecksum;
+};
 
 export const generateFlow = (context: Command, error: (input: string | Error, options?: { exit: number }) => void): ListrTask[] => [
   {
@@ -55,7 +66,8 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
         return;
       }
 
-      const currentMigrations = await PromisifiedFs.readdir(Paths.MIGRATIONS);
+      const currentMigrations = (await PromisifiedFs.readdir(Paths.MIGRATIONS))
+        .filter((name) => /\.ts$/.test(name));
 
       // eslint-disable-next-line no-param-reassign
       task.output = 'Getting migrations from latest uploaded service version';
@@ -69,16 +81,21 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
       }
 
       try {
-        // eslint-disable-next-line no-param-reassign
-        task.output = 'Removing migrations';
+        if (await migrationsAreActual(context)) {
+          // eslint-disable-next-line no-param-reassign
+          task.title = 'Your migrations are up to date';
+        } else {
+          // eslint-disable-next-line no-param-reassign
+          task.output = 'Removing migrations';
 
-        for (let i = currentMigrations.length - 1; i >= migrationsInGit.length; i -= 1) {
-          // eslint-disable-next-line no-await-in-loop
-          await connection.undoLastMigration();
+          for (let i = currentMigrations.length - 1; i >= migrationsInGit.length; i -= 1) {
+            // eslint-disable-next-line no-await-in-loop
+            await connection.undoLastMigration();
+          }
+
+          // eslint-disable-next-line no-param-reassign
+          task.title = 'Extra migrations were successfully reverted';
         }
-
-        // eslint-disable-next-line no-param-reassign
-        task.title = 'Extra migrations were successfully reverted';
       } catch (e) {
         skip(e);
       } finally {
@@ -123,8 +140,12 @@ export default class Generate extends Command {
   public static aliases = [Aliases.GENERATE];
 
   public async execute(): Promise<void> {
-    const { error } = this;
+    if (await migrationsAreActual(this)) {
+      this.log('Your code is up to date with current schema, generate is not needed');
+      return;
+    }
 
+    const { error } = this;
     const tasks = new Listr<{ encodedZip: string; generated: string }>(generateFlow(this, error));
 
     try {

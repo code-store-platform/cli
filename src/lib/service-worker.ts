@@ -24,6 +24,10 @@ export default class ServiceWorker {
     },
   };
 
+  public get schemaPath(): string {
+    return this.configFiles.schema.path;
+  }
+
   private async load(configName: 'codestore' | 'schema'): Promise<string> {
     const { path, error } = this.configFiles[configName];
     try {

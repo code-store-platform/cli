@@ -1,5 +1,7 @@
 import { gray } from 'chalk';
 import { IntrospectionField, IntrospectionObjectType } from 'graphql';
+import { PromisifiedFs } from 'codestore-utils';
+import crypto from 'crypto';
 
 export const createSuffix = (value: string): string => ` ${gray(`(${value})`)}:`;
 
@@ -20,3 +22,11 @@ export const findDiff = (loadedResolvers, schemaResolvers): string[] => {
 
   return loadedResolvers.filter((resolver) => !schemaResolvers.find((schemaResolver) => schemaResolver === resolver));
 };
+
+export async function generateChecksumForFile(path: string): Promise<string> {
+  const file = await PromisifiedFs.readFile(path, { encoding: 'utf8' });
+  return crypto
+    .createHash('sha256')
+    .update(file, 'utf8')
+    .digest('hex');
+}
