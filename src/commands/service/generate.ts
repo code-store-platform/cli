@@ -141,7 +141,7 @@ export default class Generate extends Command {
 
   public async execute(): Promise<void> {
     if (await migrationsAreActual(this)) {
-      this.log('Your code is up to date with current schema, generate is not needed');
+      this.log('Your code is up to date with the current schema, generation is not needed.');
       return;
     }
 

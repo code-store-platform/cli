@@ -22,7 +22,7 @@ export default class Push extends Command {
       return;
     }
     if (deployment.status !== DeploymentStatusEnum.DEPLOYED) {
-      this.log('Your service is deploing, please try again later');
+      this.log('Your service is deploying, please try again later.');
       return;
     }
 
