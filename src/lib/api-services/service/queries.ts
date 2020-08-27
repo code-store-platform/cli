@@ -122,3 +122,11 @@ export const GET_SERVICE_MIGRATIONS = gql`query getServiceMigrations($base64Serv
     data
   }
 }`;
+
+export const IS_SERVICE_UNIQUE_NAME_AVAILABLE = gql`query isServiceUniqueNameAvailable($displayName: String!) {
+  isServiceUniqueNameAvailable(displayName:$displayName){
+    uniqueName
+    free
+    variants
+  }
+}`;

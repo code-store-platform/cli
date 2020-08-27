@@ -28,12 +28,12 @@ export default class Create extends Command {
 
   public async execute(): Promise<void> {
     const choices = await this.codestore.Service.businessDomains();
-    // todo update description
+
     const service = await inquirer.prompt([
       {
         name: 'name',
         message: 'Service name:',
-        validate: (name): string | boolean => {
+        validate: async (name): Promise<string | boolean> => {
           if (!name.length) {
             return 'Value should not be empty';
           }
@@ -46,7 +46,11 @@ export default class Create extends Command {
             return 'Name must be longer than or equal to 3 characters';
           }
 
-          return true;
+          const available = await this.codestore.Service.isUniqueNameAvailable(name);
+          if (available.free) {
+            return true;
+          }
+          return `Service with this name already exists in your organization, available names: ${available.variants.join(', ')}`;
         },
         prefix: createPrefix(`What is your service name?\n It should be the shortest meaningful name possible, for example:
         Meeting-rooms booking`),
