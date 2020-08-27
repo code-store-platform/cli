@@ -1,5 +1,6 @@
 import inquirer from 'inquirer';
 import { Listr } from 'listr2';
+import { blue } from 'chalk';
 import Command from '../../lib/command';
 import Aliases from '../../common/constants/aliases';
 import { generateFlow } from './generate';
@@ -15,9 +16,13 @@ export default class Push extends Command {
 
   public async execute(): Promise<void> {
     const { serviceId } = await this.serviceWorker.loadValuesFromYaml();
-    const service = await this.codestore.Deployment.getDeployment(serviceId);
-    if (service.status !== DeploymentStatusEnum.DEPLOYED) {
-      this.log('Your service is deploing, please try again later');
+    const deployment = await this.codestore.Deployment.getDeployment(serviceId);
+    if (!deployment) {
+      this.log(`Service with id ${blue(serviceId)} was not deployed`);
+      return;
+    }
+    if (deployment.status !== DeploymentStatusEnum.DEPLOYED) {
+      this.log('Your service is deploying, please try again later.');
       return;
     }
 
