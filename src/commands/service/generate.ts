@@ -18,7 +18,7 @@ export const migrationsAreActual = async (context: Command): Promise<boolean> =>
 
   const migrations = await PromisifiedFs.readdir(Paths.MIGRATIONS);
   const lastMigration = migrations.pop();
-  const lastMigrationChecksum = lastMigration?.split('_').pop()?.replace(/\.ts/g, '');
+  const lastMigrationChecksum = lastMigration?.split('_')?.[1]?.replace(/\.ts/g, '');
 
   return checksum === lastMigrationChecksum;
 };
