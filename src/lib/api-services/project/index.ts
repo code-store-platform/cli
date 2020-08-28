@@ -15,6 +15,7 @@ import {
   PROMOTE_SERVICE_IN_PROJECT_BY_UNIQUE_NAME,
 } from './queries';
 import ApiService from '../base-api-service';
+import ProjectServiceBillingDetails from '../../../common/constants/project-service-billing-details.enum';
 
 export default class Project extends ApiService {
   public async create(data: { name: string; description: string }): Promise<IProject> {
@@ -62,41 +63,21 @@ export default class Project extends ApiService {
     return project;
   }
 
-  public async includeServiceByUniqueName(projectUName: string, serviceUName: string): Promise<any> {
-    const mutation = gql`mutation {
-      includeServiceByUniqueNames(data: {
-        projectUniqueName: "${projectUName}",
-        serviceUniqueName: "${serviceUName}"
-          }) { status }
+  public async includeServiceByUniqueName(projectUniqueName: string, serviceUniqueName: string, billingDetails: ProjectServiceBillingDetails): Promise<any> {
+    const mutation = gql`mutation includeServiceByUniqueNames($data: InputProjectServiceUniqueNamesWithBilling!){
+      includeServiceByUniqueNames(data: $data) {
+        status
+      }
     }`;
-    const { data: { includeServiceByUniqueNames } } = await this.executeMutation(mutation, null);
+    const { data: { includeServiceByUniqueNames } } = await this.executeMutation(mutation, {
+      data: {
+        projectUniqueName,
+        serviceUniqueName,
+        billingDetails,
+      },
+    });
 
     return includeServiceByUniqueNames;
-  }
-
-  public async includeService(projectId: number, serviceId: number): Promise<any> {
-    const mutation = gql`mutation {
-      includeService(data: {
-        projectId: ${projectId},
-        serviceId: ${serviceId}
-          }) { status }
-    }`;
-    const { data: { includeService } } = await this.executeMutation(mutation, null);
-
-    return includeService;
-  }
-
-  public async excludeService(projectId: number, serviceId: number): Promise<any> {
-    const mutation = gql`mutation {
-      excludeService(data: {
-        projectId: ${projectId},
-        serviceId: ${serviceId}
-      }) { status }
-    }`;
-
-    const { data: { excludeService } } = await this.executeMutation(mutation, null);
-
-    return excludeService;
   }
 
   public async excludeServiceByUniqueName(projectUniqueName: string, serviceUniqueName: string): Promise<any> {
@@ -105,7 +86,12 @@ export default class Project extends ApiService {
         status
       }
     }`;
-    const { data: { excludeServiceByUniqueNames } } = await this.executeMutation(mutation, { data: { projectUniqueName, serviceUniqueName } });
+    const { data: { excludeServiceByUniqueNames } } = await this.executeMutation(mutation, {
+      data: {
+        projectUniqueName,
+        serviceUniqueName,
+      },
+    });
 
     return excludeServiceByUniqueNames;
   }
