@@ -51,6 +51,7 @@ export default class UpdateChecker {
 
   private async spawnRefresh(): Promise<void> {
     debug('spawning a detached process, passing options as env arguments');
+    debug(`spawning at: ${path.join(__dirname, '../../lib/update-checker/get-version')}`);
     spawn(
       process.execPath,
       [path.join(__dirname, '../../lib/update-checker/get-version'), this.versionFilePath, this.currentVersion],

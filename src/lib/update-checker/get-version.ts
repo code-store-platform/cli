@@ -1,16 +1,15 @@
-const latestVersion = require('latest-version');
-const { PromisifiedFs: fs } = require('codestore-utils');
+import { PromisifiedFs } from 'codestore-utils';
+import latestVersion from 'latest-version';
 
 const debug = require('debug')('update-checker:get-version');
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-async function run(file, version) {
+async function run(file: string, version: string): Promise<void> {
   debug('getting the latest version');
   const latest = await latestVersion('codestore');
   debug(`got response from npmjs: ${latest}`);
 
   debug(`writing to file: ${JSON.stringify({ latest, current: version })}`);
-  await fs.writeFile(file, JSON.stringify({ latest, current: version }));
+  await PromisifiedFs.writeFile(file, JSON.stringify({ latest, current: version }));
 
   process.exit(0);
 }
