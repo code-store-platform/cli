@@ -15,7 +15,7 @@ import {
   PROMOTE_SERVICE_IN_PROJECT_BY_UNIQUE_NAME,
 } from './queries';
 import ApiService from '../base-api-service';
-import ProjectServiceBillingDetails from '../../../common/constants/project-service-billing-details.enum';
+import ProjectServiceBillingType from '../../../common/constants/project-service-billing-type.enum';
 
 export default class Project extends ApiService {
   public async create(data: { name: string; description: string }): Promise<IProject> {
@@ -63,7 +63,7 @@ export default class Project extends ApiService {
     return project;
   }
 
-  public async includeServiceByUniqueName(projectUniqueName: string, serviceUniqueName: string, billingDetails: ProjectServiceBillingDetails): Promise<any> {
+  public async includeServiceByUniqueName(projectUniqueName: string, serviceUniqueName: string, billingType: ProjectServiceBillingType, billingValue: string): Promise<any> {
     const mutation = gql`mutation includeServiceByUniqueNames($data: InputProjectServiceUniqueNamesWithBilling!){
       includeServiceByUniqueNames(data: $data) {
         status
@@ -73,7 +73,8 @@ export default class Project extends ApiService {
       data: {
         projectUniqueName,
         serviceUniqueName,
-        billingDetails,
+        billingType,
+        billingValue,
       },
     });
 
