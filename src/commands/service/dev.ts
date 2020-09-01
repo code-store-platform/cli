@@ -1,8 +1,8 @@
-import { logger } from 'codestore-utils';
+import {
+  logger, compile, PathsResolverTool, GraphqlValidatorTool, bootstrap,
+} from 'codestore-utils';
 import Command from '../../lib/command';
-import { bootstrap } from '../../lib/launcher';
 import { installDependencies } from '../../lib/child-cli';
-import compile from '../../lib/compiler';
 
 export default class Dev extends Command {
   public static description = 'Launch your service locally';
@@ -24,12 +24,11 @@ export default class Dev extends Command {
     await installDependencies();
 
     logger.log('Compiling typescript code', 'TypeScript');
-    await compile([...await this.serviceWorker.loadResolversPaths(), ...await this.serviceWorker.loadEntitiesAndMutationsPaths()]);
-
+    await compile(await PathsResolverTool.loadFilesToCompile());
     logger.log('Validating schema', 'GraphQL');
-    await this.serviceWorker.validateSchema();
+    await GraphqlValidatorTool.validateSchema();
     logger.log('Validating queries and mutations', 'GraphQL');
-    await this.serviceWorker.validateQueriesAndMutations();
+    await GraphqlValidatorTool.validateQueriesAndMutations();
 
     const { database, application } = localConfiguration;
 
@@ -38,6 +37,7 @@ export default class Dev extends Command {
     await bootstrap({
       db: database,
       port: application.port,
+      playgroundUrl: 'http://localhost:4000/graphql',
     });
   }
 }
