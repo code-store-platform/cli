@@ -28,7 +28,7 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
     title: 'Compiling your code',
     task: async (): Promise<void> => {
       await installDependencies();
-      await compile(await PathsResolverTool.resolveResolversPaths());
+      await compile(await PathsResolverTool.loadFilesToCompile());
     },
   },
   {
@@ -126,7 +126,7 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
       await PromisifiedFs.rimraf(PathsResolverTool.DIST);
       await PromisifiedFs.rimraf(PathsResolverTool.BUILD);
       await FileWorker.saveZipFromB64(generated, PathsResolverTool.DATA);
-      await compile(await PathsResolverTool.resolveResolversPaths());
+      await compile(await PathsResolverTool.loadFilesToCompile());
 
       // eslint-disable-next-line no-param-reassign
       task.title = 'Generated code has been saved';
