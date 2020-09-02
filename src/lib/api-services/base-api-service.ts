@@ -1,5 +1,5 @@
 import { ApolloClient, DocumentNode } from 'apollo-boost';
-import Logger from '../logger';
+import { logger } from 'codestore-utils';
 import { NotAuthorizedError } from '../errors';
 
 export default class ApiService {
@@ -30,7 +30,7 @@ export default class ApiService {
         fetchPolicy: 'no-cache',
       });
     } catch (e) {
-      Logger.error(e);
+      logger.error(e);
 
       if (e.graphQLErrors?.length) {
         throw this.handleCustomError(e.graphQLErrors[0]?.message);
@@ -47,7 +47,7 @@ export default class ApiService {
         variables,
       });
     } catch (e) {
-      Logger.error(e);
+      logger.error(e);
 
       if (e.graphQLErrors?.length) {
         throw this.handleCustomError(e.graphQLErrors[0].message);

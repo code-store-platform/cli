@@ -5,13 +5,12 @@ import ux from 'cli-ux';
 import { Connection } from 'typeorm';
 import inquirer from 'inquirer';
 import { yellow, blue } from 'chalk';
+import { DatabaseConnector, logger } from 'codestore-utils';
 import APIClient from './api-client';
 import HomeFolderService from './home-folder-service';
 import CommandIds from '../common/constants/commandIds';
 import ServiceWorker from './service-worker';
 import { BaseCodestoreError, NotAuthorizedError } from './errors';
-import DatabaseLoader from './launcher/DatabaseLoader';
-import Logger from './logger';
 import IService from '../interfaces/service.interface';
 import IProject from '../interfaces/project.interface';
 import { createPrefix } from '../common/utils';
@@ -40,12 +39,12 @@ export default abstract class Command extends Base {
   // do not override this method because it uses execute method to provide base error handling logic.
   public async run(): Promise<void> {
     try {
-      await this.setupApiClient(this.id === CommandIds.LOGIN);
+      await this.setupApiClient(this.id === CommandIds.LOGIN || this.id === CommandIds.DEV);
       this._codestore = new APIClient(this.homeFolderService, this.gqlClient);
       await this.execute();
     } catch (e) {
       if (e?.constructor === NotAuthorizedError) {
-        this.homeFolderService.removeToken().catch(Logger.error);
+        this.homeFolderService.removeToken().catch(logger.error);
       }
 
       if (e instanceof BaseCodestoreError) {
@@ -96,7 +95,7 @@ export default abstract class Command extends Base {
       throw new Error('There is no database configuration in codestore.yaml');
     }
 
-    return DatabaseLoader.createConnection(localConfiguration.database);
+    return DatabaseConnector.createConnection(localConfiguration.database);
   }
 
   protected async chooseService(args: { [key: string]: string }, prefix: string, inputServices?: IService[]): Promise<IService | undefined> {
