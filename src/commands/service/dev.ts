@@ -37,7 +37,7 @@ export default class Dev extends Command {
     await bootstrap({
       db: database,
       port: application.port,
-      playgroundUrl: 'http://localhost:4000/graphql',
+      playgroundUrl: `http://localhost:${application.port || 3000}/graphql`,
     });
   }
 }

@@ -1,11 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "codestore-utils": [
-        "node_modules/codestore-utils/src"
-      ]
-    },
     "declaration": true,
     "importHelpers": true,
     "module": "commonjs",

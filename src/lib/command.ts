@@ -39,7 +39,7 @@ export default abstract class Command extends Base {
   // do not override this method because it uses execute method to provide base error handling logic.
   public async run(): Promise<void> {
     try {
-      await this.setupApiClient(this.id === CommandIds.LOGIN || this.id === 'service:dev');
+      await this.setupApiClient(this.id === CommandIds.LOGIN || this.id === CommandIds.DEV);
       this._codestore = new APIClient(this.homeFolderService, this.gqlClient);
       await this.execute();
     } catch (e) {
