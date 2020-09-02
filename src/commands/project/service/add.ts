@@ -3,7 +3,7 @@ import { Listr } from 'listr2';
 import inquirer from 'inquirer';
 import Command from '../../../lib/command';
 import { createPrefix } from '../../../common/utils';
-import ProjectServiceBillingDetails from '../../../common/constants/project-service-billing-details.enum';
+import ProjectServiceBillingType from '../../../common/constants/project-service-billing-type.enum';
 
 export default class Add extends Command {
   public static description = 'Adds and existing service to your project';
@@ -24,7 +24,8 @@ export default class Add extends Command {
     if (!service) return;
     const serviceUniqueName = service.uniqueName;
 
-    let billingDetails = ProjectServiceBillingDetails.NOT_BILLABLE;
+    let billingType = ProjectServiceBillingType.NOT_BILLABLE;
+    let billingValue = '';
 
     const { wantToBill } = await inquirer.prompt({
       type: 'confirm',
@@ -35,8 +36,8 @@ export default class Add extends Command {
 
     if (wantToBill) {
       const userFriendlyBillingPlans = {
-        'Pay Per Call': ProjectServiceBillingDetails.PAY_PER_CALL,
-        'Monthly payments': ProjectServiceBillingDetails.MONTHLY,
+        'Pay Per Call': ProjectServiceBillingType.PAY_PER_CALL,
+        'Monthly payments': ProjectServiceBillingType.MONTHLY,
       };
       const { howToBill } = await inquirer.prompt({
         type: 'list',
@@ -45,14 +46,27 @@ export default class Add extends Command {
         choices: Object.keys(userFriendlyBillingPlans),
         prefix: createPrefix('Choose a billing plan for your service'),
       });
-      billingDetails = userFriendlyBillingPlans[howToBill];
+      billingType = userFriendlyBillingPlans[howToBill];
+
+      billingValue = (await inquirer.prompt({
+        type: 'input',
+        validate: (value: string): string | boolean => {
+          if (!value) {
+            return 'Billing value is required';
+          }
+          return true;
+        },
+        name: 'billingValue',
+        message: 'Billing value:',
+        prefix: createPrefix('Enter a billing value for your service'),
+      })).billingValue;
     }
 
     await new Listr<{}>([{
       title: `Including service with id ${blue(serviceUniqueName)} to project ${blue(projectUniqueName)}`,
       task: async (ctx, task): Promise<void> => {
         try {
-          const { status } = await this.codestore.Project.includeServiceByUniqueName(projectUniqueName, serviceUniqueName, billingDetails);
+          const { status } = await this.codestore.Project.includeServiceByUniqueName(projectUniqueName, serviceUniqueName, billingType, billingValue);
           // eslint-disable-next-line no-param-reassign
           task.title = `Service ${blue(serviceUniqueName)} is included to project ${blue(projectUniqueName)}\nStatus: ${bold(status)}`;
         } catch (error) {
