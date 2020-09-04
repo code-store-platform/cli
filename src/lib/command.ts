@@ -30,6 +30,8 @@ export default abstract class Command extends Base {
 
   public static apiPath = process.env.CODESTORE_GATEWAY_HOST || 'https://api.code.store';
 
+  public static appPath = process.env.CODESTORE_APP_HOST || 'https://app.code.store';
+
   public get codestore(): APIClient {
     return this._codestore;
   }

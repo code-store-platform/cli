@@ -22,6 +22,6 @@ export default class Login extends Command {
     const user = await this.codestore.getMe();
 
     ux.action.stop(blue('Done'));
-    this.log(blue(`👋 Welcome to code.store, dear ${user.firstName}`));
+    this.log(blue(`👋 Welcome to code.store${user.firstName ? `, dear ${user.firstName}` : ''}`));
   }
 }
