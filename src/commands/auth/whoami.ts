@@ -14,7 +14,19 @@ export default class Whoami extends Command {
   public async execute(): Promise<void> {
     try {
       const user: IUser = await this.codestore.getMe();
-      this.log(`You're ${chalk.cyan(user.firstName)}, officially ${chalk.cyan(user.lastName)} using ${chalk.cyan(user.email)} as main email${user?.organization?.name ? ` and working for ${chalk.cyan(user.organization.name)}` : ''}. Oh, and you're amazing!`);
+      let welcomeMessage = "You're";
+      if (user.firstName) {
+        welcomeMessage += `${chalk.cyan(user.firstName)},`;
+      }
+      if (user.lastName) {
+        welcomeMessage += ` officially ${chalk.cyan(user.lastName)}`;
+      }
+      welcomeMessage += ` using ${chalk.cyan(user.email)} as main email`;
+      if (user?.organization?.name) {
+        welcomeMessage += ` and working for ${chalk.cyan(user.organization.name)}`;
+      }
+      welcomeMessage += ". Oh, and you're amazing!";
+      this.log(welcomeMessage);
     } catch (error) {
       if (error.message === 'GraphQL error: Bad JWT token.') {
         throw new NotAuthorizedError();

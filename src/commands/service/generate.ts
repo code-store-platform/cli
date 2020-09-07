@@ -1,13 +1,13 @@
 import { Listr, ListrTask } from 'listr2';
 import clear from 'clear';
 import { yellow } from 'chalk';
-import { PromisifiedFs } from 'codestore-utils';
+import {
+  PromisifiedFs, compile, PathsResolverTool, GraphqlValidatorTool,
+} from 'codestore-utils';
 import { Connection } from 'typeorm';
 import Command from '../../lib/command';
 import Aliases from '../../common/constants/aliases';
 import FileWorker from '../../common/file-worker';
-import Paths from '../../common/constants/paths';
-import compile from '../../lib/compiler';
 import { installDependencies } from '../../lib/child-cli';
 import { generateChecksumForFile } from '../../common/utils';
 
@@ -16,7 +16,7 @@ const firstLine = (str: string): string => str.split('\n')[0].replace(/:$/, '').
 export const migrationsAreActual = async (context: Command): Promise<boolean> => {
   const checksum = await generateChecksumForFile(context.serviceWorker.schemaPath);
 
-  const migrations = await PromisifiedFs.readdir(Paths.MIGRATIONS);
+  const migrations = await PromisifiedFs.readdir(PathsResolverTool.MIGRATIONS);
   const lastMigration = migrations.pop();
   const lastMigrationChecksum = lastMigration?.split('_')?.[1]?.replace(/\.ts/g, '');
 
@@ -28,23 +28,24 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
     title: 'Compiling your code',
     task: async (): Promise<void> => {
       await installDependencies();
-      await compile(await context.serviceWorker.loadResolversPaths());
+      await compile(await PathsResolverTool.loadFilesToCompile());
     },
   },
   {
     title: 'Validating schema',
     task: async (): Promise<void> => {
-      await context.serviceWorker.validateSchema();
+      await GraphqlValidatorTool.validateSchema();
       if (context.id !== 'service:generate') {
-        await context.serviceWorker.validateQueriesAndMutations();
+        await GraphqlValidatorTool.validateQueriesAndMutations();
       }
     },
   },
   {
     title: 'Preparing the service code for upload',
     task: async (ctx): Promise<void> => {
-      await PromisifiedFs.createFolderIfNotExist(Paths.MIGRATIONS);
-      await PromisifiedFs.createFolderIfNotExist(Paths.ENTITIES);
+      await PromisifiedFs.createFolderIfNotExist(PathsResolverTool.MIGRATIONS);
+      await PromisifiedFs.createFolderIfNotExist(PathsResolverTool.ENTITIES);
+      await PromisifiedFs.rimraf(PathsResolverTool.BUILD);
       ctx.encodedZip = await FileWorker.zipFolder();
     },
   },
@@ -66,7 +67,7 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
         return;
       }
 
-      const currentMigrations = (await PromisifiedFs.readdir(Paths.MIGRATIONS))
+      const currentMigrations = (await PromisifiedFs.readdir(PathsResolverTool.MIGRATIONS))
         .filter((name) => /\.ts$/.test(name));
 
       // eslint-disable-next-line no-param-reassign
@@ -121,12 +122,12 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
         error('An error occured', { exit: 1 });
       }
 
-      await PromisifiedFs.rimraf(Paths.MIGRATIONS);
-      await PromisifiedFs.rimraf(Paths.ENTITIES);
-      await PromisifiedFs.rimraf(Paths.DIST);
-      await PromisifiedFs.rimraf(Paths.BUILD);
-      await FileWorker.saveZipFromB64(generated, Paths.DATA);
-      await compile(await context.serviceWorker.loadResolversPaths());
+      await PromisifiedFs.rimraf(PathsResolverTool.MIGRATIONS);
+      await PromisifiedFs.rimraf(PathsResolverTool.ENTITIES);
+      await PromisifiedFs.rimraf(PathsResolverTool.DIST);
+      await PromisifiedFs.rimraf(PathsResolverTool.BUILD);
+      await FileWorker.saveZipFromB64(generated, PathsResolverTool.DATA);
+      await compile(await PathsResolverTool.loadFilesToCompile());
 
       // eslint-disable-next-line no-param-reassign
       task.title = 'Generated code has been saved';

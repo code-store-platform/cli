@@ -162,7 +162,7 @@ export default class Create extends Command {
     await tasks.run();
 
     const deployments = await this.codestore.Deployment.getDeploymentsForService(this.serviceId);
-    const deploymentTo = ServiceInfo.deploymentsToEnvronments(deployments, serviceEnvironments);
+    const deploymentTo = ServiceInfo.deploymentsToEnvironments(deployments, serviceEnvironments);
 
     Object.keys(deploymentTo).forEach((environment) => {
       this.log(`Your service on ${environment} environment is available by this url: ${
