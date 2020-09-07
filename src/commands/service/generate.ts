@@ -45,6 +45,7 @@ export const generateFlow = (context: Command, error: (input: string | Error, op
     task: async (ctx): Promise<void> => {
       await PromisifiedFs.createFolderIfNotExist(PathsResolverTool.MIGRATIONS);
       await PromisifiedFs.createFolderIfNotExist(PathsResolverTool.ENTITIES);
+      await PromisifiedFs.rimraf(PathsResolverTool.BUILD);
       ctx.encodedZip = await FileWorker.zipFolder();
     },
   },
