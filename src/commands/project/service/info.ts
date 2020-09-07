@@ -25,16 +25,18 @@ export default class Info extends Command {
     if (!service) return;
 
     const deployments = await this.codestore.Deployment.getDeploymentsForProjectService(project.id, service.id);
-    const deploymentTo = ServiceInfo.deploymentsToEnvronments(deployments, projectServiceEnvironments);
+    const deploymentTo = ServiceInfo.deploymentsToEnvironments(deployments, projectServiceEnvironments);
 
     const createRows = (fields: ServiceInfo.Field[]): ServiceInfo.CreateRowResult[] => fields.map(({ name, resolve }) => {
       const result = { name };
       projectServiceEnvironments.forEach((environment) => {
-        result[environment] = resolve(deploymentTo[environment]!);
+        if (deploymentTo[environment]) {
+          result[environment] = resolve(deploymentTo[environment]!);
+        }
       });
       return result;
     });
 
-    this.renderTable(createRows(ServiceInfo.getFieldResolvers()), ServiceInfo.createColumns(projectServiceEnvironments));
+    this.renderTable(createRows(ServiceInfo.getFieldResolvers()), ServiceInfo.createColumns(projectServiceEnvironments, deploymentTo));
   }
 }
