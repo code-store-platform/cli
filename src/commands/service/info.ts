@@ -22,22 +22,21 @@ export const getFieldResolvers = (): Field[] => [{
 }];
 
 type DeploymentToEnvironment = { [key in EnvironmentEnum]?: IDeployment };
-export const deploymentsToEnvronments = (deployments: IDeployment[], environments: EnvironmentEnum[]): DeploymentToEnvironment => {
+export const deploymentsToEnvironments = (deployments: IDeployment[], environments: EnvironmentEnum[]): DeploymentToEnvironment => {
   const result: DeploymentToEnvironment = {};
   // eslint-disable-next-line no-restricted-syntax
   for (const environment of environments) {
     result[environment] = deployments.find((d) => d.environment.name === environment);
-    if (!result[environment]) {
-      throw new Error(`Deployment to environment ${environment} not found`);
-    }
   }
   return result;
 };
 
-export const createColumns = (environments: EnvironmentEnum[]): object => {
+export const createColumns = (environments: EnvironmentEnum[], deployments: DeploymentToEnvironment): object => {
   const result = { name: { header: '' } };
   environments.forEach((environment) => {
-    result[environment] = {};
+    if (deployments[environment]) {
+      result[environment] = {};
+    }
   });
   return result;
 };
@@ -65,7 +64,7 @@ export default class Info extends Command {
     if (!service) return;
 
     const deployments = await this.codestore.Deployment.getDeploymentsForService(service.id);
-    const deploymentTo = deploymentsToEnvronments(deployments, serviceEnvironments);
+    const deploymentTo = deploymentsToEnvironments(deployments, serviceEnvironments);
 
     const createRows = (fields: Field[]): CreateRowResult[] => fields.map(({ name, resolve }) => ({
       name,
@@ -73,6 +72,6 @@ export default class Info extends Command {
       demo: resolve(deploymentTo[EnvironmentEnum.DEMO]!),
     }));
 
-    this.renderTable(createRows(getFieldResolvers()), createColumns(serviceEnvironments));
+    this.renderTable(createRows(getFieldResolvers()), createColumns(serviceEnvironments, deploymentTo));
   }
 }
