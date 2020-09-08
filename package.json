@@ -1,7 +1,7 @@
 {
   "name": "codestore",
   "description": "code.store CLI. Add services, deploy, debug, perform all operations from your terminal.",
-  "version": "1.9.13",
+  "version": "1.9.14",
   "bin": {
     "codestore": "./bin/run",
     "cs": "./bin/run"
@@ -35,7 +35,7 @@
     "chalk": "^3.0.0",
     "clear": "^0.1.0",
     "cli-ux": "^5.4.5",
-    "codestore-utils": "^1.3.3",
+    "codestore-utils": "^1.3.5",
     "completion": "^1.0.1",
     "cross-fetch": "^3.0.4",
     "debug": "^4.1.1",
@@ -54,6 +54,7 @@
     "semver": "^7.3.2",
     "semver-diff": "^3.1.1",
     "tree-node-cli": "^1.3.0",
+    "tslib": "^2.0.1",
     "typeorm": "^0.2.25",
     "typescript": "^3.9.7",
     "unzipper": "^0.10.11",
