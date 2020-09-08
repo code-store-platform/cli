@@ -14,12 +14,12 @@ export default class Whoami extends Command {
   public async execute(): Promise<void> {
     try {
       const user: IUser = await this.codestore.getMe();
-      let welcomeMessage = "You're";
+      let welcomeMessage = "You're ";
       if (user.firstName) {
         welcomeMessage += `${chalk.cyan(user.firstName)},`;
       }
       if (user.lastName) {
-        welcomeMessage += ` officially ${chalk.cyan(user.lastName)}`;
+        welcomeMessage += ` officially ${chalk.cyan(user.lastName)},`;
       }
       welcomeMessage += ` using ${chalk.cyan(user.email)} as main email`;
       if (user?.organization?.name) {
