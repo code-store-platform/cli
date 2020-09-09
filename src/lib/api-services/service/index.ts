@@ -27,7 +27,7 @@ export default class Service extends ApiService {
   public async businessDomains(): Promise<string[]> {
     const { data: { __type: { enumValues } } } = await this.executeQuery(queries.LIST_BUSINESS_DOMAINS, null);
 
-    return enumValues.map((value) => value.name);
+    return enumValues.map((value) => value.name.replace('_', ' '));
   }
 
   public async delete(id: number): Promise<{ affected: number }> {
