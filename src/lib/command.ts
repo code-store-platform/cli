@@ -32,6 +32,8 @@ export default abstract class Command extends Base {
 
   public static appPath = process.env.CODESTORE_APP_HOST || 'https://app.code.store';
 
+  private authToken = process.env.AUTH_TOKEN;
+
   public get codestore(): APIClient {
     return this._codestore;
   }
@@ -69,7 +71,7 @@ export default abstract class Command extends Base {
       // does not work when uri gets from config in terminal, should be rechecked
       uri: Command.getServiceUrl({ endpoint: 'federation-gateway-service' }),
       headers: {
-        Authorization: !onLogin && await this.homeFolderService.getToken(),
+        Authorization: !onLogin && (this.authToken || await this.homeFolderService.getToken()),
       },
       onError: (): void => { },
     });
