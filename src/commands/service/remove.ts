@@ -25,8 +25,13 @@ export default class Remove extends Command {
       const tasks = new Listr<{}>([{
         title: `Removing service ${yellow(serviceId)}`,
         task: async (ctx, task): Promise<void> => {
-          const { uniqueName } = await this.codestore.Service.getService(serviceId);
-          await this.codestore.Service.deleteByUniqueName(uniqueName);
+          // eslint-disable-next-line no-restricted-globals
+          const isUniqueName = isNaN(serviceId);
+          if (isUniqueName) {
+            await this.codestore.Service.deleteByUniqueName(serviceId);
+          } else {
+            await this.codestore.Service.delete(serviceId);
+          }
 
           // eslint-disable-next-line no-param-reassign
           task.title = 'Service was successfully removed';
