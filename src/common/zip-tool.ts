@@ -1,4 +1,5 @@
-import archiver from 'archiver-promise';
+import archiver from 'archiver';
+import { WriteStream, createWriteStream } from 'fs';
 import { PromisifiedFs } from 'codestore-utils';
 import { join } from 'path';
 
@@ -7,10 +8,16 @@ export default class Archiver {
 
   private excludeFiles = ['node_modules', '.DS_Store', this.zipName, 'dist'];
 
-  private archive;
+  private archive: archiver.Archiver;
+
+  private output: WriteStream;
+
+  private absolutePath: string;
 
   public constructor(private readonly path: string) {
-    this.archive = archiver(this.zipName, { zlib: { level: 9 } });
+    this.absolutePath = join(this.path, this.zipName);
+    this.archive = archiver('zip', { zlib: { level: 9 } });
+    this.output = createWriteStream(this.absolutePath);
   }
 
   public async zipFiles(exclude?: string[]): Promise<string> {
@@ -20,7 +27,11 @@ export default class Archiver {
     await this.addItems();
     await this.archive.finalize();
 
-    return join(this.path, this.zipName);
+    return new Promise((resolve, reject) => {
+      this.output.on('error', (error) => reject(error));
+      this.output.on('close', () => resolve(this.absolutePath));
+      this.archive.pipe(this.output);
+    });
   }
 
   private async addItems(): Promise<void> {
