@@ -115,7 +115,10 @@ export default class Create extends Command {
     const tasks = new Listr<Ctx>([{
       title: `Creating service "${bold(service.name)}"`,
       task: async (ctx, task): Promise<void> => {
-        const { service: { displayName: createdServiceName, id, uniqueName }, commitId } = await this.codestore.Service.create(service);
+        const { service: { displayName: createdServiceName, id, uniqueName }, commitId } = await this.codestore.Service.create({
+          ...service,
+          businessDomain: service.businessDomain.replace(' ', '_'),
+        });
         ctx.service = {
           createdServiceName, id, commitId, uniqueName,
         };
