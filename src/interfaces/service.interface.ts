@@ -31,3 +31,5 @@ export interface IServiceCreate {
   problemSolving: string;
   howSolving: string;
 }
+
+export type IServiceDataUI = Omit<IServiceCreate, 'problemSolving'> & { problem: string };

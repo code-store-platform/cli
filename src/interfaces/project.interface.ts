@@ -13,3 +13,9 @@ export default interface IProject {
   };
   environments?: IEnvironment[];
 }
+
+export interface IProjectCreate {
+  name: string;
+  description: string;
+  proceed: boolean;
+}

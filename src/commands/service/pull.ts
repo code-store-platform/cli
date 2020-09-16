@@ -1,3 +1,4 @@
+import { flags } from '@oclif/command';
 import inquirer from 'inquirer';
 import {
   yellow, blue, yellowBright, red,
@@ -11,6 +12,13 @@ import IService from '../../interfaces/service.interface';
 export default class Pull extends Command {
   public static description = 'Download an existing service';
 
+  public static flags = {
+    force: flags.boolean({
+      char: 'f',
+      default: false,
+    }),
+  };
+
   public static aliases = [Aliases.PULL];
 
   public static args = [
@@ -18,7 +26,8 @@ export default class Pull extends Command {
   ];
 
   public async execute(): Promise<void> {
-    let { args: { service_id: serviceId } } = this.parse(Pull);
+    let { args: { service_id: serviceId }, flags: { force } } = this.parse(Pull);
+    let confirmed: boolean = force;
 
     if (!serviceId) {
       try {
@@ -49,16 +58,22 @@ ${red('BE CAREFUL! Any local changes might be deleted and lost')}`);
       return;
     }
 
-    const { userAgreed } = await inquirer.prompt([
-      {
-        name: 'userAgreed', message: `You're about to download service with ID = ${service.uniqueName} to your local machine. All local changes, if any, will be overwritten. Go?`, type: 'confirm', default: false,
-      },
-    ]);
+    if (!confirmed) {
+      confirmed = (await inquirer.prompt([
+        {
+          name: 'confirmed',
+          message: `You're about to download service with ID = ${service.uniqueName} to your local machine. All local changes, if any, will be overwritten. Go?`,
+          type: 'confirm',
+          default: false,
+        },
+      ])).confirmed;
+    }
 
-    if (userAgreed) {
+    if (confirmed) {
       const data = await this.codestore.Service.download(service.id);
 
       await FileWorker.saveZipFromB64(data, process.cwd());
+      this.log(`Service ${blue(`with ID = ${service.uniqueName}`)} was downloaded successfully!`);
     }
   }
 }

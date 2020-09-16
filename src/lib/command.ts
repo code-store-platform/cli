@@ -28,6 +28,8 @@ export default abstract class Command extends Base {
 
   protected gqlClient: ApolloClient<unknown>;
 
+  protected rules: { [key: string]: (value: any) => string | boolean | Promise<string | boolean> };
+
   public static apiPath = process.env.CODESTORE_GATEWAY_HOST || 'https://api.code.store';
 
   public static appPath = process.env.CODESTORE_APP_HOST || 'https://app.code.store';
@@ -102,16 +104,22 @@ export default abstract class Command extends Base {
     return DatabaseConnector.createConnection(localConfiguration.database);
   }
 
+  protected async findService(serviceName: string, inputServices?: IService[]): Promise<IService | undefined> {
+    const services = inputServices || await this.codestore.Service.list();
+
+    if (!services.length) {
+      this.log(`There are no services in the selected project. Try to add a new one using ${yellow('codestore project:service:add')} command.`);
+      return undefined;
+    }
+
+    return services.find((service) => service.uniqueName === serviceName);
+  }
+
   protected async chooseService(args: { [key: string]: string }, prefix: string, inputServices?: IService[]): Promise<IService | undefined> {
     const services = inputServices || await this.codestore.Service.list();
     const { serviceArg } = args;
 
-    if (!services.length) {
-      this.log(`There are no services yet, try creating one using ${yellow('codestore service:create')} command.`);
-      return undefined;
-    }
-
-    const foundService = services.find((service) => service.uniqueName === serviceArg);
+    const foundService = await this.findService(serviceArg, inputServices);
     if (foundService) return foundService;
 
     if (serviceArg) {
@@ -133,17 +141,24 @@ export default abstract class Command extends Base {
     return serviceMap.get(choosedService);
   }
 
-  protected async chooseProject(args: { [key: string]: string }, prefix: string): Promise<IProject | undefined> {
-    const projects = await this.codestore.Project.list();
-    const { projectArg } = args;
-
+  protected async findProject(projectName: string, inputProjects?: IProject[]): Promise<IProject | undefined> {
+    const projects = inputProjects || await this.codestore.Project.list();
     if (!projects.length) {
       this.log(`There are no projects yet, try creating one using ${yellow('codestore project:create')} command.`);
       return undefined;
     }
+    return projects.find((project) => project.uniqueName === projectName);
+  }
 
-    const foundProject = projects.find((project) => project.uniqueName === projectArg);
-    if (foundProject) return foundProject;
+  protected async chooseProject(args: { [key: string]: string }, prefix: string): Promise<IProject | undefined> {
+    const projects = await this.codestore.Project.list();
+    const { projectArg } = args;
+
+    const foundProject = await this.findProject(projectArg, projects);
+
+    if (foundProject) {
+      return foundProject;
+    }
 
     if (projectArg) {
       this.log(`Project with id ${blue(projectArg)} does not exist`);
@@ -164,10 +179,25 @@ export default abstract class Command extends Base {
     return projectMap.get(choosedProject);
   }
 
-  public static getServiceUrl({ endpoint }: {endpoint: string}): string {
+  public static getServiceUrl({ endpoint }: { endpoint: string }): string {
     if (endpoint !== 'federation-gateway-service') {
       return `${this.apiPath}/${endpoint.split('-').join('')}/graphql`;
     }
     return `${this.apiPath}/${endpoint}/graphql`;
+  }
+
+  protected async validate(fieldName: string, fieldValue: string | undefined): Promise<string | boolean> {
+    return this.rules[fieldName] ? this.rules[fieldName](fieldValue) : true;
+  }
+
+  protected async validateFlags<T>(flagsOptions: T, flagsData: { [key: string]: string | undefined }): Promise<{ [key in keyof T]: string }> {
+    const result = {};
+    const flagKeys = Object.keys(flagsOptions);
+    await Promise.all(flagKeys.map(async (flagName) => {
+      const validationResult = await this.validate(flagName, flagsData[flagName]);
+      if (validationResult !== true) this.error(validationResult as string);
+      result[flagName] = flagsData[flagName]!;
+    }));
+    return result as { [key in keyof T]: string };
   }
 }
