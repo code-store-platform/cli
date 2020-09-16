@@ -1,3 +1,4 @@
+import { flags } from '@oclif/command';
 import { yellow } from 'chalk';
 import inquirer from 'inquirer';
 import { Listr } from 'listr2';
@@ -10,8 +11,16 @@ export default class Delete extends Command {
     { name: 'project_id', required: true, description: '(required) ID of the project' },
   ];
 
+  public static flags = {
+    force: flags.boolean({
+      char: 'f',
+      default: false,
+    }),
+  };
+
   public async execute(): Promise<void> {
-    const { args: { project_id: projectId } } = this.parse(Delete);
+    const { args: { project_id: projectId }, flags: { force } } = this.parse(Delete);
+    let confirmed: boolean = force;
 
     const project = await this.codestore.Project.singleByUniqueName(projectId);
 
@@ -19,15 +28,16 @@ export default class Delete extends Command {
       this.log('Seems like you are trying to remove project that not exist');
       return;
     }
+    if (!confirmed) {
+      confirmed = (await inquirer.prompt([{
+        name: 'result',
+        message: `Are you sure you want to delete project ${yellow(project.name)} (ID = ${yellow(project.uniqueName)}) ?`,
+        type: 'confirm',
+        default: false,
+      }])).result;
+    }
 
-    const { result } = await inquirer.prompt([{
-      name: 'result',
-      message: `Are you sure you want to delete project ${yellow(project.name)} (ID = ${yellow(project.uniqueName)}) ?`,
-      type: 'confirm',
-      default: false,
-    }]);
-
-    if (result) {
+    if (confirmed) {
       const tasks = new Listr<{}>([{
         title: `Removing project ${yellow(projectId)}`,
         task: async (_, task): Promise<void> => {

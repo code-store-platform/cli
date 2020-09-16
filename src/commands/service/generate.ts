@@ -149,11 +149,6 @@ export default class Generate extends Command {
     const { error } = this;
     const tasks = new Listr<{ encodedZip: string; generated: string }>(generateFlow(this, error));
 
-    try {
-      await tasks.run();
-    } catch (e) {
-      clear();
-      throw e;
-    }
+    await tasks.run();
   }
 }

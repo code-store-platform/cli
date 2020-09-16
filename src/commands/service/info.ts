@@ -1,6 +1,8 @@
+import { flags } from '@oclif/command';
 import Command from '../../lib/command';
 import EnvironmentEnum, { serviceEnvironments } from '../../common/constants/environment.enum';
 import { IDeployment } from '../../interfaces/deployment.interface';
+import IService from '../../interfaces/service.interface';
 
 export type Resolver = (deployment: IDeployment) => string;
 export type Field = { name: string; resolve: Resolver };
@@ -48,12 +50,23 @@ export default class Info extends Command {
     { name: 'serviceArg', description: 'ID of the service' },
   ];
 
+  public static flags = {
+    service: flags.string({
+      char: 's',
+      description: 'ID of the service',
+    }),
+  };
+
   public async execute(): Promise<void> {
-    const { args } = this.parse(Info);
+    let service: IService | undefined;
+    const { args, flags: { service: serviceFlag } } = this.parse(Info);
 
-    let service;
-
-    if (!args.serviceArgs) {
+    if (serviceFlag) {
+      service = await this.codestore.Service.getServiceByUniqueName(serviceFlag);
+      if (!service) {
+        this.error(`Service with ID ${serviceFlag} does not exist`);
+      }
+    } else {
       try {
         const { serviceId } = await this.serviceWorker.loadValuesFromYaml();
         service = await this.codestore.Service.getService(serviceId);

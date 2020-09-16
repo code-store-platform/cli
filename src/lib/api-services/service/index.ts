@@ -19,8 +19,7 @@ export default class Service extends ApiService {
   }
 
   public async create(service: IServiceCreate): Promise<IServiceCreateResult> {
-    const { data: { createService } } = await this.executeMutation(queries.CREATE_SERVICE, { service: { ...service, private: true } });
-
+    const { data: { createService } } = await this.executeMutation(queries.CREATE_SERVICE, { service });
     return createService;
   }
 
